@@ -35,7 +35,9 @@ import static com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor.*;
 
 import com.revrobotics.jni.CANSparkJNI;
 import com.revrobotics.sim.*;
+//import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.config.ClosedLoopConfig;
+
 import edu.wpi.first.hal.SimDouble;
 import edu.wpi.first.hal.SimInt;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -138,18 +140,18 @@ public class PatchedSparkSim {
    *
    * @return the closed loop slot being used
    */
-  public ClosedLoopConfig.ClosedLoopSlot getClosedLoopSlot() {
+  public ClosedLoopSlot getClosedLoopSlot() {
     switch (m_closedLoopSlot.get()) {
       case 0:
-        return ClosedLoopConfig.ClosedLoopSlot.kSlot0;
+        return ClosedLoopSlot.kSlot0;
       case 1:
-        return ClosedLoopConfig.ClosedLoopSlot.kSlot1;
+        return ClosedLoopSlot.kSlot1;
       case 2:
-        return ClosedLoopConfig.ClosedLoopSlot.kSlot2;
+        return ClosedLoopSlot.kSlot2;
       case 3:
-        return ClosedLoopConfig.ClosedLoopSlot.kSlot3;
+        return ClosedLoopSlot.kSlot3;
       default:
-        return ClosedLoopConfig.ClosedLoopSlot.kSlot0;
+        return ClosedLoopSlot.kSlot0;
     }
   }
 
