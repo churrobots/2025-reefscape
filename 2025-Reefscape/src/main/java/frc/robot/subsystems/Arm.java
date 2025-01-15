@@ -1,0 +1,245 @@
+package frc.robot.subsystems;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkBase;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.ClosedLoopSlot;
+
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+
+import edu.wpi.first.wpilibj2.command.TrapezoidProfileSubsystem;
+import frc.robot.CANMapping;
+import frc.robot.helpers.Tunables.TunableDouble;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import com.revrobotics.spark.SparkAbsoluteEncoder;
+
+/** A robot arm subsystem that moves with a motion profile. */
+public class Arm extends TrapezoidProfileSubsystem {
+
+  class Constants {
+
+    static final double kMaxVelocityRadPerSecond = 3;
+    static final double kMaxAccelerationRadPerSecSquared = 3;
+    static final TrapezoidProfile.Constraints trapezoidProfile = new TrapezoidProfile.Constraints(
+        Constants.kMaxVelocityRadPerSecond, Constants.kMaxAccelerationRadPerSecSquared);
+
+    // The offset of the arm from the horizontal in its neutral position,
+    // measured from the horizontal
+    static final double kArmOffsetRads = 0;
+
+    // These are all the constants from the SparkMAX demo code.
+    static final TunableDouble kP = new TunableDouble("armKP", 4.6);
+    static final TunableDouble kI = new TunableDouble("armKI", 0);
+    static final TunableDouble kD = new TunableDouble("armKD", 2);
+    static final double kIz = 0;
+    static final double kFF = 0;
+    static final double kMaxOutput = 0.9;
+    static final double kMinOutput = -0.7;
+
+    // These are all the constants from the sample WPIlib trapezoid subsystem code.
+    static final TunableDouble kSVolts = new TunableDouble("feedFowardSVolts", 0);
+    static final TunableDouble kGVolts = new TunableDouble("feedFowardGVolts", 0.47);
+    static final TunableDouble kVVoltSecondPerRad = new TunableDouble("feedFowardVVoltSecondPerRad", 2.92);
+    static final TunableDouble kAVoltSecondSquaredPerRad = new TunableDouble("feedFowardAVoltSecondSquaredPerRad",
+        0.02);
+
+    // These constants are from the sample WPIlib code and shouldn't need to change.
+    static final int kCPR = 8192;
+
+    // Default slot should be fine according to:
+    // https://www.chiefdelphi.com/t/sparkmax-pid-controller/427438/4
+    static final int defaultPidSlot = 0;
+  }
+
+  final SparkMax right_motor = new SparkMax(CANMapping.rightArmMotor, MotorType.kBrushless);
+  final SparkMax left_motor = new SparkMax(CANMapping.leftArmMotor, MotorType.kBrushless);
+
+  final SparkClosedLoopController m_pidController;
+  final SlewRateLimiter rateLimiter = new SlewRateLimiter(12);
+
+  final ArmFeedforward m_feedforward = new ArmFeedforward(
+      Constants.kSVolts.get(),
+      Constants.kGVolts.get(),
+      Constants.kVVoltSecondPerRad.get(),
+      Constants.kAVoltSecondSquaredPerRad.get());
+
+  /**
+   * An alternate encoder object is constructed using the GetAlternateEncoder()
+   * method on an existing SparkMax object. If using a REV Through Bore
+   * Encoder, the type should be set to quadrature and the counts per
+   * revolution set to 8192
+   */
+  final SparkAbsoluteEncoder m_absoluteEncoder;
+
+  /** Create a new ArmSubsystem. */
+  // We used some sample code from:
+  // https://github.com/Delmar-Robotics-Engineers-At-MADE/2024-Robot/blob/main/src/main/java/frc/robot/subsystems/Arm.java
+  public Arm() {
+    super(Constants.trapezoidProfile, Constants.kArmOffsetRads);
+
+SparkMaxConfig rightConfig = new SparkMaxConfig();
+
+rightConfig
+    .inverted(false)
+    .idleMode(IdleMode.kBrake)
+    .smartCurrentLimit(40);
+
+// rightConfig.encoder
+//     .positionConversionFactor(1000)
+//     .velocityConversionFactor(1000);
+rightConfig.closedLoop
+    .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
+    .maxOutput(Constants.kMaxOutput)
+    .minOutput(Constants.kMinOutput)
+    .iZone(Constants.kIz)
+    .pid(Constants.kP.get(), Constants.kI.get(), Constants.kD.get());
+
+right_motor.configure(rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+
+SparkMaxConfig leftConfig = new SparkMaxConfig();
+
+leftConfig
+    .inverted(true)
+    .idleMode(IdleMode.kBrake)
+    .smartCurrentLimit(40);
+
+// leftConfig.encoder
+//     .positionConversionFactor(1000)
+//     .velocityConversionFactor(1000);
+// leftConfig.closedLoop
+//     .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+//     .maxOutput(Constants.kMaxOutput)
+//     .minOutput(Constants.kMinOutput)
+//     .iZone(Constants.kIz)
+//     .pid(Constants.kP.get(), Constants.kI.get(), Constants.kD.get());
+leftConfig.follow(right_motor, true);
+left_motor.configure(leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+    m_absoluteEncoder = right_motor.getAbsoluteEncoder();
+
+    m_pidController = right_motor.getClosedLoopController();
+   
+    // TODO: do we need to enable PID wrapping?
+    // m_pidController.setPositionPIDWrappingEnabled(true);
+
+    // TODO: tune the PID for the arm
+    enable();
+  }
+
+  @Override
+  public void useState(TrapezoidProfile.State setpoint) {
+    double feedforward = m_feedforward.calculate(
+        setpoint.position * 2 * Math.PI,
+        setpoint.velocity);
+    m_pidController.setReference(
+        setpoint.position,
+        SparkMax.ControlType.kPosition,
+        ClosedLoopSlot.kSlot0,
+        feedforward);
+    SmartDashboard.putNumber("Arm:mostRecentSetpointPosition", setpoint.position);
+    SmartDashboard.putNumber("Arm:mostRecentFeedForward", feedforward);
+  }
+
+  public void move_speaker() {
+    moveTo(0.048);
+  }
+
+  // public void photoAim() {
+  // PhotonPipelineResult result = m_churroCamera.getLatestResult();
+  // PhotonTrackedTarget target = result.getBestTarget();
+  // int targetId = target.getFiducialId();
+  // var fieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
+  // var tagPose = fieldLayout.getTagPose(targetId);
+
+  // if (tagPose.isPresent()) {
+  // Pose3d actualPose = tagPose.get();
+  // double distance = PhotonUtils.calculateDistanceToTargetMeters(0.32,
+  // actualPose.getZ(), Math.PI / 4, Math.PI / 2);
+  // SmartDashboard.putNumber("Distance", distance);
+  // }
+
+  // }
+
+  void moveTo(double percentageRotation) {
+    double position = m_absoluteEncoder.getPosition();
+    if (position > 0.8) {
+      position = 0;
+    }
+    if (position < 0.005) {
+      // Workaround the encoder sometimes going negative
+      disable();
+      right_motor.set(0.1);
+    } else {
+      // Now encoder is for sure positive, so we can do normal position control
+      enable();
+      setGoal(percentageRotation);
+    }
+  }
+
+  public void move_amp() {
+    moveTo(0.28);
+  }
+
+  public void move_Eject() {
+    moveTo(.16); // or .125
+  }
+
+  public void move_mid() {
+    moveTo(0.1025); // .1075 was the new one, .1025 was the OG one which we're trying now at the
+                    // practice field
+  }
+
+  public void move_Default() {
+    disable();
+    double position = m_absoluteEncoder.getPosition();
+    if (position > 0.8) {
+      position = 0;
+    }
+    if (position > 0.12) {
+      right_motor.set(-0.4);
+    } else if (position > 0.08) {
+      right_motor.set(-0.3);
+    } else if (position > 0.02) {
+      right_motor.set(-0.1);
+    } else {
+      right_motor.stopMotor();
+    }
+  }
+
+  public boolean armIsHigh() {
+    double position = m_absoluteEncoder.getPosition();
+    if (position > 0.15) {
+      return true;
+    } else
+      return false;
+
+  }
+
+  void _debug() {
+    SmartDashboard.putNumber("Arm:encoder", m_absoluteEncoder.getPosition());
+    SmartDashboard.putNumber("Arm:appliedOutputRight", right_motor.getAppliedOutput());
+    SmartDashboard.putNumber("Arm:appliedOutputLeft", left_motor.getAppliedOutput());
+    SmartDashboard.putBoolean("left motor follower status", left_motor.isFollower());
+  }
+
+  @Override
+  public void periodic() {
+    super.periodic();
+    // TODO: uncomment to see debug info for tuning the arm
+    _debug();
+  }
+
+}

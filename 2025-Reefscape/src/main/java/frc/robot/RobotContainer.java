@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj.XboxController.Button;
-
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.helpers.LogitechX3D;
 
@@ -112,7 +112,14 @@ public class RobotContainer {
 
 
   Drivetrain drivetrain = new Drivetrain();
+Arm arm = new Arm();
   final Command recalibrateDrivetrain = new RunCommand(() -> drivetrain.recalibrateDrivetrain(), drivetrain);
+  final Command moveArmToDefault = new RunCommand(() -> arm.move_Default(), arm);
+
+  final Command moveArmToMid = new RunCommand(() -> arm.move_mid(), arm);
+
+  final Command moveArmToAmp = new RunCommand(() -> arm.move_amp(), arm);
+
   final Command slowDrive = new RunCommand(
     () -> drivetrain.drive(
         -MathUtil.applyDeadband(driverForwardAxis.getAsDouble() * Constants.kSlowDriveScaling,
@@ -127,17 +134,19 @@ public class RobotContainer {
 
   final Command fastDrive = new RunCommand(
       () -> drivetrain.drive(
-          -MathUtil.applyDeadband(driverXboxController.getLeftY(),
+          -MathUtil.applyDeadband(driverForwardAxis.getAsDouble(), 
               Constants.kDriveDeadband),
-          -MathUtil.applyDeadband(driverXboxController.getLeftX(),
+          -MathUtil.applyDeadband(driverSidewaysAxis.getAsDouble(),
               Constants.kDriveDeadband),
-          -MathUtil.applyDeadband(driverXboxController.getRightX(),
+          -MathUtil.applyDeadband(driverRotationAxis.getAsDouble(),
               Constants.kDriveDeadband),
           true, false),
       drivetrain);
 
   public RobotContainer() {
+    configureButtonBindings();
     drivetrain.setDefaultCommand(fastDrive);
+    arm.setDefaultCommand(moveArmToDefault);
   }
 
   public Command getAutonomousCommand() {
@@ -156,6 +165,10 @@ public class RobotContainer {
       // Driver Joystick
       button2Trigger.whileTrue(slowDrive);
       button7Trigger.whileTrue(recalibrateDrivetrain);
+      button11Trigger.whileTrue(moveArmToMid);
+      button12Trigger.whileTrue(moveArmToAmp);
+      button10Trigger.whileTrue(moveArmToDefault);
+      
     } else {
       driverForwardAxis = forwardAxisXbox;
       driverSidewaysAxis = sidewaysAxisXbox;
@@ -175,6 +188,7 @@ public class RobotContainer {
 
   void ensureSubsystemsHaveDefaultCommands() {
     drivetrain.setDefaultCommand(fastDrive);
+    arm.setDefaultCommand(moveArmToDefault);
   }
 
 }
