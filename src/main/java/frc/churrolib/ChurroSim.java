@@ -14,16 +14,8 @@ import java.util.List;
  */
 public class ChurroSim {
 
-  /**
-   * Base interface for all simulations, so that clients can simply call
-   * iterate() without knowing about the concrete implementation.
-   */
-  public interface SimulationEntity {
-    public void iterate(double timeDeltaInSeconds);
-  }
-
   static ChurroSim instance;
-  final List<SimulationEntity> m_entities;
+  final List<ChurroSimEntity> m_entities;
 
   private ChurroSim() {
     m_entities = new ArrayList<>();
@@ -36,16 +28,16 @@ public class ChurroSim {
     return instance;
   }
 
-  private static List<SimulationEntity> getEntities() {
+  private static List<ChurroSimEntity> getEntities() {
     return getInstance().m_entities;
   }
 
-  public static void register(SimulationEntity entity) {
+  public static void register(ChurroSimEntity entity) {
     getEntities().add(entity);
   }
 
   public static void iterate(double timeDeltaInSeconds) {
-    for (SimulationEntity entity : getEntities()) {
+    for (ChurroSimEntity entity : getEntities()) {
       entity.iterate(timeDeltaInSeconds);
     }
   }
