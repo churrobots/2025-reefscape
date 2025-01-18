@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Feet;
+
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
@@ -17,6 +19,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Pipeshooter;
 import frc.robot.helpers.LogitechX3D;
 
 public class RobotContainer {
@@ -24,7 +28,7 @@ public class RobotContainer {
   static final class Constants {
     public static final int kDriverXboxPort = 0;
     public static final int kOperatorXboxPort = 1;
-    public static final int kDriverX3DPort = 2;
+    public static final int kDriverX3DPort = 0;
     public static final double kDriveDeadband = 0.1;
     public static final double kSlowDriveScaling = 0.25;
     public static final double kSuperSlowDriveScaling = .15;
@@ -41,7 +45,7 @@ public class RobotContainer {
   final Trigger button2Trigger = new JoystickButton(driverX3DController, 2); // side thumb button
   final Trigger button3Trigger = new JoystickButton(driverX3DController, 3);
   final Trigger button5Trigger = new JoystickButton(driverX3DController, 5);
-  final Trigger button7Trigger = new JoystickButton(driverX3DController, 7); // numbered buttons...
+  final Trigger button7Trigger = new JoystickButton(driverX3DController, 7); // numbered buttons... INTAKE FOR NOW
   final Trigger button8Trigger = new JoystickButton(driverX3DController, 8);
   final Trigger button9Trigger = new JoystickButton(driverX3DController, 9);
   final Trigger button10Trigger = new JoystickButton(driverX3DController, 10);
@@ -111,6 +115,15 @@ public class RobotContainer {
 
   final Command moveArmToAmp = new RunCommand(() -> arm.move_amp(), arm);
 
+  Intake intake = new Intake();
+  final Command bestIntake = new RunCommand(() -> intake.yoinkTheRings(), intake);
+  final Command stopIntake = new RunCommand(() -> intake.stopThePlan(), intake);
+
+  Pipeshooter pipeshooter = new Pipeshooter();
+  final Command coralIntaker = new RunCommand(() -> pipeshooter.coralIntake(), pipeshooter);
+  final Command coralIntakerStop = new RunCommand(() -> pipeshooter.stopCoralIntake(), pipeshooter);
+  final Command coralFeeder = new RunCommand(() -> pipeshooter.feedCoral(), pipeshooter);
+
   final Command slowDrive = new RunCommand(
       () -> drivetrain.drive(
           -MathUtil.applyDeadband(driverForwardAxis.getAsDouble() * Constants.kSlowDriveScaling,
@@ -151,8 +164,10 @@ public class RobotContainer {
       driverRotationAxis = rotationAxisX3D;
 
       // Driver Joystick
-      button2Trigger.whileTrue(slowDrive);
+      button1Trigger.whileTrue(coralIntaker);
+      button2Trigger.whileTrue(coralFeeder);
       button7Trigger.whileTrue(recalibrateDrivetrain);
+      button8Trigger.whileTrue(bestIntake);
       button11Trigger.whileTrue(moveArmToMid);
       button12Trigger.whileTrue(moveArmToAmp);
       button10Trigger.whileTrue(moveArmToDefault);
@@ -176,6 +191,8 @@ public class RobotContainer {
   void ensureSubsystemsHaveDefaultCommands() {
     drivetrain.setDefaultCommand(fastDrive);
     arm.setDefaultCommand(moveArmToDefault);
+    intake.setDefaultCommand(stopIntake);
+    pipeshooter.setDefaultCommand(coralIntakerStop);
   }
 
 }
