@@ -4,6 +4,11 @@
 //
 package frc.robot.subsystems;
 
+import java.io.File;
+import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
+
+import edu.wpi.first.wpilibj2.command.Command;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -27,6 +32,14 @@ import frc.robot.CANMapping;
 import frc.robot.helpers.RevMAXSwerveModule;
 import frc.robot.helpers.SwerveUtils;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import java.io.File;
+import edu.wpi.first.wpilibj.Filesystem;
+import swervelib.parser.SwerveParser;
+import swervelib.SwerveDrive;
+import swervelib.math.SwerveMath;
+import edu.wpi.first.math.util.Units;
+import swervelib.telemetry.SwerveDriveTelemetry;
+import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 
 public class Drivetrain extends SubsystemBase {
 
@@ -68,17 +81,17 @@ public class Drivetrain extends SubsystemBase {
   private final SlewRateLimiter m_magLimiter = new SlewRateLimiter(Constants.kMagnitudeSlewRate);
   private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(Constants.kRotationalSlewRate);
 
-  private final RevMAXSwerveModule m_frontLeft = new RevMAXSwerveModule(CANMapping.frontLeftDrivingMotor,
-      CANMapping.frontLeftTurningMotor, Constants.kFrontLeftChassisAngularOffset);
+  // private final RevMAXSwerveModule m_frontLeft = new RevMAXSwerveModule(CANMapping.frontLeftDrivingMotor,
+  //     CANMapping.frontLeftTurningMotor, Constants.kFrontLeftChassisAngularOffset);
 
-  private final RevMAXSwerveModule m_frontRight = new RevMAXSwerveModule(CANMapping.frontRightDrivingMotor,
-      CANMapping.frontRightTurningMotor, Constants.kFrontRightChassisAngularOffset);
+  // private final RevMAXSwerveModule m_frontRight = new RevMAXSwerveModule(CANMapping.frontRightDrivingMotor,
+  //     CANMapping.frontRightTurningMotor, Constants.kFrontRightChassisAngularOffset);
 
-  private final RevMAXSwerveModule m_rearLeft = new RevMAXSwerveModule(CANMapping.rearLeftDrivingMotor,
-      CANMapping.rearLeftTurningMotor, Constants.kRearLeftChassisAngularOffset);
+  // private final RevMAXSwerveModule m_rearLeft = new RevMAXSwerveModule(CANMapping.rearLeftDrivingMotor,
+  //     CANMapping.rearLeftTurningMotor, Constants.kRearLeftChassisAngularOffset);
 
-  private final RevMAXSwerveModule m_rearRight = new RevMAXSwerveModule(CANMapping.rearRightDrivingMotor,
-      CANMapping.rearRightTurningMotor, Constants.kRearRightChassisAngularOffset);
+  // private final RevMAXSwerveModule m_rearRight = new RevMAXSwerveModule(CANMapping.rearRightDrivingMotor,
+  //     CANMapping.rearRightTurningMotor, Constants.kRearRightChassisAngularOffset);
 
   private final SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
       new Translation2d(Constants.kWheelBase / 2, Constants.kTrackWidth / 2),
@@ -87,225 +100,323 @@ public class Drivetrain extends SubsystemBase {
       new Translation2d(-Constants.kWheelBase / 2, -Constants.kTrackWidth / 2));
 
   private final Pigeon2 m_gyro = new Pigeon2(CANMapping.gyroSensor);
-  private final SwerveDrivePoseEstimator m_poseEstimator = new SwerveDrivePoseEstimator(
-      m_kinematics,
-      getGyroAngle(),
-      new SwerveModulePosition[] {
-          m_frontLeft.getPosition(),
-          m_frontRight.getPosition(),
-          m_rearLeft.getPosition(),
-          m_rearRight.getPosition()
-      },
-      new Pose2d());
+  // private final SwerveDrivePoseEstimator m_poseEstimator = new SwerveDrivePoseEstimator(
+  //     m_kinematics,
+  //     getGyroAngle(),
+  //     new SwerveModulePosition[] {
+  //         m_frontLeft.getPosition(),
+  //         m_frontRight.getPosition(),
+  //         m_rearLeft.getPosition(),
+  //         m_rearRight.getPosition()
+  //     },
+  //     new Pose2d());
 
-  private final GenericSwerveSim m_sim;
+  //private final GenericSwerveSim m_sim;
+
+  // YAGSL Swerve
+  private final SwerveDrive m_swerveDrive;
 
   public Drivetrain() {
     SmartDashboard.putData("Field", m_fieldViz);
-    m_sim = new GenericSwerveSim(m_gyro, this::getRobotRelativeSpeeds, m_fieldViz);
-    ChurroSim.register(m_sim);
+    //m_sim = new GenericSwerveSim(m_gyro, this::getRobotRelativeSpeeds, m_fieldViz);
+    //ChurroSim.register(m_sim);
+    SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
+
+    File m_swerveJsonDirectory = new File(Filesystem.getDeployDirectory(), "swerve/canelo");
+    try {
+      m_swerveDrive = new SwerveParser(m_swerveJsonDirectory).createSwerveDrive(Constants.kMaxSpeedMetersPerSecond);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 
   @Override
   public void periodic() {
-    m_poseEstimator.update(
-        getGyroAngle(),
-        new SwerveModulePosition[] {
-            m_frontLeft.getPosition(),
-            m_frontRight.getPosition(),
-            m_rearLeft.getPosition(),
-            m_rearRight.getPosition()
-        });
+  //   m_poseEstimator.update(
+  //       getGyroAngle(),
+  //       new SwerveModulePosition[] {
+  //           m_frontLeft.getPosition(),
+  //           m_frontRight.getPosition(),
+  //           m_rearLeft.getPosition(),
+  //           m_rearRight.getPosition()
+  //       });
     SmartDashboard.putNumber("DrivetrainGyro", m_gyro.getRotation2d().getRadians());
-    m_actualSwerveStatePublisher.set(getModuleStates());
-    m_desiredSwerveStatePublisher.set(getDesiredModuleStates());
-    m_fieldViz.getObject("Odometry").setPose(m_poseEstimator.getEstimatedPosition());
+    //m_actualSwerveStatePublisher.set(getModuleStates());
+    //m_desiredSwerveStatePublisher.set(getDesiredModuleStates());
+    //m_fieldViz.getObject("Odometry").setPose(m_poseEstimator.getEstimatedPosition());
   }
 
-  ChassisSpeeds getRobotRelativeSpeeds() {
-    return m_kinematics.toChassisSpeeds(getModuleStates());
-  }
+  // ChassisSpeeds getRobotRelativeSpeeds() {
+  //   return m_kinematics.toChassisSpeeds(getModuleStates());
+  // }
 
-  SwerveModuleState[] getModuleStates() {
-    return new SwerveModuleState[] {
-        m_frontLeft.getState(),
-        m_frontRight.getState(),
-        m_rearLeft.getState(),
-        m_rearRight.getState()
-    };
-  }
+  // SwerveModuleState[] getModuleStates() {
+  //   return new SwerveModuleState[] {
+  //       m_frontLeft.getState(),
+  //       m_frontRight.getState(),
+  //       m_rearLeft.getState(),
+  //       m_rearRight.getState()
+  //   };
+  // }
 
-  SwerveModuleState[] getDesiredModuleStates() {
-    return new SwerveModuleState[] {
-        m_frontLeft.getDesiredState(),
-        m_frontRight.getDesiredState(),
-        m_rearLeft.getDesiredState(),
-        m_rearRight.getDesiredState()
-    };
-  }
+  // SwerveModuleState[] getDesiredModuleStates() {
+  //   return new SwerveModuleState[] {
+  //       m_frontLeft.getDesiredState(),
+  //       m_frontRight.getDesiredState(),
+  //       m_rearLeft.getDesiredState(),
+  //       m_rearRight.getDesiredState()
+  //   };
+  // }
 
   /**
    * Returns the currently-estimated pose of the robot.
    *
    * @return The pose.
    */
-  Pose2d getPose() {
-    return m_poseEstimator.getEstimatedPosition();
-  }
+  // Pose2d getPose() {
+  //   return m_poseEstimator.getEstimatedPosition();
+  // }
 
   /**
    * Resets the odometry to the specified pose.
    *
    * @param pose The pose to which to set the odometry.
    */
-  void resetPose(Pose2d pose) {
-    m_poseEstimator.resetPosition(
-        getGyroAngle(),
-        new SwerveModulePosition[] {
-            m_frontLeft.getPosition(),
-            m_frontRight.getPosition(),
-            m_rearLeft.getPosition(),
-            m_rearRight.getPosition()
-        },
-        pose);
-  }
+  // void resetPose(Pose2d pose) {
+  //   m_poseEstimator.resetPosition(
+  //       getGyroAngle(),
+  //       new SwerveModulePosition[] {
+  //           m_frontLeft.getPosition(),
+  //           m_frontRight.getPosition(),
+  //           m_rearLeft.getPosition(),
+  //           m_rearRight.getPosition()
+  //       },
+  //       pose);
+  // }
 
   /**
    * Resets the gyro as if the robot were facing away from you.
    * This is helpful for resetting field-oriented driving.
    */
-  public void recalibrateDrivetrain() {
-    double recalibratedAngleRadians = 0;
-    var alliance = DriverStation.getAlliance();
-    if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
-      recalibratedAngleRadians = Math.PI;
-    }
-    var currentPose = getPose();
-    var currentTranslation = currentPose.getTranslation();
-    var recalibratedRotation = new Rotation2d(recalibratedAngleRadians);
-    var recalibratedPose = new Pose2d(currentTranslation, recalibratedRotation);
-    resetPose(recalibratedPose);
-  }
+  // public void recalibrateDrivetrain() {
+  //   double recalibratedAngleRadians = 0;
+  //   var alliance = DriverStation.getAlliance();
+  //   if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
+  //     recalibratedAngleRadians = Math.PI;
+  //   }
+  //   var currentPose = getPose();
+  //   var currentTranslation = currentPose.getTranslation();
+  //   var recalibratedRotation = new Rotation2d(recalibratedAngleRadians);
+  //   var recalibratedPose = new Pose2d(currentTranslation, recalibratedRotation);
+  //   resetPose(recalibratedPose);
+  // }
 
-  void driveRobotRelative(ChassisSpeeds speeds) {
-    drive(speeds, false);
-  }
+  // void driveRobotRelative(ChassisSpeeds speeds) {
+  //   drive(speeds, false);
+  // }
 
-  // Reference:
-  // https://github.com/firebears-frc/FB2024/blob/main/src/main/java/frc/robot/subsystems/Bass.java#L284
-  void drive(ChassisSpeeds speeds, boolean fieldRelative) {
-    if (fieldRelative) {
-      speeds = ChassisSpeeds.fromFieldRelativeSpeeds(speeds, getPose().getRotation());
-    }
-    var swerveModuleStates = m_kinematics.toSwerveModuleStates(speeds);
-    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.kMaxSpeedMetersPerSecond);
-    setModuleStates(swerveModuleStates);
+  // // Reference:
+  // // https://github.com/firebears-frc/FB2024/blob/main/src/main/java/frc/robot/subsystems/Bass.java#L284
+  // void drive(ChassisSpeeds speeds, boolean fieldRelative) {
+  //   if (fieldRelative) {
+  //     speeds = ChassisSpeeds.fromFieldRelativeSpeeds(speeds, getPose().getRotation());
+  //   }
+  //   var swerveModuleStates = m_kinematics.toSwerveModuleStates(speeds);
+  //   SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.kMaxSpeedMetersPerSecond);
+  //   setModuleStates(swerveModuleStates);
+  // }
+
+  // /**
+  //  * Method to drive the robot using joystick info.
+  //  *
+  //  * @param xSpeed        Speed of the robot in the x direction (forward).
+  //  * @param ySpeed        Speed of the robot in the y direction (sideways).
+  //  * @param rot           Angular rate of the robot.
+  //  * @param fieldRelative Whether the provided x and y speeds are relative to the
+  //  *                      field.
+  //  * @param rateLimit     Whether to enable rate limiting for smoother control.
+  //  */
+  // public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean rateLimit) {
+
+  //   double xSpeedCommanded;
+  //   double ySpeedCommanded;
+
+  //   var alliance = DriverStation.getAlliance();
+  //   if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
+  //     xSpeed = -1 * xSpeed;
+  //     ySpeed = -1 * ySpeed;
+  //   }
+
+  //   if (rateLimit) {
+  //     // Convert XY to polar for rate limiting
+  //     double inputTranslationDir = Math.atan2(ySpeed, xSpeed);
+  //     double inputTranslationMag = Math.sqrt(Math.pow(xSpeed, 2) + Math.pow(ySpeed, 2));
+
+  //     // Calculate the direction slew rate based on an estimate of the lateral
+  //     // acceleration
+  //     double directionSlewRate;
+  //     if (m_currentTranslationMag != 0.0) {
+  //       directionSlewRate = Math.abs(Constants.kDirectionSlewRate / m_currentTranslationMag);
+  //     } else {
+  //       directionSlewRate = 500.0; // some high number that means the slew rate is effectively instantaneous
+  //     }
+
+  //     double currentTime = WPIUtilJNI.now() * 1e-6;
+  //     double elapsedTime = currentTime - m_prevTime;
+  //     double angleDif = SwerveUtils.AngleDifference(inputTranslationDir, m_currentTranslationDir);
+  //     if (angleDif < 0.45 * Math.PI) {
+  //       m_currentTranslationDir = SwerveUtils.StepTowardsCircular(m_currentTranslationDir, inputTranslationDir,
+  //           directionSlewRate * elapsedTime);
+  //       m_currentTranslationMag = m_magLimiter.calculate(inputTranslationMag);
+  //     } else if (angleDif > 0.85 * Math.PI) {
+  //       if (m_currentTranslationMag > 1e-4) { // some small number to avoid floating-point errors with equality
+  //                                             // checking
+  //                                             // keep currentTranslationDir unchanged
+  //         m_currentTranslationMag = m_magLimiter.calculate(0.0);
+  //       } else {
+  //         m_currentTranslationDir = SwerveUtils.WrapAngle(m_currentTranslationDir + Math.PI);
+  //         m_currentTranslationMag = m_magLimiter.calculate(inputTranslationMag);
+  //       }
+  //     } else {
+  //       m_currentTranslationDir = SwerveUtils.StepTowardsCircular(m_currentTranslationDir, inputTranslationDir,
+  //           directionSlewRate * elapsedTime);
+  //       m_currentTranslationMag = m_magLimiter.calculate(0.0);
+  //     }
+  //     m_prevTime = currentTime;
+
+  //     xSpeedCommanded = m_currentTranslationMag * Math.cos(m_currentTranslationDir);
+  //     ySpeedCommanded = m_currentTranslationMag * Math.sin(m_currentTranslationDir);
+  //     m_currentRotation = m_rotLimiter.calculate(rot);
+
+  //   } else {
+  //     xSpeedCommanded = xSpeed;
+  //     ySpeedCommanded = ySpeed;
+  //     m_currentRotation = rot;
+  //   }
+
+  //   // Convert the commanded speeds into the correct units for the drivetrain
+  //   double xSpeedDelivered = xSpeedCommanded * Constants.kMaxSpeedMetersPerSecond;
+  //   double ySpeedDelivered = ySpeedCommanded * Constants.kMaxSpeedMetersPerSecond;
+  //   double rotDelivered = m_currentRotation * Constants.kMaxAngularSpeed;
+
+  //   drive(new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered), fieldRelative);
+
+  // }
+
+  // YAGSL Reference: https://docs.yagsl.com/configuring-yagsl/code-setup
+  /**
+   * Drive the robot given a chassis field oriented velocity.
+   *
+   * @param velocity Velocity according to the field.
+   */
+  public void driveFieldOriented(ChassisSpeeds velocity) {
+    m_swerveDrive.driveFieldOriented(velocity);
   }
 
   /**
-   * Method to drive the robot using joystick info.
+   * Drive the robot given a chassis field oriented velocity.
    *
-   * @param xSpeed        Speed of the robot in the x direction (forward).
-   * @param ySpeed        Speed of the robot in the y direction (sideways).
-   * @param rot           Angular rate of the robot.
-   * @param fieldRelative Whether the provided x and y speeds are relative to the
-   *                      field.
-   * @param rateLimit     Whether to enable rate limiting for smoother control.
+   * @param velocity Velocity according to the field.
    */
-  public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean rateLimit) {
+  public Command driveFieldOriented(Supplier<ChassisSpeeds> velocity) {
+    return run(() -> {
+      m_swerveDrive.driveFieldOriented(velocity.get());
+    });
+  }
 
-    double xSpeedCommanded;
-    double ySpeedCommanded;
+  /**
+   * Drive according to the chassis robot oriented velocity.
+   *
+   * @param velocity Robot oriented {@link ChassisSpeeds}
+   */
+  public void drive(ChassisSpeeds velocity) {
+    m_swerveDrive.drive(velocity);
+  }
 
-    var alliance = DriverStation.getAlliance();
-    if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
-      xSpeed = -1 * xSpeed;
-      ySpeed = -1 * ySpeed;
-    }
+  /**
+   * Get the swerve drive kinematics object.
+   *
+   * @return {@link SwerveDriveKinematics} of the swerve drive.
+   */
+  public SwerveDriveKinematics getKinematics() {
+    return m_swerveDrive.kinematics;
+  }
 
-    if (rateLimit) {
-      // Convert XY to polar for rate limiting
-      double inputTranslationDir = Math.atan2(ySpeed, xSpeed);
-      double inputTranslationMag = Math.sqrt(Math.pow(xSpeed, 2) + Math.pow(ySpeed, 2));
+  /**
+   * Command to drive the robot using translative values and heading as a
+   * setpoint.
+   *
+   * @param translationX Translation in the X direction.
+   * @param translationY Translation in the Y direction.
+   * @param headingX     Heading X to calculate angle of the joystick.
+   * @param headingY     Heading Y to calculate angle of the joystick.
+   * @return Drive command.
+   */
+  public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier headingX,
+      DoubleSupplier headingY) {
+    return run(() -> {
 
-      // Calculate the direction slew rate based on an estimate of the lateral
-      // acceleration
-      double directionSlewRate;
-      if (m_currentTranslationMag != 0.0) {
-        directionSlewRate = Math.abs(Constants.kDirectionSlewRate / m_currentTranslationMag);
-      } else {
-        directionSlewRate = 500.0; // some high number that means the slew rate is effectively instantaneous
-      }
+      Translation2d scaledInputs = SwerveMath.scaleTranslation(new Translation2d(translationX.getAsDouble(),
+          translationY.getAsDouble()), 0.8);
 
-      double currentTime = WPIUtilJNI.now() * 1e-6;
-      double elapsedTime = currentTime - m_prevTime;
-      double angleDif = SwerveUtils.AngleDifference(inputTranslationDir, m_currentTranslationDir);
-      if (angleDif < 0.45 * Math.PI) {
-        m_currentTranslationDir = SwerveUtils.StepTowardsCircular(m_currentTranslationDir, inputTranslationDir,
-            directionSlewRate * elapsedTime);
-        m_currentTranslationMag = m_magLimiter.calculate(inputTranslationMag);
-      } else if (angleDif > 0.85 * Math.PI) {
-        if (m_currentTranslationMag > 1e-4) { // some small number to avoid floating-point errors with equality
-                                              // checking
-                                              // keep currentTranslationDir unchanged
-          m_currentTranslationMag = m_magLimiter.calculate(0.0);
-        } else {
-          m_currentTranslationDir = SwerveUtils.WrapAngle(m_currentTranslationDir + Math.PI);
-          m_currentTranslationMag = m_magLimiter.calculate(inputTranslationMag);
-        }
-      } else {
-        m_currentTranslationDir = SwerveUtils.StepTowardsCircular(m_currentTranslationDir, inputTranslationDir,
-            directionSlewRate * elapsedTime);
-        m_currentTranslationMag = m_magLimiter.calculate(0.0);
-      }
-      m_prevTime = currentTime;
+      // Make the robot move
+      driveFieldOriented(m_swerveDrive.swerveController.getTargetSpeeds(scaledInputs.getX(), scaledInputs.getY(),
+          headingX.getAsDouble(),
+          headingY.getAsDouble(),
+          m_swerveDrive.getOdometryHeading().getRadians(),
+          m_swerveDrive.getMaximumChassisVelocity()));
+    });
+  }
 
-      xSpeedCommanded = m_currentTranslationMag * Math.cos(m_currentTranslationDir);
-      ySpeedCommanded = m_currentTranslationMag * Math.sin(m_currentTranslationDir);
-      m_currentRotation = m_rotLimiter.calculate(rot);
-
-    } else {
-      xSpeedCommanded = xSpeed;
-      ySpeedCommanded = ySpeed;
-      m_currentRotation = rot;
-    }
-
-    // Convert the commanded speeds into the correct units for the drivetrain
-    double xSpeedDelivered = xSpeedCommanded * Constants.kMaxSpeedMetersPerSecond;
-    double ySpeedDelivered = ySpeedCommanded * Constants.kMaxSpeedMetersPerSecond;
-    double rotDelivered = m_currentRotation * Constants.kMaxAngularSpeed;
-
-    drive(new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered), fieldRelative);
-
+  /**
+   * Command to drive the robot using translative values and heading as angular
+   * velocity.
+   *
+   * @param translationX     Translation in the X direction.
+   * @param translationY     Translation in the Y direction.
+   * @param angularRotationX Rotation of the robot to set
+   * @return Drive command.
+   */
+  public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY,
+      DoubleSupplier angularRotationX) {
+    return run(() -> {
+      // Make the robot move
+      m_swerveDrive.drive(new Translation2d(translationX.getAsDouble() * m_swerveDrive.getMaximumChassisVelocity(),
+          translationY.getAsDouble() * m_swerveDrive.getMaximumChassisVelocity()),
+          angularRotationX.getAsDouble() * m_swerveDrive.getMaximumChassisAngularVelocity(),
+          true,
+          false);
+    });
   }
 
   public void stop() {
-    drive(0, 0, 0, true, true);
+    drive(new ChassisSpeeds());
+    
   }
 
   /**
    * Sets the wheels into an X formation to prevent movement.
    */
-  public void setXFormation() {
-    m_frontLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
-    m_frontRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
-    m_rearLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
-    m_rearRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
-  }
+  // public void setXFormation() {
+  //   m_frontLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
+  //   m_frontRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
+  //   m_rearLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
+  //   m_rearRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
+  // }
 
-  /**
-   * Sets the swerve ModuleStates.
-   *
-   * @param desiredStates The desired SwerveModule states.
-   */
-  void setModuleStates(SwerveModuleState[] desiredStates) {
-    SwerveDriveKinematics.desaturateWheelSpeeds(
-        desiredStates, Constants.kMaxSpeedMetersPerSecond);
-    m_frontLeft.setDesiredState(desiredStates[0]);
-    m_frontRight.setDesiredState(desiredStates[1]);
-    m_rearLeft.setDesiredState(desiredStates[2]);
-    m_rearRight.setDesiredState(desiredStates[3]);
-  }
+  // /**
+  //  * Sets the swerve ModuleStates.
+  //  *
+  //  * @param desiredStates The desired SwerveModule states.
+  //  */
+  // void setModuleStates(SwerveModuleState[] desiredStates) {
+  //   SwerveDriveKinematics.desaturateWheelSpeeds(
+  //       desiredStates, Constants.kMaxSpeedMetersPerSecond);
+  //   m_frontLeft.setDesiredState(desiredStates[0]);
+  //   m_frontRight.setDesiredState(desiredStates[1]);
+  //   m_rearLeft.setDesiredState(desiredStates[2]);
+  //   m_rearRight.setDesiredState(desiredStates[3]);
+  // }
 
   Rotation2d getGyroAngle() {
     return Rotation2d.fromDegrees(m_gyro.getYaw().getValueAsDouble() % 360);

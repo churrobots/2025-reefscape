@@ -7,6 +7,7 @@ package frc.robot;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -104,7 +105,8 @@ public class RobotContainer {
 
   Drivetrain drivetrain = new Drivetrain();
   Arm arm = new Arm();
-  final Command recalibrateDrivetrain = new RunCommand(() -> drivetrain.recalibrateDrivetrain(), drivetrain);
+  // final Command recalibrateDrivetrain = new RunCommand(() ->
+  // drivetrain.recalibrateDrivetrain(), drivetrain);
   final Command moveArmToDefault = new RunCommand(() -> arm.move_Default(), arm);
 
   final Command moveArmToMid = new RunCommand(() -> arm.move_mid(), arm);
@@ -112,25 +114,22 @@ public class RobotContainer {
   final Command moveArmToAmp = new RunCommand(() -> arm.move_amp(), arm);
 
   final Command slowDrive = new RunCommand(
-      () -> drivetrain.drive(
+      () -> drivetrain.drive(new ChassisSpeeds(
           -MathUtil.applyDeadband(driverForwardAxis.getAsDouble() * Constants.kSlowDriveScaling,
               Constants.kDriveDeadband),
           -MathUtil.applyDeadband(driverSidewaysAxis.getAsDouble() * Constants.kSlowDriveScaling,
               Constants.kDriveDeadband),
           -MathUtil.applyDeadband(driverRotationAxis.getAsDouble() * Constants.kSlowDriveScaling,
-              Constants.kDriveDeadband),
-          true, true),
+              Constants.kDriveDeadband))),
       drivetrain);
 
   final Command fastDrive = new RunCommand(
-      () -> drivetrain.drive(
-          -MathUtil.applyDeadband(driverForwardAxis.getAsDouble(),
-              Constants.kDriveDeadband),
+      () -> drivetrain.drive(new ChassisSpeeds(-MathUtil.applyDeadband(driverForwardAxis.getAsDouble(),
+          Constants.kDriveDeadband),
           -MathUtil.applyDeadband(driverSidewaysAxis.getAsDouble(),
               Constants.kDriveDeadband),
           -MathUtil.applyDeadband(driverRotationAxis.getAsDouble(),
-              Constants.kDriveDeadband),
-          true, false),
+              Constants.kDriveDeadband))),
       drivetrain);
 
   public RobotContainer() {
@@ -153,7 +152,7 @@ public class RobotContainer {
 
       // Driver Joystick
       button2Trigger.whileTrue(slowDrive);
-      button7Trigger.whileTrue(recalibrateDrivetrain);
+      // button7Trigger.whileTrue(recalibrateDrivetrain);
       button11Trigger.whileTrue(moveArmToMid);
       button12Trigger.whileTrue(moveArmToAmp);
       button10Trigger.whileTrue(moveArmToDefault);
@@ -165,7 +164,7 @@ public class RobotContainer {
 
       // Driver Controller
       leftBumperDriver.whileTrue(slowDrive);
-      startAndBackButtonDriver.whileTrue(recalibrateDrivetrain);
+      // startAndBackButtonDriver.whileTrue(recalibrateDrivetrain);
 
     }
 
