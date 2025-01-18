@@ -105,8 +105,7 @@ public class RobotContainer {
 
   Drivetrain drivetrain = new Drivetrain();
   Arm arm = new Arm();
-  // final Command recalibrateDrivetrain = new RunCommand(() ->
-  // drivetrain.recalibrateDrivetrain(), drivetrain);
+  final Command recalibrateDrivetrain = new RunCommand(() -> drivetrain.recalibrateDrivetrain(), drivetrain);
   final Command moveArmToDefault = new RunCommand(() -> arm.move_Default(), arm);
 
   final Command moveArmToMid = new RunCommand(() -> arm.move_mid(), arm);
@@ -152,7 +151,7 @@ public class RobotContainer {
 
       // Driver Joystick
       button2Trigger.whileTrue(slowDrive);
-      // button7Trigger.whileTrue(recalibrateDrivetrain);
+      button7Trigger.whileTrue(recalibrateDrivetrain);
       button11Trigger.whileTrue(moveArmToMid);
       button12Trigger.whileTrue(moveArmToAmp);
       button10Trigger.whileTrue(moveArmToDefault);
@@ -164,7 +163,7 @@ public class RobotContainer {
 
       // Driver Controller
       leftBumperDriver.whileTrue(slowDrive);
-      // startAndBackButtonDriver.whileTrue(recalibrateDrivetrain);
+      startAndBackButtonDriver.whileTrue(recalibrateDrivetrain);
 
     }
 
