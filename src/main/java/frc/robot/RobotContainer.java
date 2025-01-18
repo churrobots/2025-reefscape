@@ -135,8 +135,7 @@ public class RobotContainer {
 
   public RobotContainer() {
     configureButtonBindings();
-    drivetrain.setDefaultCommand(fastDrive);
-    arm.setDefaultCommand(moveArmToDefault);
+    ensureSubsystemsHaveDefaultCommands();
   }
 
   public Command getAutonomousCommand() {
