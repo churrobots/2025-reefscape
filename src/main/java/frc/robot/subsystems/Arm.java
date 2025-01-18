@@ -1,4 +1,5 @@
 package frc.robot.subsystems;
+
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import com.revrobotics.spark.SparkMax;
@@ -89,49 +90,48 @@ public class Arm extends TrapezoidProfileSubsystem {
   public Arm() {
     super(Constants.trapezoidProfile, Constants.kArmOffsetRads);
 
-SparkMaxConfig rightConfig = new SparkMaxConfig();
+    SparkMaxConfig rightConfig = new SparkMaxConfig();
 
-rightConfig
-    .inverted(false)
-    .idleMode(IdleMode.kBrake)
-    .smartCurrentLimit(40);
+    rightConfig
+        .inverted(false)
+        .idleMode(IdleMode.kBrake)
+        .smartCurrentLimit(40);
 
-// rightConfig.encoder
-//     .positionConversionFactor(1000)
-//     .velocityConversionFactor(1000);
-rightConfig.closedLoop
-    .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
-    .maxOutput(Constants.kMaxOutput)
-    .minOutput(Constants.kMinOutput)
-    .iZone(Constants.kIz)
-    .pid(Constants.kP.get(), Constants.kI.get(), Constants.kD.get());
+    // rightConfig.encoder
+    // .positionConversionFactor(1000)
+    // .velocityConversionFactor(1000);
+    rightConfig.closedLoop
+        .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
+        .maxOutput(Constants.kMaxOutput)
+        .minOutput(Constants.kMinOutput)
+        .iZone(Constants.kIz)
+        .pid(Constants.kP.get(), Constants.kI.get(), Constants.kD.get());
 
-right_motor.configure(rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    right_motor.configure(rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
+    SparkMaxConfig leftConfig = new SparkMaxConfig();
 
-SparkMaxConfig leftConfig = new SparkMaxConfig();
+    leftConfig
+        .inverted(true)
+        .idleMode(IdleMode.kBrake)
+        .smartCurrentLimit(40);
 
-leftConfig
-    .inverted(true)
-    .idleMode(IdleMode.kBrake)
-    .smartCurrentLimit(40);
-
-// leftConfig.encoder
-//     .positionConversionFactor(1000)
-//     .velocityConversionFactor(1000);
-// leftConfig.closedLoop
-//     .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-//     .maxOutput(Constants.kMaxOutput)
-//     .minOutput(Constants.kMinOutput)
-//     .iZone(Constants.kIz)
-//     .pid(Constants.kP.get(), Constants.kI.get(), Constants.kD.get());
-leftConfig.follow(right_motor, true);
-left_motor.configure(leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    // leftConfig.encoder
+    // .positionConversionFactor(1000)
+    // .velocityConversionFactor(1000);
+    // leftConfig.closedLoop
+    // .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+    // .maxOutput(Constants.kMaxOutput)
+    // .minOutput(Constants.kMinOutput)
+    // .iZone(Constants.kIz)
+    // .pid(Constants.kP.get(), Constants.kI.get(), Constants.kD.get());
+    leftConfig.follow(right_motor, true);
+    left_motor.configure(leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     m_absoluteEncoder = right_motor.getAbsoluteEncoder();
 
     m_pidController = right_motor.getClosedLoopController();
-   
+
     // TODO: do we need to enable PID wrapping?
     // m_pidController.setPositionPIDWrappingEnabled(true);
 

@@ -34,13 +34,13 @@ public class RobotContainer {
     public static final boolean kUseX3D = true;
   }
 
-// Logitech flight controller button and joystick axes assignments.
+  // Logitech flight controller button and joystick axes assignments.
   // Driver Controller: X3D Option
   final LogitechX3D driverX3DController = new LogitechX3D(Constants.kDriverX3DPort);
   final Trigger button1Trigger = new JoystickButton(driverX3DController, 1); // trigger
   final Trigger button2Trigger = new JoystickButton(driverX3DController, 2); // side thumb button
   final Trigger button3Trigger = new JoystickButton(driverX3DController, 3);
-  final Trigger button5Trigger = new JoystickButton(driverX3DController, 5); 
+  final Trigger button5Trigger = new JoystickButton(driverX3DController, 5);
   final Trigger button7Trigger = new JoystickButton(driverX3DController, 7); // numbered buttons...
   final Trigger button8Trigger = new JoystickButton(driverX3DController, 8);
   final Trigger button9Trigger = new JoystickButton(driverX3DController, 9);
@@ -102,17 +102,8 @@ public class RobotContainer {
   DoubleSupplier driverSidewaysAxis;
   DoubleSupplier driverRotationAxis;
 
-
-
-
-
-
-
-
-
-
   Drivetrain drivetrain = new Drivetrain();
-Arm arm = new Arm();
+  Arm arm = new Arm();
   final Command recalibrateDrivetrain = new RunCommand(() -> drivetrain.recalibrateDrivetrain(), drivetrain);
   final Command moveArmToDefault = new RunCommand(() -> arm.move_Default(), arm);
 
@@ -121,20 +112,19 @@ Arm arm = new Arm();
   final Command moveArmToAmp = new RunCommand(() -> arm.move_amp(), arm);
 
   final Command slowDrive = new RunCommand(
-    () -> drivetrain.drive(
-        -MathUtil.applyDeadband(driverForwardAxis.getAsDouble() * Constants.kSlowDriveScaling,
-            Constants.kDriveDeadband),
-        -MathUtil.applyDeadband(driverSidewaysAxis.getAsDouble() * Constants.kSlowDriveScaling,
-            Constants.kDriveDeadband),
-        -MathUtil.applyDeadband(driverRotationAxis.getAsDouble() * Constants.kSlowDriveScaling,
-            Constants.kDriveDeadband),
-        true, true),
-    drivetrain);
-
+      () -> drivetrain.drive(
+          -MathUtil.applyDeadband(driverForwardAxis.getAsDouble() * Constants.kSlowDriveScaling,
+              Constants.kDriveDeadband),
+          -MathUtil.applyDeadband(driverSidewaysAxis.getAsDouble() * Constants.kSlowDriveScaling,
+              Constants.kDriveDeadband),
+          -MathUtil.applyDeadband(driverRotationAxis.getAsDouble() * Constants.kSlowDriveScaling,
+              Constants.kDriveDeadband),
+          true, true),
+      drivetrain);
 
   final Command fastDrive = new RunCommand(
       () -> drivetrain.drive(
-          -MathUtil.applyDeadband(driverForwardAxis.getAsDouble(), 
+          -MathUtil.applyDeadband(driverForwardAxis.getAsDouble(),
               Constants.kDriveDeadband),
           -MathUtil.applyDeadband(driverSidewaysAxis.getAsDouble(),
               Constants.kDriveDeadband),
@@ -154,7 +144,6 @@ Arm arm = new Arm();
     return doNothing;
   }
 
-
   void configureButtonBindings() {
 
     if (Constants.kUseX3D) {
@@ -168,7 +157,7 @@ Arm arm = new Arm();
       button11Trigger.whileTrue(moveArmToMid);
       button12Trigger.whileTrue(moveArmToAmp);
       button10Trigger.whileTrue(moveArmToDefault);
-      
+
     } else {
       driverForwardAxis = forwardAxisXbox;
       driverSidewaysAxis = sidewaysAxisXbox;
@@ -179,7 +168,6 @@ Arm arm = new Arm();
       startAndBackButtonDriver.whileTrue(recalibrateDrivetrain);
 
     }
-
 
     // Operator;
 
