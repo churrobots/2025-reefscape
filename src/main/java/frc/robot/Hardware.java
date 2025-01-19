@@ -41,6 +41,8 @@ public final class Hardware {
     public static final double maxHeight = 1.0;
   }
 
+  // NOTE: once we adopt YAGSL we won't need this TemplateSwerve
+  // to config the subsystem, since all the configs are in YAGSL
   public final class TemplateSwerve {
     public static final int frontLeftTurningMotorCAN = 1;
     public static final int rearLeftTurningMotorCAN = 3;
