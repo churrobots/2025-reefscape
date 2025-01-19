@@ -36,6 +36,8 @@ public class RobotContainer {
 
   Drivetrain drivetrain = new Drivetrain();
   Arm arm = new Arm();
+  Intake intake = new Intake();
+  Pipeshooter pipeshooter = new Pipeshooter();
 
   void registerCommandsForUseInAutonomous() {
     // TODO: make more commands for auto to use
@@ -63,12 +65,18 @@ public class RobotContainer {
     Command moveArmToMid = new RunCommand(arm::move_mid, arm);
     Command moveArmToAmp = new RunCommand(arm::move_amp, arm);
     Command moveArmToDefault = new RunCommand(arm::move_Default, arm);
+    Command bestIntake = new RunCommand(() -> intake.yoinkTheRings(), intake);
+    Command coralIntaker = new RunCommand(() -> pipeshooter.coralIntake(), pipeshooter);
+    Command coralFeeder = new RunCommand(() -> pipeshooter.feedCoral(), pipeshooter);
 
     driverXboxController.leftBumper().whileTrue(slowFieldRelativeDriverControl);
     driverXboxController.back().whileTrue(recalibrateDriveTrain);
 
     driverFlightstickController.button(2).whileTrue(slowFieldRelativeDriverControl);
     driverFlightstickController.button(5).whileTrue(recalibrateDriveTrain);
+    driverFlightstickController.button(7).whileTrue(bestIntake);
+    driverFlightstickController.button(8).whileTrue(coralIntaker);
+    driverFlightstickController.button(9).whileTrue(coralFeeder);
     driverFlightstickController.button(10).whileTrue(moveArmToDefault);
     driverFlightstickController.button(11).whileTrue(moveArmToMid);
     driverFlightstickController.button(12).whileTrue(moveArmToAmp);
@@ -97,9 +105,13 @@ public class RobotContainer {
         drivetrain);
 
     Command restTheArm = new RunCommand(arm::move_Default, arm);
+    Command stopIntake = new RunCommand(intake::stopThePlan, intake);
+    Command coralIntakerStop = new RunCommand(pipeshooter::stopCoralIntake, pipeshooter);
 
     drivetrain.setDefaultCommand(fastFieldRelativeDriverControl);
     arm.setDefaultCommand(restTheArm);
+    intake.setDefaultCommand(stopIntake);
+    pipeshooter.setDefaultCommand(coralIntakerStop);
 
   }
 
