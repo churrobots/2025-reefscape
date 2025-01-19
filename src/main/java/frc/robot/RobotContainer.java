@@ -39,15 +39,26 @@ public class RobotContainer {
   Intake intake = new Intake();
   Pipeshooter pipeshooter = new Pipeshooter();
 
-  void registerCommandsForUseInAutonomous() {
-    // TODO: make more commands for auto to use
-    Command doNothing = new InstantCommand();
-    NamedCommands.registerCommand("doNothing", doNothing);
-  }
+  void ensureSubsystemsHaveDefaultCommands() {
 
-  SendableChooser<Command> createDriverStationAutoChooser() {
-    // TODO: return AutoBuilder.buildAutoChooser();
-    return new SendableChooser<Command>();
+    Command fastFieldRelativeDriverControl = new RunCommand(
+        () -> drivetrain.drive(
+            getDriverForwardAxis() * Constants.fastDriveScale,
+            getDriverSidewaysAxis() * Constants.fastDriveScale,
+            getDriverRotationAxis() * Constants.fastDriveScale,
+            true,
+            false),
+        drivetrain);
+
+    Command restTheArm = new RunCommand(arm::move_Default, arm);
+    Command stopIntake = new RunCommand(intake::stopThePlan, intake);
+    Command coralIntakerStop = new RunCommand(pipeshooter::stopCoralIntake, pipeshooter);
+
+    drivetrain.setDefaultCommand(fastFieldRelativeDriverControl);
+    arm.setDefaultCommand(restTheArm);
+    intake.setDefaultCommand(stopIntake);
+    pipeshooter.setDefaultCommand(coralIntakerStop);
+
   }
 
   void bindCommandsToDriverController() {
@@ -93,26 +104,15 @@ public class RobotContainer {
 
   }
 
-  void ensureSubsystemsHaveDefaultCommands() {
+  void registerCommandsForUseInAutonomous() {
+    // TODO: make more commands for auto to use
+    Command doNothing = new InstantCommand();
+    NamedCommands.registerCommand("doNothing", doNothing);
+  }
 
-    Command fastFieldRelativeDriverControl = new RunCommand(
-        () -> drivetrain.drive(
-            getDriverForwardAxis() * Constants.fastDriveScale,
-            getDriverSidewaysAxis() * Constants.fastDriveScale,
-            getDriverRotationAxis() * Constants.fastDriveScale,
-            true,
-            false),
-        drivetrain);
-
-    Command restTheArm = new RunCommand(arm::move_Default, arm);
-    Command stopIntake = new RunCommand(intake::stopThePlan, intake);
-    Command coralIntakerStop = new RunCommand(pipeshooter::stopCoralIntake, pipeshooter);
-
-    drivetrain.setDefaultCommand(fastFieldRelativeDriverControl);
-    arm.setDefaultCommand(restTheArm);
-    intake.setDefaultCommand(stopIntake);
-    pipeshooter.setDefaultCommand(coralIntakerStop);
-
+  SendableChooser<Command> createDriverStationAutoChooser() {
+    // TODO: return AutoBuilder.buildAutoChooser();
+    return new SendableChooser<Command>();
   }
 
   private double getDriverForwardAxis() {
