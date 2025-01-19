@@ -23,7 +23,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.churrolib.ChurroSim;
 import frc.churrolib.GenericSwerveSim;
-import frc.robot.CANMapping;
+import frc.robot.Hardware;
 import frc.robot.helpers.RevMAXSwerveModule;
 import frc.robot.helpers.SwerveUtils;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -68,17 +68,20 @@ public class Drivetrain extends SubsystemBase {
   private final SlewRateLimiter m_magLimiter = new SlewRateLimiter(Constants.kMagnitudeSlewRate);
   private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(Constants.kRotationalSlewRate);
 
-  private final RevMAXSwerveModule m_frontLeft = new RevMAXSwerveModule(CANMapping.frontLeftDrivingMotor,
-      CANMapping.frontLeftTurningMotor, Constants.kFrontLeftChassisAngularOffset);
+  private final RevMAXSwerveModule m_frontLeft = new RevMAXSwerveModule(
+      Hardware.TemplateSwerve.frontLeftDrivingMotorCAN,
+      Hardware.TemplateSwerve.frontLeftTurningMotorCAN, Constants.kFrontLeftChassisAngularOffset);
 
-  private final RevMAXSwerveModule m_frontRight = new RevMAXSwerveModule(CANMapping.frontRightDrivingMotor,
-      CANMapping.frontRightTurningMotor, Constants.kFrontRightChassisAngularOffset);
+  private final RevMAXSwerveModule m_frontRight = new RevMAXSwerveModule(
+      Hardware.TemplateSwerve.frontRightDrivingMotorCAN,
+      Hardware.TemplateSwerve.frontRightTurningMotorCAN, Constants.kFrontRightChassisAngularOffset);
 
-  private final RevMAXSwerveModule m_rearLeft = new RevMAXSwerveModule(CANMapping.rearLeftDrivingMotor,
-      CANMapping.rearLeftTurningMotor, Constants.kRearLeftChassisAngularOffset);
+  private final RevMAXSwerveModule m_rearLeft = new RevMAXSwerveModule(Hardware.TemplateSwerve.rearLeftDrivingMotorCAN,
+      Hardware.TemplateSwerve.rearLeftTurningMotorCAN, Constants.kRearLeftChassisAngularOffset);
 
-  private final RevMAXSwerveModule m_rearRight = new RevMAXSwerveModule(CANMapping.rearRightDrivingMotor,
-      CANMapping.rearRightTurningMotor, Constants.kRearRightChassisAngularOffset);
+  private final RevMAXSwerveModule m_rearRight = new RevMAXSwerveModule(
+      Hardware.TemplateSwerve.rearRightDrivingMotorCAN,
+      Hardware.TemplateSwerve.rearRightTurningMotorCAN, Constants.kRearRightChassisAngularOffset);
 
   private final SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
       new Translation2d(Constants.kWheelBase / 2, Constants.kTrackWidth / 2),
@@ -86,7 +89,7 @@ public class Drivetrain extends SubsystemBase {
       new Translation2d(-Constants.kWheelBase / 2, Constants.kTrackWidth / 2),
       new Translation2d(-Constants.kWheelBase / 2, -Constants.kTrackWidth / 2));
 
-  private final Pigeon2 m_gyro = new Pigeon2(CANMapping.gyroSensor);
+  private final Pigeon2 m_gyro = new Pigeon2(Hardware.TemplateSwerve.pigeonGyroCAN);
   private final SwerveDrivePoseEstimator m_poseEstimator = new SwerveDrivePoseEstimator(
       m_kinematics,
       getGyroAngle(),

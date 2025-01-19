@@ -6,50 +6,20 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
-import com.ctre.phoenix6.hardware.core.*;
-import com.revrobotics.spark.ClosedLoopSlot;
-import com.revrobotics.spark.SparkMax;
-
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.CANMapping;
+import frc.robot.Hardware;
 
 public class Intake extends SubsystemBase {
 
-  private final VictorSPX fanumTaxIntaker = new VictorSPX(CANMapping.intakeMotor);
+  private final VictorSPX fanumTaxIntaker = new VictorSPX(Hardware.Intake.brushedMotorCAN);
 
   public Intake() {
     fanumTaxIntaker.setInverted(true);
   }
 
-  public boolean isYoinking() {
-    boolean fanumTaxerIsIntaking = fanumTaxIntaker.getMotorOutputPercent() > 0.5;
-    if (fanumTaxerIsIntaking) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  public void yoinkTheRings() {
+  public void yoink() {
     fanumTaxIntaker.set(ControlMode.PercentOutput, 1);
-  }
-
-  public void deuceTheRings() {
-    fanumTaxIntaker.set(ControlMode.PercentOutput, -.35);
-  }
-
-  public boolean isDeucing() {
-    boolean deucing = false;
-    if (fanumTaxIntaker.getMotorOutputPercent() < 0) {
-      deucing = true;
-    }
-    return deucing;
-  }
-
-  public void ejectNow() {
-    fanumTaxIntaker.set(ControlMode.PercentOutput, -.85);
   }
 
   public void stopThePlan() {

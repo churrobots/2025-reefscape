@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Pipeshooter;
@@ -35,7 +34,6 @@ public class RobotContainer {
   LogitechX3D driverFlightstickController = new LogitechX3D(Constants.driverFlightstickPort);
 
   Drivetrain drivetrain = new Drivetrain();
-  Arm arm = new Arm();
   Intake intake = new Intake();
   Pipeshooter pipeshooter = new Pipeshooter();
 
@@ -50,12 +48,10 @@ public class RobotContainer {
             false),
         drivetrain);
 
-    Command restTheArm = new RunCommand(arm::move_Default, arm);
     Command stopIntake = new RunCommand(intake::stopThePlan, intake);
     Command coralIntakerStop = new RunCommand(pipeshooter::stopCoralIntake, pipeshooter);
 
     drivetrain.setDefaultCommand(fastFieldRelativeDriverControl);
-    arm.setDefaultCommand(restTheArm);
     intake.setDefaultCommand(stopIntake);
     pipeshooter.setDefaultCommand(coralIntakerStop);
 
@@ -73,34 +69,28 @@ public class RobotContainer {
         drivetrain);
 
     Command recalibrateDriveTrain = new RunCommand(drivetrain::recalibrateDrivetrain, drivetrain);
-    Command moveArmToMid = new RunCommand(arm::move_mid, arm);
-    Command moveArmToAmp = new RunCommand(arm::move_amp, arm);
-    Command moveArmToDefault = new RunCommand(arm::move_Default, arm);
-    Command bestIntake = new RunCommand(() -> intake.yoinkTheRings(), intake);
+    Command bestIntake = new RunCommand(() -> intake.yoink(), intake);
     Command coralIntaker = new RunCommand(() -> pipeshooter.coralIntake(), pipeshooter);
     Command coralFeeder = new RunCommand(() -> pipeshooter.feedCoral(), pipeshooter);
 
     driverXboxController.leftBumper().whileTrue(slowFieldRelativeDriverControl);
     driverXboxController.back().whileTrue(recalibrateDriveTrain);
+    driverXboxController.a().whileTrue(coralIntaker);
+    driverXboxController.b().whileTrue(coralFeeder);
 
     driverFlightstickController.button(2).whileTrue(slowFieldRelativeDriverControl);
     driverFlightstickController.button(5).whileTrue(recalibrateDriveTrain);
     driverFlightstickController.button(7).whileTrue(bestIntake);
     driverFlightstickController.button(8).whileTrue(coralIntaker);
     driverFlightstickController.button(9).whileTrue(coralFeeder);
-    driverFlightstickController.button(10).whileTrue(moveArmToDefault);
-    driverFlightstickController.button(11).whileTrue(moveArmToMid);
-    driverFlightstickController.button(12).whileTrue(moveArmToAmp);
 
   }
 
   void bindCommandsToOperatorController() {
 
-    final Command moveArmToMid = new RunCommand(() -> arm.move_mid(), arm);
-    final Command moveArmToAmp = new RunCommand(() -> arm.move_amp(), arm);
+    Command coralFeeder = new RunCommand(() -> pipeshooter.feedCoral(), pipeshooter);
 
-    operatorXboxController.b().whileTrue(moveArmToMid);
-    operatorXboxController.y().whileTrue(moveArmToAmp);
+    operatorXboxController.b().whileTrue(coralFeeder);
 
   }
 

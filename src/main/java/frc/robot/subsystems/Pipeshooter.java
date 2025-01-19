@@ -4,9 +4,6 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.ControlRequest;
@@ -20,13 +17,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.churrolib.CTRESingleFalconRollerSim;
 import frc.churrolib.ChurroSim;
 import frc.churrolib.ChurroSimEntity;
-import frc.robot.CANMapping;
-
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Hardware;
 
 public class Pipeshooter extends SubsystemBase {
-  /** Creates a new Pipeshooter. */
-  private final TalonFX coralIntaker = new TalonFX(CANMapping.singleCoralMotor);
 
   public Pipeshooter() {
     var config = new TalonFXConfiguration();
@@ -67,7 +60,7 @@ public class Pipeshooter extends SubsystemBase {
     // manually?
     // bottomMotor.setControl(new Follower(topMotor.getDeviceID(), false));
     ChurroSimEntity sim = new CTRESingleFalconRollerSim(
-        coralMotor, 5.0, 0.01, "TestShooter");
+        coralMotor, Hardware.Shooter.gearboxReduction, Hardware.Shooter.simMomentOfInertia, "TestShooter");
     ChurroSim.register(sim);
   }
 
@@ -79,7 +72,7 @@ public class Pipeshooter extends SubsystemBase {
   }
 
   // Daniel does not have churrobot spirit
-  final TalonFX coralMotor = new TalonFX(CANMapping.singleCoralMotor);
+  final TalonFX coralMotor = new TalonFX(Hardware.Shooter.falconMotorCAN);
 
   final PositionDutyCycle feedTarget = new PositionDutyCycle(5); // place to tweak later
 
