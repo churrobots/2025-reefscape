@@ -6,11 +6,11 @@
     "GLOBAL": {
       "font": "Proggy Dotted",
       "fps": "120",
-      "height": "916",
+      "height": "1027",
       "maximized": "1",
       "style": "3",
       "userScale": "2",
-      "width": "1512",
+      "width": "1920",
       "xpos": "0",
       "ypos": "53"
     }
@@ -44,19 +44,24 @@
       "Pos": "350,21",
       "Size": "821,440"
     },
+    "###/SmartDashboard/TestShooter": {
+      "Collapsed": "0",
+      "Pos": "991,466",
+      "Size": "249,256"
+    },
     "###FMS": {
       "Collapsed": "0",
-      "Pos": "1178,260",
+      "Pos": "1178,159",
       "Size": "167,198"
     },
     "###Joysticks": {
       "Collapsed": "0",
-      "Pos": "240,583",
+      "Pos": "325,579",
       "Size": "796,207"
     },
     "###Keyboard 0 Settings": {
       "Collapsed": "0",
-      "Pos": "1009,234",
+      "Pos": "1010,233",
       "Size": "300,560"
     },
     "###NetworkTables": {
@@ -77,7 +82,7 @@
     "###Plot <0>": {
       "Collapsed": "0",
       "Pos": "349,467",
-      "Size": "1081,371"
+      "Size": "638,371"
     },
     "###Plot <1>": {
       "Collapsed": "0",

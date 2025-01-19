@@ -13,7 +13,7 @@ public class CANMapping {
   public static final int intakeMotor = 11;
 
   public static final int topflywheelMotor = 24;
-  public static final int bottomflywheelMotor = 18;
+  public static final int singleCoralMotor = 18;
 
   public static final int frontLeftDrivingMotor = 5;
   public static final int rearLeftDrivingMotor = 7;
