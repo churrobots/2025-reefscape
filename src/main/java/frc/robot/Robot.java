@@ -8,6 +8,8 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.churrolib.ChurroSim;
@@ -25,6 +27,7 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
+  private SendableChooser<Command> m_driverStationAutoChooser;
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -37,6 +40,15 @@ public class Robot extends TimedRobot {
     // and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+    m_robotContainer.ensureSubsystemsHaveDefaultCommands();
+    m_robotContainer.bindCommandsToDriverController();
+    m_robotContainer.bindCommandsToOperatorController();
+    m_robotContainer.registerCommandsForUseInAutonomous();
+
+    // Now that we've registered all the commands that Autonomous routines
+    // might use, we can tell the auto chooser to be built.
+    m_driverStationAutoChooser = m_robotContainer.createDriverStationAutoChooser();
+    SmartDashboard.putData(m_driverStationAutoChooser);
   }
 
   /**
@@ -82,7 +94,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    m_autonomousCommand = m_driverStationAutoChooser.getSelected();
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }

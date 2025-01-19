@@ -5,13 +5,11 @@
 package frc.robot.helpers;
 
 import edu.wpi.first.hal.HAL;
-import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
 
 /** Add your docs here. */
-public class LogitechX3D extends GenericHID {
+public class LogitechX3D extends CommandGenericHID {
 
   public LogitechX3D(final int port) {
     super(port);
@@ -37,8 +35,5 @@ public class LogitechX3D extends GenericHID {
   public double getThrottle() {
     return getRawAxis(3);
   }
-
-  // Button Pressing values
-  
 
 }
