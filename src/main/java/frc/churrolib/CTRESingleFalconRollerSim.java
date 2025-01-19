@@ -28,15 +28,11 @@ public class CTRESingleFalconRollerSim implements ChurroSimEntity {
   final TalonFX m_rollerMotor;
   final TalonFXSimState m_rollerMotorSim;
   final FlywheelSim m_rollerPhysicsSim;
-  final Mechanism2d m_vizRoller;
-  final MechanismRoot2d m_vizAxle;
-  final MechanismLigament2d m_vizWheels;
 
   public CTRESingleFalconRollerSim(
       TalonFX rollerMotor,
       double rollerReduction,
-      double rollerMOI,
-      String visualizationName) {
+      double rollerMOI) {
 
     m_rollerMotor = rollerMotor;
     m_rollerMotorSim = m_rollerMotor.getSimState();
@@ -45,14 +41,10 @@ public class CTRESingleFalconRollerSim implements ChurroSimEntity {
     m_rollerPhysicsSim = new FlywheelSim(
         LinearSystemId.createFlywheelSystem(DCMotor.getFalcon500(1), rollerMOI, rollerReduction),
         DCMotor.getFalcon500(1));
+  }
 
-    // Visualize this as a yellow box, so you can see it spinning.
-    // https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/mech2d-widget.html
-    m_vizRoller = new Mechanism2d(1, 1);
-    m_vizAxle = m_vizRoller.getRoot("Roller Axle", 0.5, 0.5);
-    m_vizWheels = m_vizAxle.append(
-        new MechanismLigament2d("Roller Wheels", 0.1, 0.0, 5.0, new Color8Bit(Color.kYellow)));
-    SmartDashboard.putData(visualizationName, m_vizRoller);
+  public double rollerOutputVelocityRPM() {
+    return m_rollerPhysicsSim.getAngularVelocityRPM();
   }
 
   @Override
@@ -75,12 +67,5 @@ public class CTRESingleFalconRollerSim implements ChurroSimEntity {
     m_rollerMotorSim.setRotorVelocity(rotationsPerSecond);
     m_rollerMotorSim.addRotorPosition(rotationsPerSecond * timeDeltaInSeconds);
 
-    // Update viz based on sim
-    double speedReductionPercentageSoSpinningIsVisibleToHumanEye = 0.03;
-    m_vizWheels.setAngle(
-        m_vizWheels.getAngle()
-            + Math.toDegrees(m_rollerPhysicsSim.getAngularVelocityRPM())
-                * timeDeltaInSeconds
-                * speedReductionPercentageSoSpinningIsVisibleToHumanEye);
   }
 }

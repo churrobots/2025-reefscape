@@ -219,7 +219,7 @@ public class RevMAXSwerveModule {
         m_turningSparkMax,
         kTurningMotorReduction,
         kTurningEncoderVelocityFactor);
-    ChurroSim.register(m_sim);
+    ChurroSim.registerEntity(m_sim);
   }
 
   /**

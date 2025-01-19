@@ -14,9 +14,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.churrolib.CTRESingleFalconRollerSim;
 import frc.churrolib.ChurroSim;
-import frc.churrolib.ChurroSimEntity;
 import frc.robot.Hardware;
 
 public class Pipeshooter extends SubsystemBase {
@@ -59,9 +57,7 @@ public class Pipeshooter extends SubsystemBase {
     // TODO: this doesn't seem to target the same velocity, might have to do it
     // manually?
     // bottomMotor.setControl(new Follower(topMotor.getDeviceID(), false));
-    ChurroSimEntity sim = new CTRESingleFalconRollerSim(
-        coralMotor, Hardware.Shooter.gearboxReduction, Hardware.Shooter.simMomentOfInertia, "TestShooter");
-    ChurroSim.register(sim);
+    ChurroSim.registerDevice(coralMotor);
   }
 
   public static final class Constants {
