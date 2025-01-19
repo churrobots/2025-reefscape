@@ -23,9 +23,9 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.churrolib.ChurroSim;
 import frc.churrolib.GenericSwerveSim;
+import frc.churrolib.RevMAXSwerveModule;
+import frc.churrolib.RevMAXSwerveUtils;
 import frc.robot.Hardware;
-import frc.robot.helpers.RevMAXSwerveModule;
-import frc.robot.helpers.SwerveUtils;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Drivetrain extends SubsystemBase {
@@ -242,9 +242,9 @@ public class Drivetrain extends SubsystemBase {
 
       double currentTime = WPIUtilJNI.now() * 1e-6;
       double elapsedTime = currentTime - m_prevTime;
-      double angleDif = SwerveUtils.AngleDifference(inputTranslationDir, m_currentTranslationDir);
+      double angleDif = RevMAXSwerveUtils.AngleDifference(inputTranslationDir, m_currentTranslationDir);
       if (angleDif < 0.45 * Math.PI) {
-        m_currentTranslationDir = SwerveUtils.StepTowardsCircular(m_currentTranslationDir, inputTranslationDir,
+        m_currentTranslationDir = RevMAXSwerveUtils.StepTowardsCircular(m_currentTranslationDir, inputTranslationDir,
             directionSlewRate * elapsedTime);
         m_currentTranslationMag = m_magLimiter.calculate(inputTranslationMag);
       } else if (angleDif > 0.85 * Math.PI) {
@@ -253,11 +253,11 @@ public class Drivetrain extends SubsystemBase {
                                               // keep currentTranslationDir unchanged
           m_currentTranslationMag = m_magLimiter.calculate(0.0);
         } else {
-          m_currentTranslationDir = SwerveUtils.WrapAngle(m_currentTranslationDir + Math.PI);
+          m_currentTranslationDir = RevMAXSwerveUtils.WrapAngle(m_currentTranslationDir + Math.PI);
           m_currentTranslationMag = m_magLimiter.calculate(inputTranslationMag);
         }
       } else {
-        m_currentTranslationDir = SwerveUtils.StepTowardsCircular(m_currentTranslationDir, inputTranslationDir,
+        m_currentTranslationDir = RevMAXSwerveUtils.StepTowardsCircular(m_currentTranslationDir, inputTranslationDir,
             directionSlewRate * elapsedTime);
         m_currentTranslationMag = m_magLimiter.calculate(0.0);
       }
