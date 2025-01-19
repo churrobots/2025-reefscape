@@ -190,16 +190,16 @@ public class Arm extends TrapezoidProfileSubsystem {
   }
 
   public void move_amp() {
-    moveTo(0.28);
+    moveTo(0.15);
   }
 
   public void move_Eject() {
-    moveTo(.16); // or .125
+    moveTo(.10); // or .125
   }
 
   public void move_mid() {
-    moveTo(0.1025); // .1075 was the new one, .1025 was the OG one which we're trying now at the
-                    // practice field
+    moveTo(0.08); // .1075 was the new one, .1025 was the OG one which we're trying now at the
+                  // practice field
   }
 
   public void move_Default() {
