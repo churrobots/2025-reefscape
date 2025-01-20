@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import frc.churrolib.CTRESingleFalconRollerSim;
 import frc.churrolib.ChurroSim;
-import frc.churrolib.ChurroSimEntity;
 
 /** Add your docs here. */
 public class RobotSimulator {

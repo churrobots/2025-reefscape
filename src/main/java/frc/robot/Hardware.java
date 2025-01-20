@@ -9,17 +9,16 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 public final class Hardware {
 
   // This helps us differentiate multiple robots. Each robot stores
-  // a persisted integer in NetworkTables, so that we know which
+  // a persisted string in NetworkTables, so that we know which
   // robot we got deployed to, in case there are specific constants
   // that have different values between those robots.
-  public static final long ROBOT_CANELO = 1;
-  public static final long ROBOT_ALPHA = 2;
-  public static final long ROBOT_COMPETITION = 3;
-  public static final long robot = NetworkTableInstance
+  public static final String robotName = NetworkTableInstance
       .getDefault()
-      .getTable("churrobots")
-      .getEntry("robot_id")
-      .getInteger(ROBOT_CANELO);
+      .getEntry("robotName")
+      .getString(null);
+  public static final String ROBOT_CANELO = "canelo";
+  public static final String ROBOT_ALPHA = "alpha";
+  public static final String ROBOT_COMPETITION = "competition";
 
   public final class Intake {
     public static final int brushedMotorCAN = 11;
@@ -41,9 +40,13 @@ public final class Hardware {
     public static final double maxHeight = 1.0;
   }
 
-  // NOTE: once we adopt YAGSL we won't need this TemplateSwerve
+  // NOTE: once we adopt YAGSL we won't need these template vars
   // to config the subsystem, since all the configs are in YAGSL
-  public final class TemplateSwerve {
+  public final class RevMAXSwerveTemplate {
+    public static final boolean isUsable = switch (robotName) {
+      case ROBOT_CANELO -> true;
+      default -> false;
+    };
     public static final int frontLeftTurningMotorCAN = 1;
     public static final int rearLeftTurningMotorCAN = 3;
     public static final int frontRightTurningMotorCAN = 2;

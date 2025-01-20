@@ -47,9 +47,10 @@ public class Robot extends TimedRobot {
     m_robotContainer.registerCommandsForUseInAutonomous();
 
     // Now that we've registered all the commands that Autonomous routines
-    // might use, we can tell the auto chooser to be built.
-    m_driverStationAutoChooser = m_robotContainer.createDriverStationAutoChooser();
-    SmartDashboard.putData(m_driverStationAutoChooser);
+    // might use, we can tell the dashboard to be built, which likely
+    // includes the AutoBuilder reading from the NamedCommands global
+    // that will now be populated properly.
+    m_robotContainer.setupDriverStationDashboard();
 
     // Now we can instantiate the simulator since all the motors
     // and subsystems should have been instantiated now.
@@ -100,7 +101,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = m_driverStationAutoChooser.getSelected();
+    m_autonomousCommand = m_robotContainer.readSelectedAutonomousCommand();
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
