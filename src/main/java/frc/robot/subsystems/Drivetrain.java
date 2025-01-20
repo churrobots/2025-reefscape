@@ -20,7 +20,7 @@ import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.churrolib.DeviceRegistry;
+import frc.churrolib.SimulationRegistry;
 import frc.churrolib.RevMAXSwerveModule;
 import frc.churrolib.RevMAXSwerveUtils;
 import frc.robot.Hardware;
@@ -102,7 +102,7 @@ public class Drivetrain extends SubsystemBase {
 
   public Drivetrain() {
     SmartDashboard.putData("Field", m_fieldViz);
-    DeviceRegistry.registerDevice(m_gyro);
+    SimulationRegistry.registerHardware(m_gyro);
   }
 
   @Override

@@ -17,41 +17,41 @@ import com.revrobotics.spark.SparkMax;
  * can update them on whatever frequency we like. Instead of overriding
  * `simulationPeriodic()` in your subsystems, you just use `ChurroSim.register`.
  */
-public class DeviceRegistry {
+public class SimulationRegistry {
 
-  static DeviceRegistry instance;
+  static SimulationRegistry instance;
   final List<TalonFX> m_talonFXList;
   final List<VictorSPX> m_victorSPXList;
   final List<SparkMax> m_sparkMaxList;
   final List<Pigeon2> m_pigeon2List;
 
-  private DeviceRegistry() {
+  private SimulationRegistry() {
     m_talonFXList = new ArrayList<>();
     m_victorSPXList = new ArrayList<>();
     m_sparkMaxList = new ArrayList<>();
     m_pigeon2List = new ArrayList<>();
   }
 
-  private static DeviceRegistry getInstance() {
+  private static SimulationRegistry getInstance() {
     if (instance == null) {
-      instance = new DeviceRegistry();
+      instance = new SimulationRegistry();
     }
     return instance;
   }
 
-  public static void registerDevice(TalonFX device) {
+  public static void registerHardware(TalonFX device) {
     getInstance().m_talonFXList.add(device);
   }
 
-  public static void registerDevice(VictorSPX device) {
+  public static void registerHardware(VictorSPX device) {
     getInstance().m_victorSPXList.add(device);
   }
 
-  public static void registerDevice(SparkMax device) {
+  public static void registerHardware(SparkMax device) {
     getInstance().m_sparkMaxList.add(device);
   }
 
-  public static void registerDevice(Pigeon2 device) {
+  public static void registerHardware(Pigeon2 device) {
     getInstance().m_pigeon2List.add(device);
   }
 

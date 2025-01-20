@@ -20,7 +20,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import frc.churrolib.CTRESingleFalconRollerSim;
-import frc.churrolib.DeviceRegistry;
+import frc.churrolib.SimulationRegistry;
 import frc.churrolib.GenericSwerveSim;
 import frc.churrolib.RevMAXSwerveModuleSim;
 
@@ -44,39 +44,39 @@ public class RobotSimulator {
   // https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/mech2d-widget.html
 
   public RobotSimulator() {
-    TalonFX coralMotor = DeviceRegistry.getTalonFX(Hardware.Shooter.falconMotorCAN);
+    TalonFX coralMotor = SimulationRegistry.getTalonFX(Hardware.Shooter.falconMotorCAN);
     m_shooterSim = new CTRESingleFalconRollerSim(
         coralMotor, Hardware.Shooter.gearboxReduction, Hardware.Shooter.simMomentOfInertia);
 
     m_revTemplateSimFL = new RevMAXSwerveModuleSim(
-        DeviceRegistry.getSparkMax(Hardware.RevMAXSwerveTemplate.frontLeftDrivingMotorCAN),
+        SimulationRegistry.getSparkMax(Hardware.RevMAXSwerveTemplate.frontLeftDrivingMotorCAN),
         Hardware.RevMAXSwerveTemplate.drivingMotorGearboxReduction,
         Hardware.RevMAXSwerveTemplate.drivingEncoderVelocityFactorInMetersPerSecond,
-        DeviceRegistry.getSparkMax(Hardware.RevMAXSwerveTemplate.frontLeftTurningMotorCAN),
+        SimulationRegistry.getSparkMax(Hardware.RevMAXSwerveTemplate.frontLeftTurningMotorCAN),
         Hardware.RevMAXSwerveTemplate.turningMotorGearboxReduction,
         Hardware.RevMAXSwerveTemplate.turningEncoderVelocityFactor,
         Hardware.RevMAXSwerveTemplate.kFrontLeftChassisAngularOffset);
     m_revTemplateSimFR = new RevMAXSwerveModuleSim(
-        DeviceRegistry.getSparkMax(Hardware.RevMAXSwerveTemplate.frontRightDrivingMotorCAN),
+        SimulationRegistry.getSparkMax(Hardware.RevMAXSwerveTemplate.frontRightDrivingMotorCAN),
         Hardware.RevMAXSwerveTemplate.drivingMotorGearboxReduction,
         Hardware.RevMAXSwerveTemplate.drivingEncoderVelocityFactorInMetersPerSecond,
-        DeviceRegistry.getSparkMax(Hardware.RevMAXSwerveTemplate.frontRightTurningMotorCAN),
+        SimulationRegistry.getSparkMax(Hardware.RevMAXSwerveTemplate.frontRightTurningMotorCAN),
         Hardware.RevMAXSwerveTemplate.turningMotorGearboxReduction,
         Hardware.RevMAXSwerveTemplate.turningEncoderVelocityFactor,
         Hardware.RevMAXSwerveTemplate.kFrontRightChassisAngularOffset);
     m_revTemplateSimRL = new RevMAXSwerveModuleSim(
-        DeviceRegistry.getSparkMax(Hardware.RevMAXSwerveTemplate.rearLeftDrivingMotorCAN),
+        SimulationRegistry.getSparkMax(Hardware.RevMAXSwerveTemplate.rearLeftDrivingMotorCAN),
         Hardware.RevMAXSwerveTemplate.drivingMotorGearboxReduction,
         Hardware.RevMAXSwerveTemplate.drivingEncoderVelocityFactorInMetersPerSecond,
-        DeviceRegistry.getSparkMax(Hardware.RevMAXSwerveTemplate.rearLeftTurningMotorCAN),
+        SimulationRegistry.getSparkMax(Hardware.RevMAXSwerveTemplate.rearLeftTurningMotorCAN),
         Hardware.RevMAXSwerveTemplate.turningMotorGearboxReduction,
         Hardware.RevMAXSwerveTemplate.turningEncoderVelocityFactor,
         Hardware.RevMAXSwerveTemplate.kRearLeftChassisAngularOffset);
     m_revTemplateSimRR = new RevMAXSwerveModuleSim(
-        DeviceRegistry.getSparkMax(Hardware.RevMAXSwerveTemplate.rearRightDrivingMotorCAN),
+        SimulationRegistry.getSparkMax(Hardware.RevMAXSwerveTemplate.rearRightDrivingMotorCAN),
         Hardware.RevMAXSwerveTemplate.drivingMotorGearboxReduction,
         Hardware.RevMAXSwerveTemplate.drivingEncoderVelocityFactorInMetersPerSecond,
-        DeviceRegistry.getSparkMax(Hardware.RevMAXSwerveTemplate.rearRightTurningMotorCAN),
+        SimulationRegistry.getSparkMax(Hardware.RevMAXSwerveTemplate.rearRightTurningMotorCAN),
         Hardware.RevMAXSwerveTemplate.turningMotorGearboxReduction,
         Hardware.RevMAXSwerveTemplate.turningEncoderVelocityFactor,
         Hardware.RevMAXSwerveTemplate.kRearRightChassisAngularOffset);
@@ -108,7 +108,7 @@ public class RobotSimulator {
       });
     };
     m_swerveSim = new GenericSwerveSim(
-        DeviceRegistry.getPigeon2(Hardware.RevMAXSwerveTemplate.pigeonGyroCAN),
+        SimulationRegistry.getPigeon2(Hardware.RevMAXSwerveTemplate.pigeonGyroCAN),
         chassisSpeedsSupplier,
         m_vizField);
   }
