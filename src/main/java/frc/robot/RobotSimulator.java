@@ -44,7 +44,6 @@ public class RobotSimulator {
         .append(new MechanismLigament2d("Roller Wheels", 0.1, 0.0, 5.0, new Color8Bit(Color.kYellow)));
 
     SmartDashboard.putData("TestShooter", m_vizRoller);
-    ChurroSim.registerEntity(m_shooterSim);
 
     m_revTemplateSimFL = new RevMAXSwerveModuleSim(
         ChurroSim.getSparkMax(Hardware.RevMAXSwerveTemplate.frontLeftDrivingMotorCAN),
