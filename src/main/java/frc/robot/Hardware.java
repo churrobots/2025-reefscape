@@ -40,9 +40,9 @@ public final class Hardware {
     public static final double maxHeight = 1.0;
   }
 
-  // NOTE: once we adopt YAGSL we won't need this TemplateSwerve
+  // NOTE: once we adopt YAGSL we won't need these template vars
   // to config the subsystem, since all the configs are in YAGSL
-  public final class TemplateSwerve {
+  public final class RevMAXSwerveTemplate {
     public static final boolean isUsable = switch (robotName) {
       case ROBOT_CANELO -> true;
       default -> false;
