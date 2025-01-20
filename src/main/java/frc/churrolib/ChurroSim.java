@@ -9,6 +9,7 @@ import java.util.List;
 
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.revrobotics.spark.SparkMax;
 
 /**
  * This singleton collects all simulation objects in a single place so that we
@@ -21,11 +22,13 @@ public class ChurroSim {
   final List<ChurroSimEntity> m_entities;
   final List<TalonFX> m_talonFXList;
   final List<VictorSPX> m_victorSPXList;
+  final List<SparkMax> m_sparkMaxList;
 
   private ChurroSim() {
     m_entities = new ArrayList<>();
     m_talonFXList = new ArrayList<>();
     m_victorSPXList = new ArrayList<>();
+    m_sparkMaxList = new ArrayList<>();
   }
 
   private static ChurroSim getInstance() {
@@ -43,6 +46,10 @@ public class ChurroSim {
     getInstance().m_victorSPXList.add(device);
   }
 
+  public static void registerDevice(SparkMax device) {
+    getInstance().m_sparkMaxList.add(device);
+  }
+
   public static TalonFX getTalonFX(int canId) {
     for (TalonFX device : getInstance().m_talonFXList) {
       if (device.getDeviceID() == canId) {
@@ -55,6 +62,15 @@ public class ChurroSim {
   public static TalonFX getVictorSPX(int canId) {
     for (TalonFX device : getInstance().m_talonFXList) {
       if (device.getDeviceID() == canId) {
+        return device;
+      }
+    }
+    return null;
+  }
+
+  public static SparkMax getSparkMax(int canId) {
+    for (SparkMax device : getInstance().m_sparkMaxList) {
+      if (device.getDeviceId() == canId) {
         return device;
       }
     }

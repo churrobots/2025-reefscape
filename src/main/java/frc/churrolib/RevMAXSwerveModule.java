@@ -7,6 +7,7 @@ package frc.churrolib;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import frc.robot.Hardware;
 
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -27,32 +28,6 @@ import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
  */
 public class RevMAXSwerveModule {
 
-  private static final class Constants {
-
-    // Tuning values
-    public static final double kWheelDiameterMeters = 0.0831;
-
-    public static final double kDrivingP = .08;// .04
-    public static final double kDrivingI = 0;
-    public static final double kDrivingD = 0;
-
-    public static final double kTurningP = 2;
-    public static final double kTurningI = 0;
-    public static final double kTurningD = 0;
-
-    // The MAXSwerve module can be configured with one of three pinion gears: 12T,
-    // 13T, or 14T. This changes the drive speed of the module (a pinion gear with
-    // more teeth will result in a robot that drives faster).
-    // Note that the module itself has 45 teeth on the wheel's bevel gear, 22 teeth
-    // on the first-stage spur gear, 15 teeth on the bevel pinion.
-    public static final int kDrivingMotorPinionTeeth = 16;
-    public static final int kWheelBevelTeeth = 45;
-    public static final int kFirstStageSpurTeeth = 20;
-    public static final int kBevelPinionTeeth = 15;
-
-    public static final double kMotorFreeSpeedRpm = 5676; // Neo motors are 5676 max RPM
-  }
-
   private final SparkMax m_drivingSparkMax;
   private final SparkMax m_turningSparkMax;
 
@@ -70,28 +45,21 @@ public class RevMAXSwerveModule {
   // the steering motor in the MAXSwerve Module.
   private final boolean kTurningEncoderInverted = true;
 
-  // Turning motor reduction from "Azimuth Ratio" of MAXSwerve module spec:
-  // https://www.revrobotics.com/rev-21-3005/
-  private static final double kTurningMotorReduction = 9424 / 203;
-
   // Calculations required for driving motor conversion factors and feed forward
-  private final double kDrivingMotorFreeSpeedRps = Constants.kMotorFreeSpeedRpm / 60;
+  private final double kDrivingMotorFreeSpeedRps = Hardware.RevMAXSwerveTemplate.kMotorFreeSpeedRpm / 60;
 
-  private final double kWheelCircumferenceMeters = Constants.kWheelDiameterMeters * Math.PI;
+  private final double kWheelCircumferenceMeters = Hardware.RevMAXSwerveTemplate.wheelCircumferenceMeters;
 
-  private final double kDrivingMotorReduction = ((double) Constants.kWheelBevelTeeth * Constants.kFirstStageSpurTeeth)
-      / ((double) Constants.kDrivingMotorPinionTeeth * Constants.kBevelPinionTeeth);
+  private final double kDrivingMotorReduction = Hardware.RevMAXSwerveTemplate.drivingMotorGearboxReduction;
   private final double kDriveWheelFreeSpeedRps = (kDrivingMotorFreeSpeedRps * kWheelCircumferenceMeters)
       / kDrivingMotorReduction;
 
   private final double kDrivingEncoderPositionFactor = kWheelCircumferenceMeters
       / kDrivingMotorReduction; // meters
-  private final double kDrivingEncoderVelocityFactor = (kWheelCircumferenceMeters
-      / kDrivingMotorReduction) / 60.0; // meters per second because native units are RPM
+  private final double kDrivingEncoderVelocityFactor = Hardware.RevMAXSwerveTemplate.drivingEncoderVelocityFactorInMetersPerSecond;
 
   private final double kTurningEncoderPositionFactor = (2 * Math.PI); // radians
-  private final double kTurningEncoderVelocityFactor = (2 * Math.PI) / 60.0; // radians per second
-                                                                             // because native units are RPM
+  private final double kTurningEncoderVelocityFactor = Hardware.RevMAXSwerveTemplate.turningEncoderVelocityFactor;
 
   private final double kTurningEncoderPositionPIDMinInput = 0; // radians
   private final double kTurningEncoderPositionPIDMaxInput = kTurningEncoderPositionFactor; // radians
@@ -109,8 +77,6 @@ public class RevMAXSwerveModule {
 
   private final int kDrivingMotorCurrentLimit = 50; // amps
   private final int kTurningMotorCurrentLimit = 20; // amps
-
-  final RevMAXSwerveModuleSim m_sim;
 
   /**
    * Constructs a MAXSwerveModule and configures the driving and turning motor,
@@ -166,9 +132,9 @@ public class RevMAXSwerveModule {
     // Set the PID gains for the driving motor. Note these are example gains, and
     // you
     // may need to tune them for your own robot!
-    drivingConfig.closedLoop.p(Constants.kDrivingP);
-    drivingConfig.closedLoop.i(Constants.kDrivingI);
-    drivingConfig.closedLoop.d(Constants.kDrivingD);
+    drivingConfig.closedLoop.p(Hardware.RevMAXSwerveTemplate.kDrivingP);
+    drivingConfig.closedLoop.i(Hardware.RevMAXSwerveTemplate.kDrivingI);
+    drivingConfig.closedLoop.d(Hardware.RevMAXSwerveTemplate.kDrivingD);
     drivingConfig.closedLoop.velocityFF(kDrivingFF);
     drivingConfig.closedLoop.outputRange(kDrivingMinOutput,
         kDrivingMaxOutput);
@@ -176,9 +142,9 @@ public class RevMAXSwerveModule {
     // Set the PID gains for the turning motor. Note these are example gains, and
     // you
     // may need to tune them for your own robot!
-    turningConfig.closedLoop.p(Constants.kTurningP);
-    turningConfig.closedLoop.i(Constants.kTurningI);
-    turningConfig.closedLoop.d(Constants.kTurningD);
+    turningConfig.closedLoop.p(Hardware.RevMAXSwerveTemplate.kTurningP);
+    turningConfig.closedLoop.i(Hardware.RevMAXSwerveTemplate.kTurningI);
+    turningConfig.closedLoop.d(Hardware.RevMAXSwerveTemplate.kTurningD);
     turningConfig.closedLoop.velocityFF(kTurningFF);
     turningConfig.closedLoop.outputRange(kTurningMinOutput,
         kTurningMaxOutput);
@@ -212,14 +178,8 @@ public class RevMAXSwerveModule {
 
     // The sim needs to be initialized in the constructor because the CAN IDs are
     // passed in and we won't have the SparkMax references until this point.
-    m_sim = new RevMAXSwerveModuleSim(
-        m_drivingSparkMax,
-        kDrivingMotorReduction,
-        kDrivingEncoderVelocityFactor,
-        m_turningSparkMax,
-        kTurningMotorReduction,
-        kTurningEncoderVelocityFactor);
-    ChurroSim.registerEntity(m_sim);
+    ChurroSim.registerDevice(m_drivingSparkMax);
+    ChurroSim.registerDevice(m_turningSparkMax);
   }
 
   /**
