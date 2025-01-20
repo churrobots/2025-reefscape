@@ -7,6 +7,7 @@ package frc.robot;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -40,12 +41,10 @@ public class RobotContainer {
   void ensureSubsystemsHaveDefaultCommands() {
 
     Command fastFieldRelativeDriverControl = new RunCommand(
-        () -> drivetrain.drive(
+        () -> drivetrain.drive(new ChassisSpeeds(
             getDriverForwardAxis() * Constants.fastDriveScale,
             getDriverSidewaysAxis() * Constants.fastDriveScale,
-            getDriverRotationAxis() * Constants.fastDriveScale,
-            true,
-            false),
+            getDriverRotationAxis() * Constants.fastDriveScale)),
         drivetrain);
 
     Command stopIntake = new RunCommand(intake::stopThePlan, intake);
@@ -60,12 +59,10 @@ public class RobotContainer {
   void bindCommandsToDriverController() {
 
     Command slowFieldRelativeDriverControl = new RunCommand(
-        () -> drivetrain.drive(
+        () -> drivetrain.drive(new ChassisSpeeds(
             getDriverForwardAxis() * Constants.slowDriveScale,
             getDriverSidewaysAxis() * Constants.slowDriveScale,
-            getDriverRotationAxis() * Constants.slowDriveScale,
-            true,
-            false),
+            getDriverRotationAxis() * Constants.slowDriveScale)),
         drivetrain);
 
     Command recalibrateDriveTrain = new RunCommand(drivetrain::recalibrateDrivetrain, drivetrain);
