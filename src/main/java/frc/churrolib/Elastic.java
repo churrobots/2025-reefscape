@@ -10,10 +10,13 @@ package frc.churrolib;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import edu.wpi.first.net.WebServer;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.PubSubOption;
 import edu.wpi.first.networktables.StringPublisher;
 import edu.wpi.first.networktables.StringTopic;
+import edu.wpi.first.wpilibj.Filesystem;
 
 public final class Elastic {
   private static final StringTopic notificationTopic = NetworkTableInstance.getDefault()
@@ -67,6 +70,24 @@ public final class Elastic {
    */
   public static void selectTab(int tabIndex) {
     selectTab(Integer.toString(tabIndex));
+  }
+
+  /**
+   * This helper starts the webserver that Elastic uses for downloading
+   * the dashboard from whatever was in the deploy directory. This makes
+   * it easy for software team to configure Elastic and save the JSON to
+   * the deploy directory under ./deploy/elastic-layout.json, and then
+   * any driver station that connects can simply download it from the
+   * robot by clicking "File...Download From Robot"
+   * 
+   * NOTE: Churrobots patched this method in, it was not originally part
+   * of this vendored Elastic library.
+   * 
+   * See more info:
+   * https://frc-elastic.gitbook.io/docs/additional-features-and-references/remote-layout-downloading#on-robot-configuration
+   */
+  public static void enableDashboardToBeDownloadedFromRobotDeployDirectory() {
+    WebServer.start(5800, Filesystem.getDeployDirectory().getPath());
   }
 
   /**

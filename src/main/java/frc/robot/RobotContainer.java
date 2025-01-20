@@ -12,6 +12,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.churrolib.Elastic;
 import frc.churrolib.LogitechX3D;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
@@ -32,6 +34,7 @@ public class RobotContainer {
   CommandXboxController driverXboxController = new CommandXboxController(Constants.driverXboxPort);
   CommandXboxController operatorXboxController = new CommandXboxController(Constants.operatorXboxPort);
   LogitechX3D driverFlightstickController = new LogitechX3D(Constants.driverFlightstickPort);
+  SendableChooser<Command> autoChooser;
 
   Drivetrain drivetrain = new Drivetrain();
   Intake intake = new Intake();
@@ -100,9 +103,16 @@ public class RobotContainer {
     NamedCommands.registerCommand("doNothing", doNothing);
   }
 
-  SendableChooser<Command> createDriverStationAutoChooser() {
+  void setupDriverStationDashboard() {
+    // TODO: setup any camera feeds or other driver tools here
     // TODO: return AutoBuilder.buildAutoChooser();
-    return new SendableChooser<Command>();
+    autoChooser = new SendableChooser<Command>();
+    SmartDashboard.putData(autoChooser);
+    Elastic.enableDashboardToBeDownloadedFromRobotDeployDirectory();
+  }
+
+  Command readSelectedAutonomousCommand() {
+    return autoChooser.getSelected();
   }
 
   private double getDriverForwardAxis() {
