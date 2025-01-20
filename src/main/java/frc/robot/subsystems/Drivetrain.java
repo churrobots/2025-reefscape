@@ -14,15 +14,13 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.churrolib.ChurroSim;
-import frc.churrolib.GenericSwerveSim;
+import frc.churrolib.DeviceRegistry;
 import frc.churrolib.RevMAXSwerveModule;
 import frc.churrolib.RevMAXSwerveUtils;
 import frc.robot.Hardware;
@@ -33,23 +31,23 @@ public class Drivetrain extends SubsystemBase {
   private static final class Constants {
 
     // Chassis configuration
-    public static final double kTrackWidth = Units.inchesToMeters(18.5);
-    public static final double kWheelBase = Units.inchesToMeters(23.5);
+    public static final double kTrackWidth = Hardware.RevMAXSwerveTemplate.kTrackWidth;
+    public static final double kWheelBase = Hardware.RevMAXSwerveTemplate.kWheelBase;
 
     // Angular offsets of the modules relative to the chassis in radians
-    public static final double kFrontLeftChassisAngularOffset = -Math.PI / 2;
-    public static final double kFrontRightChassisAngularOffset = 0;
-    public static final double kRearLeftChassisAngularOffset = Math.PI;
-    public static final double kRearRightChassisAngularOffset = Math.PI / 2;
+    public static final double kFrontLeftChassisAngularOffset = Hardware.RevMAXSwerveTemplate.kFrontLeftChassisAngularOffset;
+    public static final double kFrontRightChassisAngularOffset = Hardware.RevMAXSwerveTemplate.kFrontRightChassisAngularOffset;
+    public static final double kRearLeftChassisAngularOffset = Hardware.RevMAXSwerveTemplate.kRearLeftChassisAngularOffset;
+    public static final double kRearRightChassisAngularOffset = Hardware.RevMAXSwerveTemplate.kRearRightChassisAngularOffset;
 
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
-    public static final double kMaxSpeedMetersPerSecond = 6.04;
-    public static final double kMaxAngularSpeed = 2 * Math.PI; // radians per second
+    public static final double kMaxSpeedMetersPerSecond = Hardware.RevMAXSwerveTemplate.kMaxSpeedMetersPerSecond;
+    public static final double kMaxAngularSpeed = Hardware.RevMAXSwerveTemplate.kMaxAngularSpeed;
 
-    public static final double kDirectionSlewRate = 3.6; // radians per second
-    public static final double kMagnitudeSlewRate = 4.5; // percent per second (1 = 100%)
-    public static final double kRotationalSlewRate = 6; // percent per second (1 = 100%)
+    public static final double kDirectionSlewRate = Hardware.RevMAXSwerveTemplate.kDirectionSlewRate;
+    public static final double kMagnitudeSlewRate = Hardware.RevMAXSwerveTemplate.kMagnitudeSlewRate;
+    public static final double kRotationalSlewRate = Hardware.RevMAXSwerveTemplate.kRotationalSlewRate;
   }
 
   // Logging helpers.
@@ -102,12 +100,9 @@ public class Drivetrain extends SubsystemBase {
       },
       new Pose2d());
 
-  private final GenericSwerveSim m_sim;
-
   public Drivetrain() {
     SmartDashboard.putData("Field", m_fieldViz);
-    m_sim = new GenericSwerveSim(m_gyro, this::getRobotRelativeSpeeds, m_fieldViz);
-    ChurroSim.registerEntity(m_sim);
+    DeviceRegistry.registerDevice(m_gyro);
   }
 
   @Override

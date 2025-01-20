@@ -178,8 +178,8 @@ public class RevMAXSwerveModule {
 
     // The sim needs to be initialized in the constructor because the CAN IDs are
     // passed in and we won't have the SparkMax references until this point.
-    ChurroSim.registerDevice(m_drivingSparkMax);
-    ChurroSim.registerDevice(m_turningSparkMax);
+    DeviceRegistry.registerDevice(m_drivingSparkMax);
+    DeviceRegistry.registerDevice(m_turningSparkMax);
   }
 
   /**

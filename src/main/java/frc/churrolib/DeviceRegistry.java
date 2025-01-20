@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.spark.SparkMax;
 
@@ -16,24 +17,24 @@ import com.revrobotics.spark.SparkMax;
  * can update them on whatever frequency we like. Instead of overriding
  * `simulationPeriodic()` in your subsystems, you just use `ChurroSim.register`.
  */
-public class ChurroSim {
+public class DeviceRegistry {
 
-  static ChurroSim instance;
-  final List<ChurroSimEntity> m_entities;
+  static DeviceRegistry instance;
   final List<TalonFX> m_talonFXList;
   final List<VictorSPX> m_victorSPXList;
   final List<SparkMax> m_sparkMaxList;
+  final List<Pigeon2> m_pigeon2List;
 
-  private ChurroSim() {
-    m_entities = new ArrayList<>();
+  private DeviceRegistry() {
     m_talonFXList = new ArrayList<>();
     m_victorSPXList = new ArrayList<>();
     m_sparkMaxList = new ArrayList<>();
+    m_pigeon2List = new ArrayList<>();
   }
 
-  private static ChurroSim getInstance() {
+  private static DeviceRegistry getInstance() {
     if (instance == null) {
-      instance = new ChurroSim();
+      instance = new DeviceRegistry();
     }
     return instance;
   }
@@ -48,6 +49,10 @@ public class ChurroSim {
 
   public static void registerDevice(SparkMax device) {
     getInstance().m_sparkMaxList.add(device);
+  }
+
+  public static void registerDevice(Pigeon2 device) {
+    getInstance().m_pigeon2List.add(device);
   }
 
   public static TalonFX getTalonFX(int canId) {
@@ -77,13 +82,13 @@ public class ChurroSim {
     return null;
   }
 
-  public static void registerEntity(ChurroSimEntity entity) {
-    getInstance().m_entities.add(entity);
+  public static Pigeon2 getPigeon2(int canId) {
+    for (Pigeon2 device : getInstance().m_pigeon2List) {
+      if (device.getDeviceID() == canId) {
+        return device;
+      }
+    }
+    return null;
   }
 
-  public static void iterate(double timeDeltaInSeconds) {
-    for (ChurroSimEntity entity : getInstance().m_entities) {
-      entity.iterate(timeDeltaInSeconds);
-    }
-  }
 }

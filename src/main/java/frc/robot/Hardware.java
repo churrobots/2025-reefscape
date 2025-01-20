@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
 public final class Hardware {
@@ -16,7 +17,7 @@ public final class Hardware {
   public static final String robotName = NetworkTableInstance
       .getDefault()
       .getEntry("robotName")
-      .getString(null);
+      .getString("unknown");
   public static final String ROBOT_CANELO = "canelo";
   public static final String ROBOT_ALPHA = "alpha";
   public static final String ROBOT_COMPETITION = "competition";
@@ -94,6 +95,24 @@ public final class Hardware {
     public static final double turningMotorGearboxReduction = 9424 / 203;
     public static final double turningEncoderVelocityFactor = (2 * Math.PI) / 60.0; // radians per second
     // because native units are RPM
+
+    // Chassis configuration
+    public static final double kTrackWidth = Units.inchesToMeters(18.5);
+    public static final double kWheelBase = Units.inchesToMeters(23.5);
+
+    // Offsets of the turning motor of each module, relative to chassis (radians).
+    public static final double kFrontLeftChassisAngularOffset = -Math.PI / 2;
+    public static final double kFrontRightChassisAngularOffset = 0;
+    public static final double kRearLeftChassisAngularOffset = Math.PI;
+    public static final double kRearRightChassisAngularOffset = Math.PI / 2;
+
+    // Driving Parameters - Note that these are not the maximum capable speeds of
+    // the robot, rather the allowed maximum speeds
+    public static final double kMaxSpeedMetersPerSecond = 6.04;
+    public static final double kMaxAngularSpeed = 2 * Math.PI; // radians per second
+    public static final double kDirectionSlewRate = 3.6; // radians per second
+    public static final double kMagnitudeSlewRate = 4.5; // percent per second (1 = 100%)
+    public static final double kRotationalSlewRate = 6; // percent per second (1 = 100%)
 
   }
 

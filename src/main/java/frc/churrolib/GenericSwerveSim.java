@@ -20,7 +20,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
  * Simulation for a generic swerve drive, inspired by Quixilver's approach.
  * https://github.com/frc604/2023-public/blob/main/FRC-2023/src/main/java/frc/quixlib/swerve/QuixSwerveModule.java#L88
  */
-public class GenericSwerveSim implements ChurroSimEntity {
+public class GenericSwerveSim {
   final Pigeon2 m_gyro;
   final Supplier<ChassisSpeeds> m_chassisSpeedsSupplier;
   final Field2d m_fieldViz;
