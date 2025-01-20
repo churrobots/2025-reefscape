@@ -40,9 +40,6 @@ public class RobotSimulator {
   final MechanismLigament2d m_vizWheels;
   final Field2d m_vizField;
 
-  // Visualize this as a yellow box, so you can see it spinning.
-  // https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/mech2d-widget.html
-
   public RobotSimulator() {
     TalonFX coralMotor = SimulationRegistry.getTalonFX(Hardware.Shooter.falconMotorCAN);
     m_shooterSim = new CTRESingleFalconRollerSim(
@@ -82,6 +79,8 @@ public class RobotSimulator {
         Hardware.RevMAXSwerveTemplate.kRearRightChassisAngularOffset);
 
     // Setup visualizations
+    // Visualize this as a yellow box, so you can see it spinning.
+    // https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/mech2d-widget.html
     m_vizRoller = new Mechanism2d(1, 1);
     m_vizAxle = m_vizRoller.getRoot("Roller Axle", 0.5, 0.5);
     m_vizWheels = m_vizAxle
@@ -92,7 +91,11 @@ public class RobotSimulator {
     m_vizField = (Field2d) SmartDashboard.getData("Field");
     SmartDashboard.putData("TestShooter", m_vizRoller);
 
-    // TODO: decouple the viz from this one
+    // Create the all-in-one swerve sim (it has viz built-in)
+    // TODO: decouple the viz from this one?
+    // TODO: maybe it's okay for each Sim object to have a "rough viz" and then
+    // expose methods for the main simulation to re-render in a different way and
+    // link up sub-assemblies?
     SwerveDriveKinematics simKinematics = new SwerveDriveKinematics(
         new Translation2d(Hardware.RevMAXSwerveTemplate.kWheelBase / 2, Hardware.RevMAXSwerveTemplate.kTrackWidth / 2),
         new Translation2d(Hardware.RevMAXSwerveTemplate.kWheelBase / 2, -Hardware.RevMAXSwerveTemplate.kTrackWidth / 2),
@@ -124,6 +127,9 @@ public class RobotSimulator {
 
   public void render(double timeDeltaInSeconds) {
     // Update viz based on sim
+    // TODO: try to use color to indicate speed, the "scaling" really messes with
+    // the low speeds, and we really just want to indicate when the speed is so fast
+    // that aliasing will occur. maybe scale only above a certain velocity?
     double speedReductionPercentageSoSpinningIsVisibleToHumanEye = 0.03;
     m_vizWheels.setAngle(
         m_vizWheels.getAngle()
