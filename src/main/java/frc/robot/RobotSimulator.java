@@ -40,6 +40,10 @@ public class RobotSimulator {
     ChurroSim.registerEntity(m_shooterSim);
   }
 
+  public void iterate(double timeDeltaInSeconds) {
+    ChurroSim.iterate(timeDeltaInSeconds);
+  }
+
   public void render(double timeDeltaInSeconds) {
     // Update viz based on sim
     double speedReductionPercentageSoSpinningIsVisibleToHumanEye = 0.03;

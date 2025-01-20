@@ -86,9 +86,10 @@ public class Robot extends TimedRobot {
   @Override
   public void simulationPeriodic() {
     // TODO: use a faster loop in a thread to make ChurroSim more realistic to motor
-    // controller clock speeds in the real world
+    // controller clock speeds in the real world. The render() doesn't need to be
+    // as rapid, so that's why we have iterate() separate from render().
     if (m_robotSimulator != null) {
-      ChurroSim.iterate(TimedRobot.kDefaultPeriod);
+      m_robotSimulator.iterate(TimedRobot.kDefaultPeriod);
       m_robotSimulator.render(TimedRobot.kDefaultPeriod);
     }
   }
