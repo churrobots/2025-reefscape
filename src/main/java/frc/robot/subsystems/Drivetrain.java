@@ -12,6 +12,8 @@ import static edu.wpi.first.units.Units.Meter;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import com.ctre.phoenix6.hardware.Pigeon2;
+import com.revrobotics.spark.SparkMax;
+
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -96,6 +98,10 @@ public class Drivetrain extends SubsystemBase {
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
+
+    // TODO: see if this helps us debug
+    // _registerHardwardWithOldSimulation();
+
     // m_swerveDrive.setHeadingCorrection(false); // Heading correction should only
     // be used while controlling the robot via
     // angle.
@@ -110,6 +116,18 @@ public class Drivetrain extends SubsystemBase {
     // 1); // Enable if you want to resynchronize your absolute encoders and motor
     // encoders
     // // periodically when they are not moving.
+  }
+
+  private void _registerHardwardWithOldSimulation() {
+    SimulationRegistry.registerHardware((Pigeon2) m_swerveDrive.getGyro().getIMU());
+    SimulationRegistry.registerHardware((SparkMax) m_swerveDrive.getModules()[0].getDriveMotor().getMotor());
+    SimulationRegistry.registerHardware((SparkMax) m_swerveDrive.getModules()[0].getAngleMotor().getMotor());
+    SimulationRegistry.registerHardware((SparkMax) m_swerveDrive.getModules()[1].getDriveMotor().getMotor());
+    SimulationRegistry.registerHardware((SparkMax) m_swerveDrive.getModules()[1].getAngleMotor().getMotor());
+    SimulationRegistry.registerHardware((SparkMax) m_swerveDrive.getModules()[2].getDriveMotor().getMotor());
+    SimulationRegistry.registerHardware((SparkMax) m_swerveDrive.getModules()[2].getAngleMotor().getMotor());
+    SimulationRegistry.registerHardware((SparkMax) m_swerveDrive.getModules()[3].getDriveMotor().getMotor());
+    SimulationRegistry.registerHardware((SparkMax) m_swerveDrive.getModules()[3].getAngleMotor().getMotor());
   }
 
   @Override
