@@ -27,7 +27,7 @@ import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.churrolib.DeviceRegistry;
+import frc.churrolib.SimulationRegistry;
 import frc.churrolib.RevMAXSwerveModule;
 import frc.churrolib.RevMAXSwerveUtils;
 import frc.robot.Hardware;
