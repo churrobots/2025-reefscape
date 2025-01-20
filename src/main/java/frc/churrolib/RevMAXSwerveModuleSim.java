@@ -8,6 +8,8 @@ import com.revrobotics.spark.SparkBase;
 // TODO: stop using PatchedSparkSim once RevLib fixes their SparkSim bugs
 import com.revrobotics.spark.PatchedSparkSim;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.RobotController;
@@ -19,7 +21,7 @@ import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
  * approach taken by Quixilver:
  * https://github.com/frc604/2023-public/blob/main/FRC-2023/src/main/java/frc/quixlib/swerve/QuixSwerveModule.java#L88
  */
-public class RevMAXSwerveModuleSim implements ChurroSimEntity {
+public class RevMAXSwerveModuleSim {
 
   final SparkBase m_drivingMotorController;
   final SparkBase m_turningMotorController;
@@ -31,6 +33,7 @@ public class RevMAXSwerveModuleSim implements ChurroSimEntity {
   final double m_turningMotorReduction;
   final double m_drivingEncoderVelocityFactor;
   final double m_turningEncoderVelocityFactor;
+  final double m_turningAngularOffset;
 
   public RevMAXSwerveModuleSim(
       SparkBase drivingMotorController,
@@ -38,7 +41,8 @@ public class RevMAXSwerveModuleSim implements ChurroSimEntity {
       double drivingEncoderVelocityFactor,
       SparkBase turningMotorController,
       double turningMotorReduction,
-      double turningEncoderVelocityFactor) {
+      double turningEncoderVelocityFactor,
+      double turningAngularOffset) {
 
     // Start with the motor controller sims.
     m_drivingMotorController = drivingMotorController;
@@ -53,6 +57,7 @@ public class RevMAXSwerveModuleSim implements ChurroSimEntity {
     m_drivingEncoderVelocityFactor = drivingEncoderVelocityFactor;
     m_turningMotorReduction = turningMotorReduction;
     m_turningEncoderVelocityFactor = turningEncoderVelocityFactor;
+    m_turningAngularOffset = turningAngularOffset;
 
     // Add the physics sims.
     // TODO: VecBuilder was weird, figure out if we need to add noise back in
@@ -73,6 +78,14 @@ public class RevMAXSwerveModuleSim implements ChurroSimEntity {
         false, // Simulate gravity
         Math.random() * 2 * Math.PI // random starting angle for the wheels, never know
     );
+  }
+
+  public SwerveModuleState getSimulatedState() {
+    double drivingEncoderVelocityRPM = m_drivingMotorController.getEncoder().getVelocity();
+    double turningEncoderPosition = m_turningMotorController.getAbsoluteEncoder().getPosition();
+    return new SwerveModuleState(
+        drivingEncoderVelocityRPM,
+        new Rotation2d(turningEncoderPosition - m_turningAngularOffset));
   }
 
   public void iterate(double timeDeltaInSeconds) {

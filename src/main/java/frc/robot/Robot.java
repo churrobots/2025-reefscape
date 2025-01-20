@@ -8,11 +8,9 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.churrolib.ChurroSim;
+import frc.churrolib.DeviceRegistry;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -24,11 +22,10 @@ import frc.churrolib.ChurroSim;
  * project.
  */
 public class Robot extends TimedRobot {
-  private Command m_autonomousCommand;
 
+  private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
   private RobotSimulator m_robotSimulator;
-  private SendableChooser<Command> m_driverStationAutoChooser;
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -51,10 +48,6 @@ public class Robot extends TimedRobot {
     // includes the AutoBuilder reading from the NamedCommands global
     // that will now be populated properly.
     m_robotContainer.setupDriverStationDashboard();
-
-    // Now we can instantiate the simulator since all the motors
-    // and subsystems should have been instantiated now.
-    m_robotSimulator = new RobotSimulator();
   }
 
   /**
@@ -80,11 +73,25 @@ public class Robot extends TimedRobot {
   }
 
   @Override
+  public void simulationInit() {
+    // Now we can instantiate the simulator since all the motors
+    // and subsystems should have been instantiated by now.
+    // NOTE: we don't instantiate the simulator in robotInit since
+    // we don't want any simulation errors to break competition mode.
+    if (m_robotSimulator == null) {
+      m_robotSimulator = new RobotSimulator();
+    }
+  }
+
+  @Override
   public void simulationPeriodic() {
     // TODO: use a faster loop in a thread to make ChurroSim more realistic to motor
-    // controller clock speeds in the real world
-    ChurroSim.iterate(TimedRobot.kDefaultPeriod);
-    m_robotSimulator.render(TimedRobot.kDefaultPeriod);
+    // controller clock speeds in the real world. The render() doesn't need to be
+    // as rapid, so that's why we have iterate() separate from render().
+    if (m_robotSimulator != null) {
+      m_robotSimulator.iterate(TimedRobot.kDefaultPeriod);
+      m_robotSimulator.render(TimedRobot.kDefaultPeriod);
+    }
   }
 
   @Override

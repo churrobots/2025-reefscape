@@ -4,18 +4,20 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
 public final class Hardware {
 
   // This helps us differentiate multiple robots. Each robot stores
   // a persisted string in NetworkTables, so that we know which
+  // a persisted string in NetworkTables, so that we know which
   // robot we got deployed to, in case there are specific constants
   // that have different values between those robots.
   public static final String robotName = NetworkTableInstance
       .getDefault()
       .getEntry("robotName")
-      .getString(null);
+      .getString("unknown");
   public static final String ROBOT_CANELO = "canelo";
   public static final String ROBOT_ALPHA = "alpha";
   public static final String ROBOT_COMPETITION = "competition";
@@ -56,6 +58,62 @@ public final class Hardware {
     public static final int frontRightDrivingMotorCAN = 6;
     public static final int rearRightDrivingMotorCAN = 8;
     public static final int pigeonGyroCAN = 9;
+
+    // Tuning values
+    public static final double kWheelDiameterMeters = 0.0831;
+    public static final double kDrivingP = .08;// .04
+    public static final double kDrivingI = 0;
+    public static final double kDrivingD = 0;
+    public static final double kTurningP = 2;
+    public static final double kTurningI = 0;
+    public static final double kTurningD = 0;
+
+    // The MAXSwerve module can be configured with one of three pinion gears: 12T,
+    // 13T, or 14T. This changes the drive speed of the module (a pinion gear with
+    // more teeth will result in a robot that drives faster).
+    // Note that the module itself has 45 teeth on the wheel's bevel gear, 22 teeth
+    // on the first-stage spur gear, 15 teeth on the bevel pinion.
+    public static final int kDrivingMotorPinionTeeth = 16;
+    public static final int kWheelBevelTeeth = 45;
+    public static final int kFirstStageSpurTeeth = 20;
+    public static final int kBevelPinionTeeth = 15;
+
+    // Neo motors are 5676 max RPM
+    public static final double kMotorFreeSpeedRpm = 5676;
+
+    // Other items we need centrally to manage simulation.
+    public static final double wheelCircumferenceMeters = kWheelDiameterMeters * Math.PI;
+    public static final double drivingMotorGearboxReduction = ((double) kWheelBevelTeeth
+        * kFirstStageSpurTeeth)
+        / ((double) kDrivingMotorPinionTeeth
+            * kBevelPinionTeeth);
+    public static final double drivingEncoderVelocityFactorInMetersPerSecond = (wheelCircumferenceMeters
+        / drivingMotorGearboxReduction) / 60.0; // meters per second because native units are RPM
+
+    // Turning motor reduction from "Azimuth Ratio" of MAXSwerve module spec:
+    // https://www.revrobotics.com/rev-21-3005/
+    public static final double turningMotorGearboxReduction = 9424 / 203;
+    public static final double turningEncoderVelocityFactor = (2 * Math.PI) / 60.0; // radians per second
+    // because native units are RPM
+
+    // Chassis configuration
+    public static final double kTrackWidth = Units.inchesToMeters(18.5);
+    public static final double kWheelBase = Units.inchesToMeters(23.5);
+
+    // Offsets of the turning motor of each module, relative to chassis (radians).
+    public static final double kFrontLeftChassisAngularOffset = -Math.PI / 2;
+    public static final double kFrontRightChassisAngularOffset = 0;
+    public static final double kRearLeftChassisAngularOffset = Math.PI;
+    public static final double kRearRightChassisAngularOffset = Math.PI / 2;
+
+    // Driving Parameters - Note that these are not the maximum capable speeds of
+    // the robot, rather the allowed maximum speeds
+    public static final double kMaxSpeedMetersPerSecond = 6.04;
+    public static final double kMaxAngularSpeed = 2 * Math.PI; // radians per second
+    public static final double kDirectionSlewRate = 3.6; // radians per second
+    public static final double kMagnitudeSlewRate = 4.5; // percent per second (1 = 100%)
+    public static final double kRotationalSlewRate = 6; // percent per second (1 = 100%)
+
   }
 
 }

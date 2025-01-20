@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj.simulation.FlywheelSim;
  * here if we want to figure out how to properly attach a roller to an arm.
  * https://github.com/frc604/robot-sim-example/blob/main/src/main/java/frc/robot/subsystems/IntakeSubsystem.java
  */
-public class CTRESingleFalconRollerSim implements ChurroSimEntity {
+public class CTRESingleFalconRollerSim {
 
   final TalonFX m_rollerMotor;
   final TalonFXSimState m_rollerMotorSim;
@@ -41,7 +41,6 @@ public class CTRESingleFalconRollerSim implements ChurroSimEntity {
     return m_rollerPhysicsSim.getAngularVelocityRPM();
   }
 
-  @Override
   public void iterate(double timeDeltaInSeconds) {
     // Apply the motor controller's voltage to the roller wheel physics sim for
     // the number of seconds given.
