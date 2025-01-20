@@ -7,17 +7,15 @@ package frc.robot;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import frc.robot.subsystems.Arm;
+import frc.churrolib.LogitechX3D;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Pipeshooter;
-import frc.robot.helpers.LogitechX3D;
 
 public class RobotContainer {
 
@@ -36,9 +34,65 @@ public class RobotContainer {
   LogitechX3D driverFlightstickController = new LogitechX3D(Constants.driverFlightstickPort);
 
   Drivetrain drivetrain = new Drivetrain();
-  Arm arm = new Arm();
   Intake intake = new Intake();
   Pipeshooter pipeshooter = new Pipeshooter();
+
+  void ensureSubsystemsHaveDefaultCommands() {
+
+    Command fastFieldRelativeDriverControl = new RunCommand(
+        () -> drivetrain.drive(
+            getDriverForwardAxis() * Constants.fastDriveScale,
+            getDriverSidewaysAxis() * Constants.fastDriveScale,
+            getDriverRotationAxis() * Constants.fastDriveScale,
+            true,
+            false),
+        drivetrain);
+
+    Command stopIntake = new RunCommand(intake::stopThePlan, intake);
+    Command coralIntakerStop = new RunCommand(pipeshooter::stopCoralIntake, pipeshooter);
+
+    drivetrain.setDefaultCommand(fastFieldRelativeDriverControl);
+    intake.setDefaultCommand(stopIntake);
+    pipeshooter.setDefaultCommand(coralIntakerStop);
+
+  }
+
+  void bindCommandsToDriverController() {
+
+    Command slowFieldRelativeDriverControl = new RunCommand(
+        () -> drivetrain.drive(
+            getDriverForwardAxis() * Constants.slowDriveScale,
+            getDriverSidewaysAxis() * Constants.slowDriveScale,
+            getDriverRotationAxis() * Constants.slowDriveScale,
+            true,
+            false),
+        drivetrain);
+
+    Command recalibrateDriveTrain = new RunCommand(drivetrain::recalibrateDrivetrain, drivetrain);
+    Command bestIntake = new RunCommand(() -> intake.yoink(), intake);
+    Command coralIntaker = new RunCommand(() -> pipeshooter.coralIntake(), pipeshooter);
+    Command coralFeeder = new RunCommand(() -> pipeshooter.feedCoral(), pipeshooter);
+
+    driverXboxController.leftBumper().whileTrue(slowFieldRelativeDriverControl);
+    driverXboxController.back().whileTrue(recalibrateDriveTrain);
+    driverXboxController.a().whileTrue(coralIntaker);
+    driverXboxController.b().whileTrue(coralFeeder);
+
+    driverFlightstickController.button(2).whileTrue(slowFieldRelativeDriverControl);
+    driverFlightstickController.button(5).whileTrue(recalibrateDriveTrain);
+    driverFlightstickController.button(7).whileTrue(bestIntake);
+    driverFlightstickController.button(8).whileTrue(coralIntaker);
+    driverFlightstickController.button(9).whileTrue(coralFeeder);
+
+  }
+
+  void bindCommandsToOperatorController() {
+
+    Command coralFeeder = new RunCommand(() -> pipeshooter.feedCoral(), pipeshooter);
+
+    operatorXboxController.b().whileTrue(coralFeeder);
+
+  }
 
   void registerCommandsForUseInAutonomous() {
     // TODO: make more commands for auto to use
@@ -49,67 +103,6 @@ public class RobotContainer {
   SendableChooser<Command> createDriverStationAutoChooser() {
     // TODO: return AutoBuilder.buildAutoChooser();
     return new SendableChooser<Command>();
-  }
-
-  void bindCommandsToDriverController() {
-
-    Command slowFieldRelativeDriverControl = new RunCommand(
-        () -> drivetrain.drive(new ChassisSpeeds(
-            getDriverForwardAxis() * Constants.slowDriveScale,
-            getDriverSidewaysAxis() * Constants.slowDriveScale,
-            getDriverRotationAxis() * Constants.slowDriveScale)),
-        drivetrain);
-
-    Command recalibrateDriveTrain = new RunCommand(drivetrain::recalibrateDrivetrain, drivetrain);
-    Command moveArmToMid = new RunCommand(arm::move_mid, arm);
-    Command moveArmToAmp = new RunCommand(arm::move_amp, arm);
-    Command moveArmToDefault = new RunCommand(arm::move_Default, arm);
-    Command bestIntake = new RunCommand(() -> intake.yoinkTheRings(), intake);
-    Command coralIntaker = new RunCommand(() -> pipeshooter.coralIntake(), pipeshooter);
-    Command coralFeeder = new RunCommand(() -> pipeshooter.feedCoral(), pipeshooter);
-
-    driverXboxController.leftBumper().whileTrue(slowFieldRelativeDriverControl);
-    driverXboxController.back().whileTrue(recalibrateDriveTrain);
-
-    driverFlightstickController.button(2).whileTrue(slowFieldRelativeDriverControl);
-    driverFlightstickController.button(5).whileTrue(recalibrateDriveTrain);
-    driverFlightstickController.button(7).whileTrue(bestIntake);
-    driverFlightstickController.button(8).whileTrue(coralIntaker);
-    driverFlightstickController.button(9).whileTrue(coralFeeder);
-    driverFlightstickController.button(10).whileTrue(moveArmToDefault);
-    driverFlightstickController.button(11).whileTrue(moveArmToMid);
-    driverFlightstickController.button(12).whileTrue(moveArmToAmp);
-
-  }
-
-  void bindCommandsToOperatorController() {
-
-    final Command moveArmToMid = new RunCommand(() -> arm.move_mid(), arm);
-    final Command moveArmToAmp = new RunCommand(() -> arm.move_amp(), arm);
-
-    operatorXboxController.b().whileTrue(moveArmToMid);
-    operatorXboxController.y().whileTrue(moveArmToAmp);
-
-  }
-
-  void ensureSubsystemsHaveDefaultCommands() {
-
-    Command fastFieldRelativeDriverControl = new RunCommand(
-        () -> drivetrain.drive(new ChassisSpeeds(
-            getDriverForwardAxis() * Constants.fastDriveScale,
-            getDriverSidewaysAxis() * Constants.fastDriveScale,
-            getDriverRotationAxis() * Constants.fastDriveScale)),
-        drivetrain);
-
-    Command restTheArm = new RunCommand(arm::move_Default, arm);
-    Command stopIntake = new RunCommand(intake::stopThePlan, intake);
-    Command coralIntakerStop = new RunCommand(pipeshooter::stopCoralIntake, pipeshooter);
-
-    drivetrain.setDefaultCommand(fastFieldRelativeDriverControl);
-    arm.setDefaultCommand(restTheArm);
-    intake.setDefaultCommand(stopIntake);
-    pipeshooter.setDefaultCommand(coralIntakerStop);
-
   }
 
   private double getDriverForwardAxis() {

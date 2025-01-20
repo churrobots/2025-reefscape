@@ -27,6 +27,7 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
+  private RobotSimulator m_robotSimulator;
   private SendableChooser<Command> m_driverStationAutoChooser;
 
   /**
@@ -49,6 +50,10 @@ public class Robot extends TimedRobot {
     // might use, we can tell the auto chooser to be built.
     m_driverStationAutoChooser = m_robotContainer.createDriverStationAutoChooser();
     SmartDashboard.putData(m_driverStationAutoChooser);
+
+    // Now we can instantiate the simulator since all the motors
+    // and subsystems should have been instantiated now.
+    m_robotSimulator = new RobotSimulator();
   }
 
   /**
@@ -78,6 +83,7 @@ public class Robot extends TimedRobot {
     // TODO: use a faster loop in a thread to make ChurroSim more realistic to motor
     // controller clock speeds in the real world
     ChurroSim.iterate(TimedRobot.kDefaultPeriod);
+    m_robotSimulator.render(TimedRobot.kDefaultPeriod);
   }
 
   @Override

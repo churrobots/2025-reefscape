@@ -9,14 +9,8 @@
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
-      "/SmartDashboard/Encoders": "Alerts",
       "/SmartDashboard/Field": "Field2d",
-      "/SmartDashboard/IMU": "Alerts",
-      "/SmartDashboard/JSON": "Alerts",
-      "/SmartDashboard/Motors": "Alerts",
-      "/SmartDashboard/Pigeon 2 (v6) [9]": "Gyro",
       "/SmartDashboard/SendableChooser[0]": "String Chooser",
-      "/SmartDashboard/Swerve Drive": "Alerts",
       "/SmartDashboard/TestShooter": "Mechanism2d"
     },
     "windows": {

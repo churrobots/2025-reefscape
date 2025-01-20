@@ -2,14 +2,14 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.helpers;
+package frc.churrolib;
 
 /**
  * Utilities from the MAXSwerve example code.
  * 
  * https://github.com/REVrobotics/MAXSwerve-Java-Template/blob/main/src/main/java/frc/utils/SwerveUtils.java
  */
-public class SwerveUtils {
+public class RevMAXSwerveUtils {
 
   /**
    * Steps a value towards a target with a specified step size.
