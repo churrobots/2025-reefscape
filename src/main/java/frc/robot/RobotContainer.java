@@ -6,7 +6,6 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.NamedCommands;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -21,91 +20,90 @@ import frc.robot.subsystems.Pipeshooter;
 
 public class RobotContainer {
 
-  static final class Constants {
-    public static final int driverXboxPort = 0;
-    public static final int operatorXboxPort = 1;
-    public static final int driverFlightstickPort = 2;
-    public static final double driverXboxDeadband = 0.1;
-    public static final double driverFlightstickDeadband = 0.1;
-    public static final double fastDriveScale = 1.0;
-    public static final double slowDriveScale = 0.25;
-  }
-
-  CommandXboxController driverXboxController = new CommandXboxController(Constants.driverXboxPort);
-  CommandXboxController operatorXboxController = new CommandXboxController(Constants.operatorXboxPort);
-  LogitechX3D driverFlightstickController = new LogitechX3D(Constants.driverFlightstickPort);
-  SendableChooser<Command> autoChooser;
-
   Drivetrain drivetrain = new Drivetrain();
   Intake intake = new Intake();
   Pipeshooter pipeshooter = new Pipeshooter();
 
-  void ensureSubsystemsHaveDefaultCommands() {
+  CommandXboxController driverXboxController = new CommandXboxController(Hardware.DriverStation.driverXboxPort);
+  CommandXboxController operatorXboxController = new CommandXboxController(Hardware.DriverStation.operatorXboxPort);
+  LogitechX3D driverFlightstickController = new LogitechX3D(Hardware.DriverStation.driverFlightstickPort);
 
-    Command fastFieldRelativeDriverControl = new RunCommand(
-        () -> drivetrain.drive(
-            getDriverForwardAxis() * Constants.fastDriveScale,
-            getDriverSidewaysAxis() * Constants.fastDriveScale,
-            getDriverRotationAxis() * Constants.fastDriveScale,
-            true,
-            false),
-        drivetrain);
+  SendableChooser<Command> autoChooser;
 
-    Command stopIntake = new RunCommand(intake::stopThePlan, intake);
-    Command coralIntakerStop = new RunCommand(pipeshooter::stopCoralIntake, pipeshooter);
+  void bindCommandsForTeleop() {
 
-    drivetrain.setDefaultCommand(fastFieldRelativeDriverControl);
-    intake.setDefaultCommand(stopIntake);
-    pipeshooter.setDefaultCommand(coralIntakerStop);
-
-  }
-
-  void bindCommandsToDriverController() {
-
-    Command slowFieldRelativeDriverControl = new RunCommand(
-        () -> drivetrain.drive(
-            getDriverForwardAxis() * Constants.slowDriveScale,
-            getDriverSidewaysAxis() * Constants.slowDriveScale,
-            getDriverRotationAxis() * Constants.slowDriveScale,
-            true,
-            false),
-        drivetrain);
-
-    Command recalibrateDriveTrain = new RunCommand(drivetrain::recalibrateDrivetrain, drivetrain);
+    Command recalibrateDriveTrain = new RunCommand(() -> drivetrain.recalibrateDrivetrain(), drivetrain);
     Command bestIntake = new RunCommand(() -> intake.yoink(), intake);
     Command coralIntaker = new RunCommand(() -> pipeshooter.coralIntake(), pipeshooter);
     Command coralFeeder = new RunCommand(() -> pipeshooter.feedCoral(), pipeshooter);
 
-    driverXboxController.leftBumper().whileTrue(slowFieldRelativeDriverControl);
-    driverXboxController.back().whileTrue(recalibrateDriveTrain);
-    driverXboxController.a().whileTrue(coralIntaker);
-    driverXboxController.b().whileTrue(coralFeeder);
+    Command fastFieldRelativeDriverFlightstickControl = new RunCommand(
+        () -> drivetrain.drive(
+            driverFlightstickController.getY() * Hardware.DriverStation.fastDriveScale,
+            driverFlightstickController.getX() * Hardware.DriverStation.fastDriveScale,
+            driverFlightstickController.getTwist() * Hardware.DriverStation.fastDriveScale,
+            true,
+            false),
+        drivetrain);
 
-    driverFlightstickController.button(2).whileTrue(slowFieldRelativeDriverControl);
-    driverFlightstickController.button(5).whileTrue(recalibrateDriveTrain);
-    driverFlightstickController.button(7).whileTrue(bestIntake);
-    driverFlightstickController.button(8).whileTrue(coralIntaker);
-    driverFlightstickController.button(9).whileTrue(coralFeeder);
+    Command slowFieldRelativeDriverFlightstickControl = new RunCommand(
+        () -> drivetrain.drive(
+            driverFlightstickController.getY() * Hardware.DriverStation.slowDriveScale,
+            driverFlightstickController.getX() * Hardware.DriverStation.slowDriveScale,
+            driverFlightstickController.getTwist() * Hardware.DriverStation.slowDriveScale,
+            true,
+            false),
+        drivetrain);
 
-  }
+    Command fastFieldRelativeDriverXboxControl = new RunCommand(
+        () -> drivetrain.drive(
+            driverXboxController.getLeftY() * Hardware.DriverStation.fastDriveScale,
+            driverXboxController.getLeftX() * Hardware.DriverStation.fastDriveScale,
+            driverXboxController.getRightX() * Hardware.DriverStation.fastDriveScale,
+            true,
+            false),
+        drivetrain);
 
-  void bindCommandsToOperatorController() {
+    Command slowFieldRelativeDriverXboxControl = new RunCommand(
+        () -> drivetrain.drive(
+            driverXboxController.getLeftY() * Hardware.DriverStation.slowDriveScale,
+            driverXboxController.getLeftX() * Hardware.DriverStation.slowDriveScale,
+            driverXboxController.getRightX() * Hardware.DriverStation.slowDriveScale,
+            true,
+            false),
+        drivetrain);
 
-    Command coralFeeder = new RunCommand(() -> pipeshooter.feedCoral(), pipeshooter);
+    if (Hardware.DriverStation.driverUsesFlightstick) {
+
+      drivetrain.setDefaultCommand(fastFieldRelativeDriverFlightstickControl);
+      driverFlightstickController.button(2).whileTrue(slowFieldRelativeDriverFlightstickControl);
+      driverFlightstickController.button(5).whileTrue(recalibrateDriveTrain);
+      driverFlightstickController.button(7).whileTrue(bestIntake);
+      driverFlightstickController.button(8).whileTrue(coralIntaker);
+      driverFlightstickController.button(9).whileTrue(coralFeeder);
+
+    } else {
+
+      drivetrain.setDefaultCommand(fastFieldRelativeDriverXboxControl);
+      driverXboxController.leftBumper().whileTrue(slowFieldRelativeDriverXboxControl);
+      driverXboxController.back().whileTrue(recalibrateDriveTrain);
+      driverXboxController.a().whileTrue(coralIntaker);
+      driverXboxController.b().whileTrue(coralFeeder);
+    }
 
     operatorXboxController.b().whileTrue(coralFeeder);
 
   }
 
-  void registerCommandsForUseInAutonomous() {
-    // TODO: make more commands for auto to use
+  void bindCommandsForAutonomous() {
+    // TODO: make real commands for auto to use
     Command doNothing = new InstantCommand();
     NamedCommands.registerCommand("doNothing", doNothing);
   }
 
   void setupDriverStationDashboard() {
     // TODO: setup any camera feeds or other driver tools here
-    // TODO: return AutoBuilder.buildAutoChooser();
+    // TODO: use AutoBuilder.buildAutoChooser();
     autoChooser = new SendableChooser<Command>();
     SmartDashboard.putData(autoChooser);
     Elastic.enableDashboardToBeDownloadedFromRobotDeployDirectory();
@@ -115,18 +113,4 @@ public class RobotContainer {
     return autoChooser.getSelected();
   }
 
-  private double getDriverForwardAxis() {
-    return (MathUtil.applyDeadband(driverXboxController.getLeftY(), Constants.driverXboxDeadband) +
-        MathUtil.applyDeadband(driverFlightstickController.getY(), Constants.driverFlightstickDeadband));
-  }
-
-  private double getDriverSidewaysAxis() {
-    return (MathUtil.applyDeadband(driverXboxController.getLeftX(), Constants.driverXboxDeadband) +
-        MathUtil.applyDeadband(driverFlightstickController.getX(), Constants.driverFlightstickDeadband));
-  }
-
-  private double getDriverRotationAxis() {
-    return (MathUtil.applyDeadband(driverXboxController.getRightX(), Constants.driverXboxDeadband) +
-        MathUtil.applyDeadband(driverFlightstickController.getTwist(), Constants.driverFlightstickDeadband));
-  }
 }
