@@ -12,6 +12,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
@@ -19,6 +21,7 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
+import frc.churrolib.CTREDoubleFalconElevatorSim;
 import frc.churrolib.CTRESingleFalconRollerSim;
 import frc.churrolib.SimulationRegistry;
 import frc.churrolib.GenericSwerveSim;
@@ -34,6 +37,10 @@ public class RobotSimulator {
   final RevMAXSwerveModuleSim m_revTemplateSimRL;
   final GenericSwerveSim m_swerveSim;
 
+  final CTREDoubleFalconElevatorSim m_elevatorSim;
+
+  // TODO: look at Quixlib Link2d helper
+  // final Link2d m_vizElevator;
   final Mechanism2d m_vizRoller;
   final MechanismRoot2d m_vizAxle;
   final MechanismLigament2d m_vizWheels;
@@ -43,6 +50,15 @@ public class RobotSimulator {
     TalonFX coralMotor = SimulationRegistry.getTalonFX(Hardware.Shooter.falconMotorCAN);
     m_shooterSim = new CTRESingleFalconRollerSim(
         coralMotor, Hardware.Shooter.gearboxReduction, Hardware.Shooter.simMomentOfInertia);
+
+    m_elevatorSim = new CTREDoubleFalconElevatorSim(
+        SimulationRegistry.getTalonFX(Hardware.Elevator.leaderFalconMotorCAN),
+        SimulationRegistry.getTalonFX(Hardware.Elevator.followerFalconMotorCAN),
+        Hardware.Elevator.gearboxReduction,
+        Hardware.Elevator.simCarriageMass,
+        Hardware.Elevator.sprocketPitchDiameter * 0.5,
+        Hardware.Elevator.minHeightInMeters,
+        Hardware.Elevator.maxHeightInMeters);
 
     m_revTemplateSimFL = new RevMAXSwerveModuleSim(
         SimulationRegistry.getSparkMax(Hardware.RevMAXSwerveTemplate.frontLeftDrivingMotorCAN),
@@ -117,6 +133,7 @@ public class RobotSimulator {
 
   public void iterate(double timeDeltaInSeconds) {
     m_shooterSim.iterate(timeDeltaInSeconds);
+    m_elevatorSim.iterate(timeDeltaInSeconds);
     m_revTemplateSimFL.iterate(timeDeltaInSeconds);
     m_revTemplateSimFR.iterate(timeDeltaInSeconds);
     m_revTemplateSimRL.iterate(timeDeltaInSeconds);
