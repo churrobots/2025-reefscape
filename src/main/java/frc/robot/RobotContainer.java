@@ -40,39 +40,31 @@ public class RobotContainer {
     Command coralFeeder = new RunCommand(() -> pipeshooter.feedCoral(), pipeshooter);
 
     Command fastFieldRelativeDriverFlightstickControl = new RunCommand(
-        () -> drivetrain.drive(
+        () -> drivetrain.drive(new ChassisSpeeds(
             driverFlightstickController.getY() * Hardware.DriverStation.fastDriveScale,
             driverFlightstickController.getX() * Hardware.DriverStation.fastDriveScale,
-            driverFlightstickController.getTwist() * Hardware.DriverStation.fastDriveScale,
-            true,
-            false),
+            driverFlightstickController.getTwist() * Hardware.DriverStation.fastDriveScale)),
         drivetrain);
 
     Command slowFieldRelativeDriverFlightstickControl = new RunCommand(
-        () -> drivetrain.drive(
+        () -> drivetrain.drive(new ChassisSpeeds(
             driverFlightstickController.getY() * Hardware.DriverStation.slowDriveScale,
             driverFlightstickController.getX() * Hardware.DriverStation.slowDriveScale,
-            driverFlightstickController.getTwist() * Hardware.DriverStation.slowDriveScale,
-            true,
-            false),
+            driverFlightstickController.getTwist() * Hardware.DriverStation.slowDriveScale)),
         drivetrain);
 
     Command fastFieldRelativeDriverXboxControl = new RunCommand(
-        () -> drivetrain.drive(
+        () -> drivetrain.drive(new ChassisSpeeds(
             driverXboxController.getLeftY() * Hardware.DriverStation.fastDriveScale,
             driverXboxController.getLeftX() * Hardware.DriverStation.fastDriveScale,
-            driverXboxController.getRightX() * Hardware.DriverStation.fastDriveScale,
-            true,
-            false),
+            driverXboxController.getRightX() * Hardware.DriverStation.fastDriveScale)),
         drivetrain);
 
     Command slowFieldRelativeDriverXboxControl = new RunCommand(
-        () -> drivetrain.drive(
+        () -> drivetrain.drive(new ChassisSpeeds(
             driverXboxController.getLeftY() * Hardware.DriverStation.slowDriveScale,
             driverXboxController.getLeftX() * Hardware.DriverStation.slowDriveScale,
-            driverXboxController.getRightX() * Hardware.DriverStation.slowDriveScale,
-            true,
-            false),
+            driverXboxController.getRightX() * Hardware.DriverStation.slowDriveScale)),
         drivetrain);
 
     if (Hardware.DriverStation.driverUsesFlightstick) {
