@@ -33,6 +33,8 @@ public class RobotContainer {
 
   void bindCommandsForTeleop() {
 
+    // TODO: confirm WASD is simulating joystick axes pos/neg directions correctly
+    // TODO: figure out how sim handles the initial pose, and recalibrated poses
     Command recalibrateDriveTrain = new RunCommand(() -> drivetrain.recalibrateDrivetrain(), drivetrain);
     Command bestIntake = new RunCommand(() -> intake.yoink(), intake);
     Command coralIntaker = new RunCommand(() -> pipeshooter.coralIntake(), pipeshooter);
