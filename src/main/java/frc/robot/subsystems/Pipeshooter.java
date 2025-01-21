@@ -20,6 +20,9 @@ import frc.robot.Hardware;
 
 public class Pipeshooter extends SubsystemBase {
 
+  final TalonFX m_coralMotor = new TalonFX(Hardware.Shooter.falconMotorCAN);
+  final PositionDutyCycle m_feedTargetPosition = new PositionDutyCycle(5); // place to tweak later
+
   public Pipeshooter() {
     setDefaultCommand(new RunCommand(this::stopCoralIntake, this));
     var config = new TalonFXConfiguration();
@@ -40,9 +43,13 @@ public class Pipeshooter extends SubsystemBase {
     config.Voltage.PeakReverseVoltage = -8;
     config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
+    // TODO: we are getting some kind of error where it thinks we're
+    // applying/refreshing config over and over again?
+    // > Do not apply or refresh configs periodically, as configs are blocking.
+    // > talon fx 10 ("") Config
     StatusCode status = StatusCode.StatusCodeNotInitialized;
     for (int i = 0; i < 5; ++i) {
-      status = coralMotor.getConfigurator().apply(config);
+      status = m_coralMotor.getConfigurator().apply(config);
       if (status.isOK())
         break;
     }
@@ -51,76 +58,24 @@ public class Pipeshooter extends SubsystemBase {
       System.out.println("Could not apply config, error code:" +
           status.toString());
     }
-    if (!status.isOK()) {
-      // TODO: set some sticky error state and show it via LEDs?
-      System.out.println("Could not apply config, error code:" +
-          status.toString());
-    }
-    // TODO: this doesn't seem to target the same velocity, might have to do it
-    // manually?
-    // bottomMotor.setControl(new Follower(topMotor.getDeviceID(), false));
-    SimulationRegistry.registerHardware(coralMotor);
+    SimulationRegistry.registerHardware(m_coralMotor);
   }
-
-  public static final class Constants {
-    public static final double targetVelocityTolerance = 1.5;
-
-    public static final double bottomSpeakerVelocity = 60; // 50
-    public static final double bottomSpeakerPosition = 0;
-  }
-
-  // Daniel does not have churrobot spirit
-  final TalonFX coralMotor = new TalonFX(Hardware.Shooter.falconMotorCAN);
-
-  final PositionDutyCycle feedTarget = new PositionDutyCycle(5); // place to tweak later
 
   public void coralIntake() {
-    coralMotor.set(1);
+    m_coralMotor.set(1);
   }
 
   public void stopCoralIntake() {
-    coralMotor.set(0);
-    coralMotor.setPosition(0); // Set encoder position to zero
+    m_coralMotor.set(0);
+    m_coralMotor.setPosition(0); // Set encoder position to zero
   }
 
   public void feedCoral() {
-    coralMotor.setControl(feedTarget);
+    m_coralMotor.setControl(m_feedTargetPosition);
   }
 
   public void shootCoral() {
-    coralMotor.set(-1);
-  }
-
-  boolean isMotorAtTarget(TalonFX motor) {
-    ControlRequest appliedControl = motor.getAppliedControl();
-    if (appliedControl.getName() == "NeutralOut") {
-      return false;
-    } else if (appliedControl.getName() == "VelocityVoltage") {
-      VelocityVoltage target = (VelocityVoltage) appliedControl;
-      var actualVelocity = motor.getVelocity().getValueAsDouble();
-      var expectedVelocity = target.Velocity;
-      var isReversing = expectedVelocity < 0;
-      if (isReversing) {
-        // don't consider reversing (like keeping the note in the intake) as "at target"
-        return false;
-      }
-      var minVelocity = expectedVelocity - Constants.targetVelocityTolerance;
-      var maxVelocity = expectedVelocity + Constants.targetVelocityTolerance;
-      if (actualVelocity > minVelocity && actualVelocity < maxVelocity) {
-        return true;
-      } else {
-        return false;
-      }
-    } else {
-      return false;
-    }
-  }
-
-  void _debug() {
-    var actualBottomVelocity = coralMotor.getVelocity().getValueAsDouble();
-    var actualBottomPosition = coralMotor.getPosition().getValueAsDouble();
-    SmartDashboard.putNumber("bottomPosition", actualBottomPosition);
-    SmartDashboard.putNumber("bottomVelocity", actualBottomVelocity);
+    m_coralMotor.set(-1);
   }
 
   @Override
