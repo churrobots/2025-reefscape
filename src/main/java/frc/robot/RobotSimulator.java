@@ -24,7 +24,6 @@ import frc.churrolib.SimulationRegistry;
 import frc.churrolib.GenericSwerveSim;
 import frc.churrolib.RevMAXSwerveModuleSim;
 
-/** Add your docs here. */
 public class RobotSimulator {
 
   final CTRESingleFalconRollerSim m_shooterSim;

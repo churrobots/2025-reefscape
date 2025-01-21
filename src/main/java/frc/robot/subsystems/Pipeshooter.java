@@ -43,16 +43,15 @@ public class Pipeshooter extends SubsystemBase {
     config.Voltage.PeakReverseVoltage = -8;
     config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
+    // TODO: we are getting some kind of error where it thinks we're
+    // applying/refreshing config over and over again?
+    // > Do not apply or refresh configs periodically, as configs are blocking.
+    // > talon fx 10 ("") Config
     StatusCode status = StatusCode.StatusCodeNotInitialized;
     for (int i = 0; i < 5; ++i) {
       status = m_coralMotor.getConfigurator().apply(config);
       if (status.isOK())
         break;
-    }
-    if (!status.isOK()) {
-      // TODO: set some sticky error state and show it via LEDs?
-      System.out.println("Could not apply config, error code:" +
-          status.toString());
     }
     if (!status.isOK()) {
       // TODO: set some sticky error state and show it via LEDs?
