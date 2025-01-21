@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.RobotBase;
 
 public final class Hardware {
 
@@ -114,6 +115,17 @@ public final class Hardware {
     public static final double kMagnitudeSlewRate = 4.5; // percent per second (1 = 100%)
     public static final double kRotationalSlewRate = 6; // percent per second (1 = 100%)
 
+  }
+
+  public static class DriverStation {
+    public static final int driverXboxPort = 0;
+    public static final int operatorXboxPort = 1;
+    public static final int driverFlightstickPort = 2;
+    public static final double driverXboxDeadband = 0.1;
+    public static final double driverFlightstickDeadband = 0.1;
+    public static final boolean driverUsesFlightstick = RobotBase.isSimulation() ? false : true;
+    public static final double fastDriveScale = 1.0;
+    public static final double slowDriveScale = 0.25;
   }
 
 }

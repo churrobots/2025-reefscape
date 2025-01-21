@@ -13,6 +13,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.churrolib.SimulationRegistry;
 import frc.robot.Hardware;
@@ -20,6 +21,7 @@ import frc.robot.Hardware;
 public class Pipeshooter extends SubsystemBase {
 
   public Pipeshooter() {
+    setDefaultCommand(new RunCommand(this::stopCoralIntake, this));
     var config = new TalonFXConfiguration();
     // TODO: consider adding these Phoenix6 equivalents of our old Phoenix5 config
     // config.MotorOutput.NeutralMode = NeutralModeValue.Coast;

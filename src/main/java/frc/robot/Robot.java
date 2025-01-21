@@ -38,10 +38,8 @@ public class Robot extends TimedRobot {
     // and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-    m_robotContainer.ensureSubsystemsHaveDefaultCommands();
-    m_robotContainer.bindCommandsToDriverController();
-    m_robotContainer.bindCommandsToOperatorController();
-    m_robotContainer.registerCommandsForUseInAutonomous();
+    m_robotContainer.bindCommandsForTeleop();
+    m_robotContainer.bindCommandsForAutonomous();
 
     // Now that we've registered all the commands that Autonomous routines
     // might use, we can tell the dashboard to be built, which likely

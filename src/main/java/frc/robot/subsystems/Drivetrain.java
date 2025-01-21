@@ -33,6 +33,7 @@ import frc.churrolib.SimulationRegistry;
 import frc.churrolib.RevMAXSwerveModule;
 import frc.churrolib.RevMAXSwerveUtils;
 import frc.robot.Hardware;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.io.File;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -81,6 +82,7 @@ public class Drivetrain extends SubsystemBase {
   private final SwerveDrive m_swerveDrive;
 
   public Drivetrain() {
+    setDefaultCommand(new RunCommand(this::stop, this));
     SmartDashboard.putData("Field", m_fieldViz);
     // m_sim = new GenericSwerveSim(m_gyro, this::getRobotRelativeSpeeds,
     // m_fieldViz);
