@@ -24,6 +24,7 @@ import frc.churrolib.SimulationRegistry;
 import frc.churrolib.RevMAXSwerveModule;
 import frc.churrolib.RevMAXSwerveUtils;
 import frc.robot.Hardware;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Drivetrain extends SubsystemBase {
@@ -101,6 +102,7 @@ public class Drivetrain extends SubsystemBase {
       new Pose2d());
 
   public Drivetrain() {
+    setDefaultCommand(new RunCommand(this::stop, this));
     SmartDashboard.putData("Field", m_fieldViz);
     SimulationRegistry.registerHardware(m_gyro);
   }
