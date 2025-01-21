@@ -100,7 +100,7 @@ public class Drivetrain extends SubsystemBase {
     }
 
     // TODO: see if this helps us debug
-    // _registerHardwardWithOldSimulation();
+    _registerHardwardWithOldSimulation();
 
     // m_swerveDrive.setHeadingCorrection(false); // Heading correction should only
     // be used while controlling the robot via
