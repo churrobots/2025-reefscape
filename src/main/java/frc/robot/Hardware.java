@@ -63,14 +63,19 @@ public final class Hardware {
   // NOTE: once we adopt YAGSL we won't need these template vars
   // to config the subsystem, since all the configs are in YAGSL
   public final class DrivetrainWithTemplate {
+
     public static final int frontLeftTurningMotorCAN = 1;
-    public static final int rearLeftTurningMotorCAN = 3;
-    public static final int frontRightTurningMotorCAN = 2;
-    public static final int rearRightTurningMotorCAN = 4;
     public static final int frontLeftDrivingMotorCAN = 5;
-    public static final int rearLeftDrivingMotorCAN = 7;
+
+    public static final int frontRightTurningMotorCAN = 2;
     public static final int frontRightDrivingMotorCAN = 6;
+
+    public static final int rearLeftTurningMotorCAN = 3;
+    public static final int rearLeftDrivingMotorCAN = 7;
+
+    public static final int rearRightTurningMotorCAN = 4;
     public static final int rearRightDrivingMotorCAN = 8;
+
     public static final int pigeonGyroCAN = 9;
 
     // Tuning values
