@@ -14,59 +14,35 @@ import edu.wpi.first.wpilibj2.command.Command;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.revrobotics.spark.SparkMax;
 
-import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
-import edu.wpi.first.util.WPIUtilJNI;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.churrolib.SimulationRegistry;
-import frc.churrolib.RevMAXSwerveModule;
-import frc.churrolib.RevMAXSwerveUtils;
+import frc.churrolib.simulation.SimulationRegistry;
 import frc.robot.Hardware;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import java.io.File;
 import edu.wpi.first.wpilibj.Filesystem;
 import swervelib.parser.SwerveParser;
 import swervelib.SwerveDrive;
 import swervelib.math.SwerveMath;
-import edu.wpi.first.math.util.Units;
 import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 
-public class Drivetrain extends SubsystemBase {
+// TODO(Controls): Support robot-relative driving so the Operator can use the live camera feed to position the robot for placing coral on the reef.
+// Note: there is a robot-relative boolean on one of the drive APIs that can be used for this purpose.
+// Steps:
+// (1) add a command for robot-relative driving
+// (2) design the user interaction -- does the driver press and hold a button to release driving control to the operator? What controller does the operator use? (Flightstick seems like a good fit).
+// (3) map the joystick axes/buttons accordingly in RobotContainer.java
 
-  private static final class Constants {
-
-    // Chassis configuration
-    public static final double kTrackWidth = Hardware.RevMAXSwerveTemplate.kTrackWidth;
-    public static final double kWheelBase = Hardware.RevMAXSwerveTemplate.kWheelBase;
-
-    // Angular offsets of the modules relative to the chassis in radians
-    public static final double kFrontLeftChassisAngularOffset = Hardware.RevMAXSwerveTemplate.kFrontLeftChassisAngularOffset;
-    public static final double kFrontRightChassisAngularOffset = Hardware.RevMAXSwerveTemplate.kFrontRightChassisAngularOffset;
-    public static final double kRearLeftChassisAngularOffset = Hardware.RevMAXSwerveTemplate.kRearLeftChassisAngularOffset;
-    public static final double kRearRightChassisAngularOffset = Hardware.RevMAXSwerveTemplate.kRearRightChassisAngularOffset;
-
-    // Driving Parameters - Note that these are not the maximum capable speeds of
-    // the robot, rather the allowed maximum speeds
-    public static final double kMaxSpeedMetersPerSecond = Hardware.RevMAXSwerveTemplate.kMaxSpeedMetersPerSecond;
-    public static final double kMaxAngularSpeed = Hardware.RevMAXSwerveTemplate.kMaxAngularSpeed;
-
-    public static final double kDirectionSlewRate = Hardware.RevMAXSwerveTemplate.kDirectionSlewRate;
-    public static final double kMagnitudeSlewRate = Hardware.RevMAXSwerveTemplate.kMagnitudeSlewRate;
-    public static final double kRotationalSlewRate = Hardware.RevMAXSwerveTemplate.kRotationalSlewRate;
-  }
+public class DrivetrainWithYAGSL extends SubsystemBase {
 
   // Logging helpers.
   final StructArrayPublisher<SwerveModuleState> m_actualSwerveStatePublisher = NetworkTableInstance.getDefault()
@@ -81,7 +57,7 @@ public class Drivetrain extends SubsystemBase {
   // YAGSL Swerve
   private final SwerveDrive m_swerveDrive;
 
-  public Drivetrain() {
+  public DrivetrainWithYAGSL() {
     setDefaultCommand(new RunCommand(this::stop, this));
     SmartDashboard.putData("Field", m_fieldViz);
     // m_sim = new GenericSwerveSim(m_gyro, this::getRobotRelativeSpeeds,
@@ -89,11 +65,12 @@ public class Drivetrain extends SubsystemBase {
     // ChurroSim.register(m_sim);
     SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
 
-    File m_swerveJsonDirectory = new File(Filesystem.getDeployDirectory(), "swerve/canelo");
+    File m_swerveJsonDirectory = new File(Filesystem.getDeployDirectory(),
+        Hardware.DrivetrainWithYAGSL.swerveConfigDeployPath);
     try {
       m_swerveDrive = new SwerveParser(
           m_swerveJsonDirectory).createSwerveDrive(
-              Constants.kMaxSpeedMetersPerSecond,
+              Hardware.DrivetrainWithYAGSL.maxSpeedMetersPerSecond,
               new Pose2d(new Translation2d(Meter.of(1),
                   Meter.of(4)),
                   Rotation2d.fromDegrees(0)));
@@ -227,7 +204,7 @@ public class Drivetrain extends SubsystemBase {
    * @param angularRotationX Rotation of the robot to set
    * @return Drive command.
    */
-  public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY,
+  public Command createFieldRelativeDriveCommand(DoubleSupplier translationX, DoubleSupplier translationY,
       DoubleSupplier angularRotationX) {
     return run(() -> {
       // Make the robot move

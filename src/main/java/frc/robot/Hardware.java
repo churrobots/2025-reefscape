@@ -15,13 +15,14 @@ public final class Hardware {
   // a persisted string in NetworkTables, so that we know which
   // robot we got deployed to, in case there are specific constants
   // that have different values between those robots.
-  public static final String robotName = NetworkTableInstance
-      .getDefault()
-      .getEntry("robotName")
-      .getString("unknown");
   public static final String ROBOT_CANELO = "canelo";
   public static final String ROBOT_ALPHA = "alpha";
   public static final String ROBOT_COMPETITION = "competition";
+  public static final String robotName = NetworkTableInstance
+      .getDefault()
+      .getEntry("robotName")
+      // FIXME: make the default robot config be the competition bot
+      .getString(ROBOT_CANELO);
 
   public final class Intake {
     public static final int brushedMotorCAN = 11;
@@ -43,13 +44,19 @@ public final class Hardware {
     public static final double maxHeight = 1.0;
   }
 
+  public final class DrivetrainWithYAGSL {
+    public static final String swerveConfigDeployPath = switch (robotName) {
+      case ROBOT_CANELO -> "yagsl-configs/canelo";
+      case ROBOT_ALPHA -> "yagsl-configs/alpha";
+      case ROBOT_COMPETITION -> "yagsl-configs/competition";
+      default -> "yagsl-configs/competition";
+    };
+    public static final double maxSpeedMetersPerSecond = 6.04;
+  }
+
   // NOTE: once we adopt YAGSL we won't need these template vars
   // to config the subsystem, since all the configs are in YAGSL
-  public final class RevMAXSwerveTemplate {
-    public static final boolean isUsable = switch (robotName) {
-      case ROBOT_CANELO -> true;
-      default -> false;
-    };
+  public final class DrivetrainWithTemplate {
     public static final int frontLeftTurningMotorCAN = 1;
     public static final int rearLeftTurningMotorCAN = 3;
     public static final int frontRightTurningMotorCAN = 2;
