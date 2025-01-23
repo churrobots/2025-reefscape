@@ -8,7 +8,6 @@ import java.util.function.Supplier;
 
 import com.pathplanner.lib.auto.NamedCommands;
 
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -17,7 +16,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.churrolib.LogitechX3D;
 import frc.churrolib.vendor.Elastic;
-import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.DrivetrainWithTemplate;
+import frc.robot.subsystems.DrivetrainWithYAGSL;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Pipeshooter;
 
@@ -28,9 +28,13 @@ import frc.robot.subsystems.Pipeshooter;
 
 public class RobotContainer {
 
-  Drivetrain drivetrain = new Drivetrain();
   Intake intake = new Intake();
   Pipeshooter pipeshooter = new Pipeshooter();
+
+  // NOTE: eventually we will migrate over to the YAGSL drivetrain, but for now
+  // we are keeping both so we can switch back in the worst case scenario
+  // DrivetrainWithYAGSL drivetrain = new DrivetrainWithYAGSL();
+  DrivetrainWithTemplate drivetrain = new DrivetrainWithTemplate();
 
   void bindCommandsForTeleop() {
 
@@ -45,33 +49,25 @@ public class RobotContainer {
     Command coralIntaker = new RunCommand(() -> pipeshooter.coralIntake(), pipeshooter);
     Command coralFeeder = new RunCommand(() -> pipeshooter.feedCoral(), pipeshooter);
 
-    Command fastFieldRelativeDriverFlightstickControl = new RunCommand(
-        () -> drivetrain.driveFieldOriented(new ChassisSpeeds(
-            driverFlightstickController.getY() * Hardware.DriverStation.fastDriveScale,
-            driverFlightstickController.getX() * Hardware.DriverStation.fastDriveScale,
-            driverFlightstickController.getTwist() * Hardware.DriverStation.fastDriveScale)),
-        drivetrain);
+    Command fastFieldRelativeDriverFlightstickControl = drivetrain.createFieldRelativeDriveCommand(
+        () -> driverFlightstickController.getY() * Hardware.DriverStation.fastDriveScale,
+        () -> driverFlightstickController.getX() * Hardware.DriverStation.fastDriveScale,
+        () -> driverFlightstickController.getTwist() * Hardware.DriverStation.fastDriveScale);
 
-    Command slowFieldRelativeDriverFlightstickControl = new RunCommand(
-        () -> drivetrain.driveFieldOriented(new ChassisSpeeds(
-            driverFlightstickController.getY() * Hardware.DriverStation.slowDriveScale,
-            driverFlightstickController.getX() * Hardware.DriverStation.slowDriveScale,
-            driverFlightstickController.getTwist() * Hardware.DriverStation.slowDriveScale)),
-        drivetrain);
+    Command slowFieldRelativeDriverFlightstickControl = drivetrain.createFieldRelativeDriveCommand(
+        () -> driverFlightstickController.getY() * Hardware.DriverStation.slowDriveScale,
+        () -> driverFlightstickController.getX() * Hardware.DriverStation.slowDriveScale,
+        () -> driverFlightstickController.getTwist() * Hardware.DriverStation.slowDriveScale);
 
-    Command fastFieldRelativeDriverXboxControl = new RunCommand(
-        () -> drivetrain.driveFieldOriented(new ChassisSpeeds(
-            driverXboxController.getLeftY() * Hardware.DriverStation.fastDriveScale,
-            driverXboxController.getLeftX() * Hardware.DriverStation.fastDriveScale,
-            driverXboxController.getRightX() * Hardware.DriverStation.fastDriveScale)),
-        drivetrain);
+    Command fastFieldRelativeDriverXboxControl = drivetrain.createFieldRelativeDriveCommand(
+        () -> driverXboxController.getLeftY() * Hardware.DriverStation.fastDriveScale,
+        () -> driverXboxController.getLeftX() * Hardware.DriverStation.fastDriveScale,
+        () -> driverXboxController.getRightX() * Hardware.DriverStation.fastDriveScale);
 
-    Command slowFieldRelativeDriverXboxControl = new RunCommand(
-        () -> drivetrain.driveFieldOriented(new ChassisSpeeds(
-            driverXboxController.getLeftY() * Hardware.DriverStation.slowDriveScale,
-            driverXboxController.getLeftX() * Hardware.DriverStation.slowDriveScale,
-            driverXboxController.getRightX() * Hardware.DriverStation.slowDriveScale)),
-        drivetrain);
+    Command slowFieldRelativeDriverXboxControl = drivetrain.createFieldRelativeDriveCommand(
+        () -> driverXboxController.getLeftY() * Hardware.DriverStation.slowDriveScale,
+        () -> driverXboxController.getLeftX() * Hardware.DriverStation.slowDriveScale,
+        () -> driverXboxController.getRightX() * Hardware.DriverStation.slowDriveScale);
 
     if (Hardware.DriverStation.driverUsesFlightstick) {
 
@@ -140,10 +136,6 @@ public class RobotContainer {
 
     ////////////////////////////////////////////////////////////////////////////////
 
-    // Allow the driver to select which autonomous to run via the SmartDashboard.
-    // TODO: use AutoBuilder.buildAutoChooser();
-    autoChooser = new SendableChooser<Command>();
-    SmartDashboard.putData(autoChooser);
     Elastic.enableDashboardToBeDownloadedFromRobotDeployDirectory();
 
   }

@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.churrolib;
+package frc.robot.subsystems;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -27,7 +27,7 @@ import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
  * More RevLib examples:
  * https://github.com/REVrobotics/SPARK-MAX-Examples/tree/master/Java
  */
-public class RevMAXSwerveModule {
+public class DrivetrainWithTemplateModule {
 
   private final SparkMax m_drivingSparkMax;
   private final SparkMax m_turningSparkMax;
@@ -85,7 +85,7 @@ public class RevMAXSwerveModule {
    * MAXSwerve Module built with NEOs, SPARKS MAX, and a Through Bore
    * Encoder.
    */
-  public RevMAXSwerveModule(int drivingCANId, int turningCANId, double chassisAngularOffset) {
+  public DrivetrainWithTemplateModule(int drivingCANId, int turningCANId, double chassisAngularOffset) {
     m_drivingSparkMax = new SparkMax(drivingCANId, MotorType.kBrushless);
     m_turningSparkMax = new SparkMax(turningCANId, MotorType.kBrushless);
 
