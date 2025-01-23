@@ -122,8 +122,7 @@ public class RobotSimulator {
     };
     m_swerveSim = new GenericSwerveSim(
         SimulationRegistry.getPigeon2(Hardware.DrivetrainWithTemplate.pigeonGyroCAN),
-        chassisSpeedsSupplier,
-        m_vizField);
+        chassisSpeedsSupplier);
   }
 
   public void iterate(double timeDeltaInSeconds) {
@@ -146,5 +145,9 @@ public class RobotSimulator {
             + Math.toDegrees(m_shooterSim.rollerOutputVelocityRPM())
                 * timeDeltaInSeconds
                 * speedReductionPercentageSoSpinningIsVisibleToHumanEye);
+
+    // Show where the template drive thinks things are.
+    m_vizField.getObject("GenericSwerveRobot").setPose(m_swerveSim.getRobotPose());
+
   }
 }

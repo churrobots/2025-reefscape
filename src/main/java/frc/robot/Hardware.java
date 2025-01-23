@@ -15,13 +15,14 @@ public final class Hardware {
   // a persisted string in NetworkTables, so that we know which
   // robot we got deployed to, in case there are specific constants
   // that have different values between those robots.
-  public static final String robotName = NetworkTableInstance
-      .getDefault()
-      .getEntry("robotName")
-      .getString("unknown");
   public static final String ROBOT_CANELO = "canelo";
   public static final String ROBOT_ALPHA = "alpha";
   public static final String ROBOT_COMPETITION = "competition";
+  public static final String robotName = NetworkTableInstance
+      .getDefault()
+      .getEntry("robotName")
+      // FIXME: make the default robot config be the competition bot
+      .getString(ROBOT_CANELO);
 
   public final class Intake {
     public static final int brushedMotorCAN = 11;

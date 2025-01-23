@@ -23,16 +23,13 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 public class GenericSwerveSim {
   final Pigeon2 m_gyro;
   final Supplier<ChassisSpeeds> m_chassisSpeedsSupplier;
-  final Field2d m_fieldViz;
   Pose2d m_simPose;
 
   public GenericSwerveSim(
       Pigeon2 gyro,
-      Supplier<ChassisSpeeds> chassisSpeedsSupplier,
-      Field2d fieldViz) {
+      Supplier<ChassisSpeeds> chassisSpeedsSupplier) {
     m_gyro = gyro;
     m_chassisSpeedsSupplier = chassisSpeedsSupplier;
-    m_fieldViz = fieldViz;
     m_simPose = new Pose2d();
   }
 
@@ -45,6 +42,10 @@ public class GenericSwerveSim {
    */
   public void assumeRealWorldPose(Pose2d newPose) {
     m_simPose = newPose;
+  }
+
+  public Pose2d getRobotPose() {
+    return m_simPose;
   }
 
   public void iterate(double timeDeltaInSeconds) {
@@ -60,8 +61,5 @@ public class GenericSwerveSim {
     // Update gyro based on sim pose.
     Pigeon2SimState gyroSimState = m_gyro.getSimState();
     gyroSimState.setRawYaw(m_simPose.getRotation().getDegrees());
-
-    // Finally, update the visualization.
-    m_fieldViz.setRobotPose(m_simPose);
   }
 }
