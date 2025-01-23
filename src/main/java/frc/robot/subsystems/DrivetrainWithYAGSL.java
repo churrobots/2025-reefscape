@@ -70,7 +70,7 @@ public class DrivetrainWithYAGSL extends SubsystemBase {
     try {
       m_swerveDrive = new SwerveParser(
           m_swerveJsonDirectory).createSwerveDrive(
-              Hardware.DrivetrainWithYAGSL.maxSpeedMetersPerSecond,
+              Hardware.Drivetrain.maxSpeedMetersPerSecond,
               new Pose2d(new Translation2d(Meter.of(1),
                   Meter.of(4)),
                   Rotation2d.fromDegrees(0)));
@@ -214,6 +214,41 @@ public class DrivetrainWithYAGSL extends SubsystemBase {
           true,
           false);
     });
+  }
+
+  /**
+   * Command to drive the robot using translative values and heading as angular
+   * velocity.
+   *
+   * @param translationX     Translation in the X direction.
+   * @param translationY     Translation in the Y direction.
+   * @param angularRotationX Rotation of the robot to set
+   * @return Drive command.
+   */
+  public Command createRobotRelativeDriveCommand(DoubleSupplier translationX, DoubleSupplier translationY,
+      DoubleSupplier angularRotationX) {
+    return run(() -> {
+      // Make the robot move
+      m_swerveDrive.drive(new Translation2d(translationX.getAsDouble() * m_swerveDrive.getMaximumChassisVelocity(),
+          translationY.getAsDouble() * m_swerveDrive.getMaximumChassisVelocity()),
+          angularRotationX.getAsDouble() * m_swerveDrive.getMaximumChassisAngularVelocity(),
+          false,
+          false);
+    });
+  }
+
+  public void resetPose(Pose2d newPose) {
+    // FIXME: needs to be implemented
+  }
+
+  public ChassisSpeeds getRobotRelativeSpeeds() {
+    // FIXME: needs to be implemented
+    var fakeSpeeds = new ChassisSpeeds();
+    return fakeSpeeds;
+  }
+
+  public void setRobotRelativeSpeeds(ChassisSpeeds speeds) {
+    // FIXME: needs to be implemented
   }
 
   public void stop() {

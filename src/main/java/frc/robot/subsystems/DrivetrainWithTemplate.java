@@ -44,7 +44,7 @@ public class DrivetrainWithTemplate extends SubsystemBase {
 
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
-    public static final double kMaxSpeedMetersPerSecond = Hardware.DrivetrainWithTemplate.kMaxSpeedMetersPerSecond;
+    public static final double kMaxSpeedMetersPerSecond = Hardware.Drivetrain.maxSpeedMetersPerSecond;
     public static final double kMaxAngularSpeed = Hardware.DrivetrainWithTemplate.kMaxAngularSpeed;
 
     public static final double kDirectionSlewRate = Hardware.DrivetrainWithTemplate.kDirectionSlewRate;
@@ -209,6 +209,17 @@ public class DrivetrainWithTemplate extends SubsystemBase {
           translationY.getAsDouble(),
           angularRotationX.getAsDouble(),
           true,
+          false);
+    }, this);
+  }
+
+  public Command createRobotRelativeDriveCommand(DoubleSupplier translationX, DoubleSupplier translationY,
+      DoubleSupplier angularRotationX) {
+    return new RunCommand(() -> {
+      this.drive(translationX.getAsDouble(),
+          translationY.getAsDouble(),
+          angularRotationX.getAsDouble(),
+          false,
           false);
     }, this);
   }

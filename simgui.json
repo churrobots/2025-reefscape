@@ -21,22 +21,6 @@
     },
     "windows": {
       "/SmartDashboard/Field": {
-        "GenericSwerveRobot": {
-          "arrowColor": [
-            1.0,
-            0.8352941274642944,
-            0.0,
-            255.0
-          ],
-          "arrowWeight": 3.0,
-          "color": [
-            1.0,
-            0.8333333730697632,
-            0.0,
-            255.0
-          ],
-          "style": "Box/Image"
-        },
         "Odometry": {
           "arrowColor": [
             0.6117647290229797,
@@ -102,6 +86,22 @@
             255.0
           ],
           "weight": 1.0
+        },
+        "TemplateRobotPose": {
+          "arrowColor": [
+            1.0,
+            0.8352941274642944,
+            0.0,
+            255.0
+          ],
+          "arrowWeight": 3.0,
+          "color": [
+            1.0,
+            0.8333333730697632,
+            0.0,
+            255.0
+          ],
+          "style": "Box/Image"
         },
         "XModules": {
           "arrowColor": [

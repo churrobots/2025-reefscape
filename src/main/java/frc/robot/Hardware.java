@@ -18,11 +18,11 @@ public final class Hardware {
   public static final String ROBOT_CANELO = "canelo";
   public static final String ROBOT_ALPHA = "alpha";
   public static final String ROBOT_COMPETITION = "competition";
+  public static final String ROBOT_DEFAULT = RobotBase.isSimulation() ? ROBOT_CANELO : ROBOT_COMPETITION;
   public static final String robotName = NetworkTableInstance
       .getDefault()
       .getEntry("robotName")
-      // FIXME: make the default robot config be the competition bot
-      .getString(ROBOT_CANELO);
+      .getString(ROBOT_DEFAULT);
 
   public final class Intake {
     public static final int brushedMotorCAN = 11;
@@ -44,6 +44,13 @@ public final class Hardware {
     public static final double maxHeight = 1.0;
   }
 
+  public final class Drivetrain {
+    // NOTE: eventually we will migrate over to the YAGSL drivetrain, but for now
+    // we are keeping both so we can switch back in the worst case scenario
+    public static final boolean useYAGSL = false;
+    public static final double maxSpeedMetersPerSecond = 6.04;
+  }
+
   public final class DrivetrainWithYAGSL {
     public static final String swerveConfigDeployPath = switch (robotName) {
       case ROBOT_CANELO -> "yagsl-configs/canelo";
@@ -51,7 +58,6 @@ public final class Hardware {
       case ROBOT_COMPETITION -> "yagsl-configs/competition";
       default -> "yagsl-configs/competition";
     };
-    public static final double maxSpeedMetersPerSecond = 6.04;
   }
 
   // NOTE: once we adopt YAGSL we won't need these template vars
@@ -116,7 +122,6 @@ public final class Hardware {
 
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
-    public static final double kMaxSpeedMetersPerSecond = 6.04;
     public static final double kMaxAngularSpeed = 2 * Math.PI; // radians per second
     public static final double kDirectionSlewRate = 3.6; // radians per second
     public static final double kMagnitudeSlewRate = 4.5; // percent per second (1 = 100%)

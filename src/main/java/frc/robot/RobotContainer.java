@@ -16,8 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.churrolib.LogitechX3D;
 import frc.churrolib.vendor.Elastic;
-import frc.robot.subsystems.DrivetrainWithTemplate;
-import frc.robot.subsystems.DrivetrainWithYAGSL;
+import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Pipeshooter;
 
@@ -30,11 +29,7 @@ public class RobotContainer {
 
   Intake intake = new Intake();
   Pipeshooter pipeshooter = new Pipeshooter();
-
-  // NOTE: eventually we will migrate over to the YAGSL drivetrain, but for now
-  // we are keeping both so we can switch back in the worst case scenario
-  // DrivetrainWithYAGSL drivetrain = new DrivetrainWithYAGSL();
-  DrivetrainWithTemplate drivetrain = new DrivetrainWithTemplate();
+  Drivetrain drivetrain = new Drivetrain();
 
   void bindCommandsForTeleop() {
 
