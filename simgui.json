@@ -9,12 +9,34 @@
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
+      "/SmartDashboard/Encoders": "Alerts",
       "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/IMU": "Alerts",
+      "/SmartDashboard/JSON": "Alerts",
+      "/SmartDashboard/Motors": "Alerts",
+      "/SmartDashboard/Pigeon 2 (v6) [9]": "Gyro",
       "/SmartDashboard/SendableChooser[0]": "String Chooser",
+      "/SmartDashboard/Swerve Drive": "Alerts",
       "/SmartDashboard/TestShooter": "Mechanism2d"
     },
     "windows": {
       "/SmartDashboard/Field": {
+        "GenericSwerveRobot": {
+          "arrowColor": [
+            1.0,
+            0.8352941274642944,
+            0.0,
+            255.0
+          ],
+          "arrowWeight": 3.0,
+          "color": [
+            1.0,
+            0.8333333730697632,
+            0.0,
+            255.0
+          ],
+          "style": "Box/Image"
+        },
         "Odometry": {
           "arrowColor": [
             0.6117647290229797,
@@ -32,21 +54,22 @@
           "style": "Box/Image",
           "weight": 3.0
         },
-        "Robot": {
+        "TemplateOdometry": {
           "arrowColor": [
-            1.0,
-            0.8352941274642944,
-            0.0,
+            0.572549045085907,
+            0.4901960790157318,
+            0.08235294371843338,
             255.0
           ],
-          "arrowWeight": 3.0,
+          "arrowSize": 39,
+          "arrowWeight": 1.0,
           "color": [
-            1.0,
-            0.8333333730697632,
-            0.0,
+            0.5722222328186035,
+            0.49062761664390564,
+            0.08265433460474014,
             255.0
           ],
-          "style": "Box/Image"
+          "weight": 1.0
         },
         "bottom": 1476,
         "height": 8.210550308227539,

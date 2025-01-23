@@ -7,10 +7,11 @@
 
 package frc.robot;
 
+import java.util.function.Supplier;
+
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.churrolib.SimulationRegistry;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -26,6 +27,7 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
   private RobotSimulator m_robotSimulator;
+  private Supplier<Command> m_autoCommandSupplier;
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -39,13 +41,7 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
     m_robotContainer.bindCommandsForTeleop();
-    m_robotContainer.bindCommandsForAutonomous();
-
-    // Now that we've registered all the commands that Autonomous routines
-    // might use, we can tell the dashboard to be built, which likely
-    // includes the AutoBuilder reading from the NamedCommands global
-    // that will now be populated properly.
-    m_robotContainer.setupDriverStationDashboard();
+    m_autoCommandSupplier = m_robotContainer.bindCommandsForAutonomous();
   }
 
   /**
@@ -106,7 +102,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.readSelectedAutonomousCommand();
+    m_autonomousCommand = m_autoCommandSupplier.get();
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }

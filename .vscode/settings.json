@@ -90,10 +90,23 @@
     // command-based robot architecture has a RobotContainer
     // that looks like a better abstraction to work with.
     "**/Robot.java": true,
-    // Churrobots: pathplanner and deploy dirs shouldn't be edited
-    // since they are edited directly by the PathPlanner app.
-    "**/.pathplanner": true,
-    "**/deploy": true,
+    // Churrobots: hide the simulator code for now too
+    "**/RobotSimulator.java": true,
+    // Churrobots: hide any library patches, which should
+    // be anything starting with com/net/org.*
+    "src/main/java/com/": true,
+    "src/main/java/net/": true,
+    "src/main/java/org/": true,
+    // Churrobots: hide the parts of churrolib that students
+    // don't need to deal with yet
+    "**/churrolib/simulation/": true,
+    "**/churrolib/vendor/": true,
+    // Churrobots: hide pathplanner files, those are edited by pathplanner
+    "**/deploy/pathplanner/": true,
+    // Churrobots: hide elastic dashboard files, those are edited by elastic
+    "**/deploy/elastic-layout.json": true,
+    // Churrobots: hide junk files
+    "**/deploy/example.txt": true,
   },
   // Churrobots: Keep workspace clean. Don't show git branch since we want to generally
   // keep workflow in Github Desktop for consistency.

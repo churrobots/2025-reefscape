@@ -22,19 +22,21 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import frc.churrolib.CTREDoubleFalconElevatorSim;
-import frc.churrolib.CTRESingleFalconRollerSim;
-import frc.churrolib.SimulationRegistry;
-import frc.churrolib.GenericSwerveSim;
-import frc.churrolib.RevMAXSwerveModuleSim;
+import frc.churrolib.simulation.CTRESingleFalconRollerSim;
+import frc.churrolib.simulation.GenericSwerveSim;
+import frc.churrolib.simulation.RevMAXSwerveModuleSim;
+import frc.churrolib.simulation.SimulationRegistry;
 
 public class RobotSimulator {
 
   final CTRESingleFalconRollerSim m_shooterSim;
 
-  final RevMAXSwerveModuleSim m_revTemplateSimFR;
-  final RevMAXSwerveModuleSim m_revTemplateSimFL;
-  final RevMAXSwerveModuleSim m_revTemplateSimRR;
-  final RevMAXSwerveModuleSim m_revTemplateSimRL;
+  final RevMAXSwerveModuleSim m_revTemplateSimFR; // front right
+  final RevMAXSwerveModuleSim m_revTemplateSimFL; // front left
+  final RevMAXSwerveModuleSim m_revTemplateSimRR; // rear right
+  final RevMAXSwerveModuleSim m_revTemplateSimRL; // rear left
+  // Abstraction of the entire robot body given the activity of the above four
+  // modules.
   final GenericSwerveSim m_swerveSim;
 
   final CTREDoubleFalconElevatorSim m_elevatorSim;
@@ -61,37 +63,37 @@ public class RobotSimulator {
         Hardware.Elevator.maxHeightInMeters);
 
     m_revTemplateSimFL = new RevMAXSwerveModuleSim(
-        SimulationRegistry.getSparkMax(Hardware.RevMAXSwerveTemplate.frontLeftDrivingMotorCAN),
-        Hardware.RevMAXSwerveTemplate.drivingMotorGearboxReduction,
-        Hardware.RevMAXSwerveTemplate.drivingEncoderVelocityFactorInMetersPerSecond,
-        SimulationRegistry.getSparkMax(Hardware.RevMAXSwerveTemplate.frontLeftTurningMotorCAN),
-        Hardware.RevMAXSwerveTemplate.turningMotorGearboxReduction,
-        Hardware.RevMAXSwerveTemplate.turningEncoderVelocityFactor,
-        Hardware.RevMAXSwerveTemplate.kFrontLeftChassisAngularOffset);
+        SimulationRegistry.getSparkMax(Hardware.DrivetrainWithTemplate.frontLeftDrivingMotorCAN),
+        Hardware.DrivetrainWithTemplate.drivingMotorGearboxReduction,
+        Hardware.DrivetrainWithTemplate.drivingEncoderVelocityFactorInMetersPerSecond,
+        SimulationRegistry.getSparkMax(Hardware.DrivetrainWithTemplate.frontLeftTurningMotorCAN),
+        Hardware.DrivetrainWithTemplate.turningMotorGearboxReduction,
+        Hardware.DrivetrainWithTemplate.turningEncoderVelocityFactor,
+        Hardware.DrivetrainWithTemplate.kFrontLeftChassisAngularOffset);
     m_revTemplateSimFR = new RevMAXSwerveModuleSim(
-        SimulationRegistry.getSparkMax(Hardware.RevMAXSwerveTemplate.frontRightDrivingMotorCAN),
-        Hardware.RevMAXSwerveTemplate.drivingMotorGearboxReduction,
-        Hardware.RevMAXSwerveTemplate.drivingEncoderVelocityFactorInMetersPerSecond,
-        SimulationRegistry.getSparkMax(Hardware.RevMAXSwerveTemplate.frontRightTurningMotorCAN),
-        Hardware.RevMAXSwerveTemplate.turningMotorGearboxReduction,
-        Hardware.RevMAXSwerveTemplate.turningEncoderVelocityFactor,
-        Hardware.RevMAXSwerveTemplate.kFrontRightChassisAngularOffset);
+        SimulationRegistry.getSparkMax(Hardware.DrivetrainWithTemplate.frontRightDrivingMotorCAN),
+        Hardware.DrivetrainWithTemplate.drivingMotorGearboxReduction,
+        Hardware.DrivetrainWithTemplate.drivingEncoderVelocityFactorInMetersPerSecond,
+        SimulationRegistry.getSparkMax(Hardware.DrivetrainWithTemplate.frontRightTurningMotorCAN),
+        Hardware.DrivetrainWithTemplate.turningMotorGearboxReduction,
+        Hardware.DrivetrainWithTemplate.turningEncoderVelocityFactor,
+        Hardware.DrivetrainWithTemplate.kFrontRightChassisAngularOffset);
     m_revTemplateSimRL = new RevMAXSwerveModuleSim(
-        SimulationRegistry.getSparkMax(Hardware.RevMAXSwerveTemplate.rearLeftDrivingMotorCAN),
-        Hardware.RevMAXSwerveTemplate.drivingMotorGearboxReduction,
-        Hardware.RevMAXSwerveTemplate.drivingEncoderVelocityFactorInMetersPerSecond,
-        SimulationRegistry.getSparkMax(Hardware.RevMAXSwerveTemplate.rearLeftTurningMotorCAN),
-        Hardware.RevMAXSwerveTemplate.turningMotorGearboxReduction,
-        Hardware.RevMAXSwerveTemplate.turningEncoderVelocityFactor,
-        Hardware.RevMAXSwerveTemplate.kRearLeftChassisAngularOffset);
+        SimulationRegistry.getSparkMax(Hardware.DrivetrainWithTemplate.rearLeftDrivingMotorCAN),
+        Hardware.DrivetrainWithTemplate.drivingMotorGearboxReduction,
+        Hardware.DrivetrainWithTemplate.drivingEncoderVelocityFactorInMetersPerSecond,
+        SimulationRegistry.getSparkMax(Hardware.DrivetrainWithTemplate.rearLeftTurningMotorCAN),
+        Hardware.DrivetrainWithTemplate.turningMotorGearboxReduction,
+        Hardware.DrivetrainWithTemplate.turningEncoderVelocityFactor,
+        Hardware.DrivetrainWithTemplate.kRearLeftChassisAngularOffset);
     m_revTemplateSimRR = new RevMAXSwerveModuleSim(
-        SimulationRegistry.getSparkMax(Hardware.RevMAXSwerveTemplate.rearRightDrivingMotorCAN),
-        Hardware.RevMAXSwerveTemplate.drivingMotorGearboxReduction,
-        Hardware.RevMAXSwerveTemplate.drivingEncoderVelocityFactorInMetersPerSecond,
-        SimulationRegistry.getSparkMax(Hardware.RevMAXSwerveTemplate.rearRightTurningMotorCAN),
-        Hardware.RevMAXSwerveTemplate.turningMotorGearboxReduction,
-        Hardware.RevMAXSwerveTemplate.turningEncoderVelocityFactor,
-        Hardware.RevMAXSwerveTemplate.kRearRightChassisAngularOffset);
+        SimulationRegistry.getSparkMax(Hardware.DrivetrainWithTemplate.rearRightDrivingMotorCAN),
+        Hardware.DrivetrainWithTemplate.drivingMotorGearboxReduction,
+        Hardware.DrivetrainWithTemplate.drivingEncoderVelocityFactorInMetersPerSecond,
+        SimulationRegistry.getSparkMax(Hardware.DrivetrainWithTemplate.rearRightTurningMotorCAN),
+        Hardware.DrivetrainWithTemplate.turningMotorGearboxReduction,
+        Hardware.DrivetrainWithTemplate.turningEncoderVelocityFactor,
+        Hardware.DrivetrainWithTemplate.kRearRightChassisAngularOffset);
 
     // Setup visualizations
     // Visualize this as a yellow box, so you can see it spinning.
@@ -107,16 +109,25 @@ public class RobotSimulator {
     SmartDashboard.putData("TestShooter", m_vizRoller);
 
     // Create the all-in-one swerve sim (it has viz built-in)
+    // Specify the location of each of the four swerve modules on the drivebase
+    // rectange.
+    //
     // TODO: decouple the viz from this one?
     // TODO: maybe it's okay for each Sim object to have a "rough viz" and then
     // expose methods for the main simulation to re-render in a different way and
     // link up sub-assemblies?
     SwerveDriveKinematics simKinematics = new SwerveDriveKinematics(
-        new Translation2d(Hardware.RevMAXSwerveTemplate.kWheelBase / 2, Hardware.RevMAXSwerveTemplate.kTrackWidth / 2),
-        new Translation2d(Hardware.RevMAXSwerveTemplate.kWheelBase / 2, -Hardware.RevMAXSwerveTemplate.kTrackWidth / 2),
-        new Translation2d(-Hardware.RevMAXSwerveTemplate.kWheelBase / 2, Hardware.RevMAXSwerveTemplate.kTrackWidth / 2),
-        new Translation2d(-Hardware.RevMAXSwerveTemplate.kWheelBase / 2,
-            -Hardware.RevMAXSwerveTemplate.kTrackWidth / 2));
+        new Translation2d(Hardware.DrivetrainWithTemplate.kWheelBase / 2,
+            Hardware.DrivetrainWithTemplate.kTrackWidth / 2),
+        new Translation2d(Hardware.DrivetrainWithTemplate.kWheelBase / 2,
+            -Hardware.DrivetrainWithTemplate.kTrackWidth / 2),
+        new Translation2d(-Hardware.DrivetrainWithTemplate.kWheelBase / 2,
+            Hardware.DrivetrainWithTemplate.kTrackWidth / 2),
+        new Translation2d(-Hardware.DrivetrainWithTemplate.kWheelBase / 2,
+            -Hardware.DrivetrainWithTemplate.kTrackWidth / 2));
+
+    // Given the positions and the activity of each of the four modules, determine
+    // what the chassis isdoing as a whole.
     Supplier<ChassisSpeeds> chassisSpeedsSupplier = () -> {
       return simKinematics.toChassisSpeeds(new SwerveModuleState[] {
           m_revTemplateSimFL.getSimulatedState(),
@@ -126,9 +137,8 @@ public class RobotSimulator {
       });
     };
     m_swerveSim = new GenericSwerveSim(
-        SimulationRegistry.getPigeon2(Hardware.RevMAXSwerveTemplate.pigeonGyroCAN),
-        chassisSpeedsSupplier,
-        m_vizField);
+        SimulationRegistry.getPigeon2(Hardware.DrivetrainWithTemplate.pigeonGyroCAN),
+        chassisSpeedsSupplier);
   }
 
   public void iterate(double timeDeltaInSeconds) {
@@ -152,5 +162,9 @@ public class RobotSimulator {
             + Math.toDegrees(m_shooterSim.rollerOutputVelocityRPM())
                 * timeDeltaInSeconds
                 * speedReductionPercentageSoSpinningIsVisibleToHumanEye);
+
+    // Show where the template drive thinks things are.
+    m_vizField.getObject("GenericSwerveRobot").setPose(m_swerveSim.getRobotPose());
+
   }
 }
