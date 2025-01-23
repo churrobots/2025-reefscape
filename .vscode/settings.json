@@ -90,6 +90,13 @@
     // command-based robot architecture has a RobotContainer
     // that looks like a better abstraction to work with.
     "**/Robot.java": true,
+    // Churrobots: hide the simulator code for now too
+    "**/RobotSimulator.java": true,
+    // Churrobots: hide any library patches, which should
+    // be anything starting with com/net/org.*
+    "src/main/java/com/": true,
+    "src/main/java/net/": true,
+    "src/main/java/org/": true,
     // Churrobots: pathplanner and deploy dirs shouldn't be edited
     // since they are edited directly by the PathPlanner app.
     "**/.pathplanner": true,
