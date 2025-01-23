@@ -33,23 +33,23 @@ public class DrivetrainWithTemplate extends SubsystemBase {
   private static final class Constants {
 
     // Chassis configuration
-    public static final double kTrackWidth = Hardware.RevMAXSwerveTemplate.kTrackWidth;
-    public static final double kWheelBase = Hardware.RevMAXSwerveTemplate.kWheelBase;
+    public static final double kTrackWidth = Hardware.DrivetrainWithTemplate.kTrackWidth;
+    public static final double kWheelBase = Hardware.DrivetrainWithTemplate.kWheelBase;
 
     // Angular offsets of the modules relative to the chassis in radians
-    public static final double kFrontLeftChassisAngularOffset = Hardware.RevMAXSwerveTemplate.kFrontLeftChassisAngularOffset;
-    public static final double kFrontRightChassisAngularOffset = Hardware.RevMAXSwerveTemplate.kFrontRightChassisAngularOffset;
-    public static final double kRearLeftChassisAngularOffset = Hardware.RevMAXSwerveTemplate.kRearLeftChassisAngularOffset;
-    public static final double kRearRightChassisAngularOffset = Hardware.RevMAXSwerveTemplate.kRearRightChassisAngularOffset;
+    public static final double kFrontLeftChassisAngularOffset = Hardware.DrivetrainWithTemplate.kFrontLeftChassisAngularOffset;
+    public static final double kFrontRightChassisAngularOffset = Hardware.DrivetrainWithTemplate.kFrontRightChassisAngularOffset;
+    public static final double kRearLeftChassisAngularOffset = Hardware.DrivetrainWithTemplate.kRearLeftChassisAngularOffset;
+    public static final double kRearRightChassisAngularOffset = Hardware.DrivetrainWithTemplate.kRearRightChassisAngularOffset;
 
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
-    public static final double kMaxSpeedMetersPerSecond = Hardware.RevMAXSwerveTemplate.kMaxSpeedMetersPerSecond;
-    public static final double kMaxAngularSpeed = Hardware.RevMAXSwerveTemplate.kMaxAngularSpeed;
+    public static final double kMaxSpeedMetersPerSecond = Hardware.DrivetrainWithTemplate.kMaxSpeedMetersPerSecond;
+    public static final double kMaxAngularSpeed = Hardware.DrivetrainWithTemplate.kMaxAngularSpeed;
 
-    public static final double kDirectionSlewRate = Hardware.RevMAXSwerveTemplate.kDirectionSlewRate;
-    public static final double kMagnitudeSlewRate = Hardware.RevMAXSwerveTemplate.kMagnitudeSlewRate;
-    public static final double kRotationalSlewRate = Hardware.RevMAXSwerveTemplate.kRotationalSlewRate;
+    public static final double kDirectionSlewRate = Hardware.DrivetrainWithTemplate.kDirectionSlewRate;
+    public static final double kMagnitudeSlewRate = Hardware.DrivetrainWithTemplate.kMagnitudeSlewRate;
+    public static final double kRotationalSlewRate = Hardware.DrivetrainWithTemplate.kRotationalSlewRate;
   }
 
   // Logging helpers.
@@ -69,20 +69,20 @@ public class DrivetrainWithTemplate extends SubsystemBase {
   private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(Constants.kRotationalSlewRate);
 
   private final DrivetrainWithTemplateModule m_frontLeft = new DrivetrainWithTemplateModule(
-      Hardware.RevMAXSwerveTemplate.frontLeftDrivingMotorCAN,
-      Hardware.RevMAXSwerveTemplate.frontLeftTurningMotorCAN, Constants.kFrontLeftChassisAngularOffset);
+      Hardware.DrivetrainWithTemplate.frontLeftDrivingMotorCAN,
+      Hardware.DrivetrainWithTemplate.frontLeftTurningMotorCAN, Constants.kFrontLeftChassisAngularOffset);
 
   private final DrivetrainWithTemplateModule m_frontRight = new DrivetrainWithTemplateModule(
-      Hardware.RevMAXSwerveTemplate.frontRightDrivingMotorCAN,
-      Hardware.RevMAXSwerveTemplate.frontRightTurningMotorCAN, Constants.kFrontRightChassisAngularOffset);
+      Hardware.DrivetrainWithTemplate.frontRightDrivingMotorCAN,
+      Hardware.DrivetrainWithTemplate.frontRightTurningMotorCAN, Constants.kFrontRightChassisAngularOffset);
 
   private final DrivetrainWithTemplateModule m_rearLeft = new DrivetrainWithTemplateModule(
-      Hardware.RevMAXSwerveTemplate.rearLeftDrivingMotorCAN,
-      Hardware.RevMAXSwerveTemplate.rearLeftTurningMotorCAN, Constants.kRearLeftChassisAngularOffset);
+      Hardware.DrivetrainWithTemplate.rearLeftDrivingMotorCAN,
+      Hardware.DrivetrainWithTemplate.rearLeftTurningMotorCAN, Constants.kRearLeftChassisAngularOffset);
 
   private final DrivetrainWithTemplateModule m_rearRight = new DrivetrainWithTemplateModule(
-      Hardware.RevMAXSwerveTemplate.rearRightDrivingMotorCAN,
-      Hardware.RevMAXSwerveTemplate.rearRightTurningMotorCAN, Constants.kRearRightChassisAngularOffset);
+      Hardware.DrivetrainWithTemplate.rearRightDrivingMotorCAN,
+      Hardware.DrivetrainWithTemplate.rearRightTurningMotorCAN, Constants.kRearRightChassisAngularOffset);
 
   private final SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
       new Translation2d(Constants.kWheelBase / 2, Constants.kTrackWidth / 2),
@@ -90,7 +90,7 @@ public class DrivetrainWithTemplate extends SubsystemBase {
       new Translation2d(-Constants.kWheelBase / 2, Constants.kTrackWidth / 2),
       new Translation2d(-Constants.kWheelBase / 2, -Constants.kTrackWidth / 2));
 
-  private final Pigeon2 m_gyro = new Pigeon2(Hardware.RevMAXSwerveTemplate.pigeonGyroCAN);
+  private final Pigeon2 m_gyro = new Pigeon2(Hardware.DrivetrainWithTemplate.pigeonGyroCAN);
   private final SwerveDrivePoseEstimator m_poseEstimator = new SwerveDrivePoseEstimator(
       m_kinematics,
       getGyroAngle(),

@@ -47,20 +47,20 @@ public class DrivetrainWithTemplateModule {
   private final boolean kTurningEncoderInverted = true;
 
   // Calculations required for driving motor conversion factors and feed forward
-  private final double kDrivingMotorFreeSpeedRps = Hardware.RevMAXSwerveTemplate.kMotorFreeSpeedRpm / 60;
+  private final double kDrivingMotorFreeSpeedRps = Hardware.DrivetrainWithTemplate.kMotorFreeSpeedRpm / 60;
 
-  private final double kWheelCircumferenceMeters = Hardware.RevMAXSwerveTemplate.wheelCircumferenceMeters;
+  private final double kWheelCircumferenceMeters = Hardware.DrivetrainWithTemplate.wheelCircumferenceMeters;
 
-  private final double kDrivingMotorReduction = Hardware.RevMAXSwerveTemplate.drivingMotorGearboxReduction;
+  private final double kDrivingMotorReduction = Hardware.DrivetrainWithTemplate.drivingMotorGearboxReduction;
   private final double kDriveWheelFreeSpeedRps = (kDrivingMotorFreeSpeedRps * kWheelCircumferenceMeters)
       / kDrivingMotorReduction;
 
   private final double kDrivingEncoderPositionFactor = kWheelCircumferenceMeters
       / kDrivingMotorReduction; // meters
-  private final double kDrivingEncoderVelocityFactor = Hardware.RevMAXSwerveTemplate.drivingEncoderVelocityFactorInMetersPerSecond;
+  private final double kDrivingEncoderVelocityFactor = Hardware.DrivetrainWithTemplate.drivingEncoderVelocityFactorInMetersPerSecond;
 
   private final double kTurningEncoderPositionFactor = (2 * Math.PI); // radians
-  private final double kTurningEncoderVelocityFactor = Hardware.RevMAXSwerveTemplate.turningEncoderVelocityFactor;
+  private final double kTurningEncoderVelocityFactor = Hardware.DrivetrainWithTemplate.turningEncoderVelocityFactor;
 
   private final double kTurningEncoderPositionPIDMinInput = 0; // radians
   private final double kTurningEncoderPositionPIDMaxInput = kTurningEncoderPositionFactor; // radians
@@ -133,9 +133,9 @@ public class DrivetrainWithTemplateModule {
     // Set the PID gains for the driving motor. Note these are example gains, and
     // you
     // may need to tune them for your own robot!
-    drivingConfig.closedLoop.p(Hardware.RevMAXSwerveTemplate.kDrivingP);
-    drivingConfig.closedLoop.i(Hardware.RevMAXSwerveTemplate.kDrivingI);
-    drivingConfig.closedLoop.d(Hardware.RevMAXSwerveTemplate.kDrivingD);
+    drivingConfig.closedLoop.p(Hardware.DrivetrainWithTemplate.kDrivingP);
+    drivingConfig.closedLoop.i(Hardware.DrivetrainWithTemplate.kDrivingI);
+    drivingConfig.closedLoop.d(Hardware.DrivetrainWithTemplate.kDrivingD);
     drivingConfig.closedLoop.velocityFF(kDrivingFF);
     drivingConfig.closedLoop.outputRange(kDrivingMinOutput,
         kDrivingMaxOutput);
@@ -143,9 +143,9 @@ public class DrivetrainWithTemplateModule {
     // Set the PID gains for the turning motor. Note these are example gains, and
     // you
     // may need to tune them for your own robot!
-    turningConfig.closedLoop.p(Hardware.RevMAXSwerveTemplate.kTurningP);
-    turningConfig.closedLoop.i(Hardware.RevMAXSwerveTemplate.kTurningI);
-    turningConfig.closedLoop.d(Hardware.RevMAXSwerveTemplate.kTurningD);
+    turningConfig.closedLoop.p(Hardware.DrivetrainWithTemplate.kTurningP);
+    turningConfig.closedLoop.i(Hardware.DrivetrainWithTemplate.kTurningI);
+    turningConfig.closedLoop.d(Hardware.DrivetrainWithTemplate.kTurningD);
     turningConfig.closedLoop.velocityFF(kTurningFF);
     turningConfig.closedLoop.outputRange(kTurningMinOutput,
         kTurningMaxOutput);

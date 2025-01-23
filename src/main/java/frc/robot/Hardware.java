@@ -43,13 +43,19 @@ public final class Hardware {
     public static final double maxHeight = 1.0;
   }
 
+  public final class DrivetrainWithYAGSL {
+    public static final String swerveConfigDeployPath = switch (robotName) {
+      case ROBOT_CANELO -> "yagsl-configs/canelo";
+      case ROBOT_ALPHA -> "yagsl-configs/alpha";
+      case ROBOT_COMPETITION -> "yagsl-configs/competition";
+      default -> "yagsl-configs/competition";
+    };
+    public static final double maxSpeedMetersPerSecond = 6.04;
+  }
+
   // NOTE: once we adopt YAGSL we won't need these template vars
   // to config the subsystem, since all the configs are in YAGSL
-  public final class RevMAXSwerveTemplate {
-    public static final boolean isUsable = switch (robotName) {
-      case ROBOT_CANELO -> true;
-      default -> false;
-    };
+  public final class DrivetrainWithTemplate {
     public static final int frontLeftTurningMotorCAN = 1;
     public static final int rearLeftTurningMotorCAN = 3;
     public static final int frontRightTurningMotorCAN = 2;

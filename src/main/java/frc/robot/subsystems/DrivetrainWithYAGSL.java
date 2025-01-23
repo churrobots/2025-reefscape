@@ -65,11 +65,12 @@ public class DrivetrainWithYAGSL extends SubsystemBase {
     // ChurroSim.register(m_sim);
     SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
 
-    File m_swerveJsonDirectory = new File(Filesystem.getDeployDirectory(), "swerve/canelo");
+    File m_swerveJsonDirectory = new File(Filesystem.getDeployDirectory(),
+        Hardware.DrivetrainWithYAGSL.swerveConfigDeployPath);
     try {
       m_swerveDrive = new SwerveParser(
           m_swerveJsonDirectory).createSwerveDrive(
-              Hardware.RevMAXSwerveTemplate.kMaxSpeedMetersPerSecond,
+              Hardware.DrivetrainWithYAGSL.maxSpeedMetersPerSecond,
               new Pose2d(new Translation2d(Meter.of(1),
                   Meter.of(4)),
                   Rotation2d.fromDegrees(0)));
