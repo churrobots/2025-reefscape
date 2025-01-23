@@ -101,12 +101,12 @@
     // don't need to deal with yet
     "**/churrolib/simulation/": true,
     "**/churrolib/vendor/": true,
-    // Churrobots: pathplanner and deploy dirs shouldn't be edited
-    // since they are edited directly by the PathPlanner app.
-    "**/.pathplanner": true,
-    // Churrobots: YAGSL swerve configs are under the deploy directory.
-    // "**/deploy": true,
-    // TODO: hide the json files for auto
+    // Churrobots: hide pathplanner files, those are edited by pathplanner
+    "**/deploy/pathplanner/": true,
+    // Churrobots: hide elastic dashboard files, those are edited by elastic
+    "**/deploy/elastic-layout.json": true,
+    // Churrobots: hide junk files
+    "**/deploy/example.txt": true,
   },
   // Churrobots: Keep workspace clean. Don't show git branch since we want to generally
   // keep workflow in Github Desktop for consistency.
