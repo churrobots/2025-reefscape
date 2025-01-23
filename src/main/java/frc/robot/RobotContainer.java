@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.util.function.Supplier;
+
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -24,13 +26,11 @@ public class RobotContainer {
   Intake intake = new Intake();
   Pipeshooter pipeshooter = new Pipeshooter();
 
-  CommandXboxController driverXboxController = new CommandXboxController(Hardware.DriverStation.driverXboxPort);
-  CommandXboxController operatorXboxController = new CommandXboxController(Hardware.DriverStation.operatorXboxPort);
-  LogitechX3D driverFlightstickController = new LogitechX3D(Hardware.DriverStation.driverFlightstickPort);
-
-  SendableChooser<Command> autoChooser;
-
   void bindCommandsForTeleop() {
+
+    CommandXboxController driverXboxController = new CommandXboxController(Hardware.DriverStation.driverXboxPort);
+    CommandXboxController operatorXboxController = new CommandXboxController(Hardware.DriverStation.operatorXboxPort);
+    LogitechX3D driverFlightstickController = new LogitechX3D(Hardware.DriverStation.driverFlightstickPort);
 
     // TODO: confirm WASD is simulating joystick axes pos/neg directions correctly
     // TODO: figure out how sim handles the initial pose, and recalibrated poses
@@ -95,24 +95,18 @@ public class RobotContainer {
 
     operatorXboxController.b().whileTrue(coralFeeder);
 
-  }
-
-  void bindCommandsForAutonomous() {
-    // TODO: make real commands for auto to use
-    Command doNothing = new InstantCommand();
-    NamedCommands.registerCommand("doNothing", doNothing);
-  }
-
-  void setupDriverStationDashboard() {
     // TODO: setup any camera feeds or other driver tools here
-    // TODO: use AutoBuilder.buildAutoChooser();
-    autoChooser = new SendableChooser<Command>();
-    SmartDashboard.putData(autoChooser);
     Elastic.enableDashboardToBeDownloadedFromRobotDeployDirectory();
+
   }
 
-  Command readSelectedAutonomousCommand() {
-    return autoChooser.getSelected();
+  Supplier<Command> bindCommandsForAutonomous() {
+    // TODO: make real commands for auto to use
+    NamedCommands.registerCommand("doNothing", new InstantCommand());
+    // TODO: use AutoBuilder.buildAutoChooser() instead
+    SendableChooser<Command> autoChooser = new SendableChooser<Command>();
+    SmartDashboard.putData(autoChooser);
+    return autoChooser::getSelected;
   }
 
 }
