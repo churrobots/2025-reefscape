@@ -27,6 +27,13 @@ import frc.robot.Hardware;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+// TODO(Controls): Support robot-relative driving so the Operator can use the live camera feed to position the robot for placing coral on the reef.
+// Note: there is a robot-relative boolean on one of the drive APIs that can be used for this purpose.
+// Steps:
+// (1) add a command for robot-relative driving
+// (2) design the user interaction -- does the driver press and hold a button to release driving control to the operator? What controller does the operator use? (Flightstick seems like a good fit).
+// (3) map the joystick axes/buttons accordingly in RobotContainer.java
+
 public class Drivetrain extends SubsystemBase {
 
   private static final class Constants {

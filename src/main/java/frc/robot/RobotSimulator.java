@@ -28,10 +28,12 @@ public class RobotSimulator {
 
   final CTRESingleFalconRollerSim m_shooterSim;
 
-  final RevMAXSwerveModuleSim m_revTemplateSimFR;
-  final RevMAXSwerveModuleSim m_revTemplateSimFL;
-  final RevMAXSwerveModuleSim m_revTemplateSimRR;
-  final RevMAXSwerveModuleSim m_revTemplateSimRL;
+  final RevMAXSwerveModuleSim m_revTemplateSimFR; // front right
+  final RevMAXSwerveModuleSim m_revTemplateSimFL; // front left
+  final RevMAXSwerveModuleSim m_revTemplateSimRR; // rear right
+  final RevMAXSwerveModuleSim m_revTemplateSimRL; // rear left
+  // Abstraction of the entire robot body given the activity of the above four
+  // modules.
   final GenericSwerveSim m_swerveSim;
 
   final Mechanism2d m_vizRoller;
@@ -91,6 +93,9 @@ public class RobotSimulator {
     SmartDashboard.putData("TestShooter", m_vizRoller);
 
     // Create the all-in-one swerve sim (it has viz built-in)
+    // Specify the location of each of the four swerve modules on the drivebase
+    // rectange.
+    //
     // TODO: decouple the viz from this one?
     // TODO: maybe it's okay for each Sim object to have a "rough viz" and then
     // expose methods for the main simulation to re-render in a different way and
@@ -101,6 +106,9 @@ public class RobotSimulator {
         new Translation2d(-Hardware.RevMAXSwerveTemplate.kWheelBase / 2, Hardware.RevMAXSwerveTemplate.kTrackWidth / 2),
         new Translation2d(-Hardware.RevMAXSwerveTemplate.kWheelBase / 2,
             -Hardware.RevMAXSwerveTemplate.kTrackWidth / 2));
+
+    // Given the positions and the activity of each of the four modules, determine
+    // what the chassis isdoing as a whole.
     Supplier<ChassisSpeeds> chassisSpeedsSupplier = () -> {
       return simKinematics.toChassisSpeeds(new SwerveModuleState[] {
           m_revTemplateSimFL.getSimulatedState(),
