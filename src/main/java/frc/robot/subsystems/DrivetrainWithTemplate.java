@@ -121,7 +121,7 @@ public class DrivetrainWithTemplate extends SubsystemBase {
     SmartDashboard.putNumber("DrivetrainGyro", m_gyro.getRotation2d().getRadians());
     m_actualSwerveStatePublisher.set(getModuleStates());
     m_desiredSwerveStatePublisher.set(getDesiredModuleStates());
-    m_fieldViz.getObject("TemplateOdometry").setPose(m_poseEstimator.getEstimatedPosition());
+    m_fieldViz.getObject("OdometryPose").setPose(m_poseEstimator.getEstimatedPosition());
   }
 
   ChassisSpeeds getRobotRelativeSpeeds() {
