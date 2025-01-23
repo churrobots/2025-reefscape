@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.churrolib;
+package frc.churrolib.simulation;
 
 import com.revrobotics.spark.SparkBase;
 // TODO: stop using PatchedSparkSim once RevLib fixes their SparkSim bugs

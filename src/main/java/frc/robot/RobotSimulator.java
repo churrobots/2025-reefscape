@@ -19,10 +19,10 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
-import frc.churrolib.CTRESingleFalconRollerSim;
-import frc.churrolib.SimulationRegistry;
-import frc.churrolib.GenericSwerveSim;
-import frc.churrolib.RevMAXSwerveModuleSim;
+import frc.churrolib.simulation.CTRESingleFalconRollerSim;
+import frc.churrolib.simulation.GenericSwerveSim;
+import frc.churrolib.simulation.RevMAXSwerveModuleSim;
+import frc.churrolib.simulation.SimulationRegistry;
 
 public class RobotSimulator {
 

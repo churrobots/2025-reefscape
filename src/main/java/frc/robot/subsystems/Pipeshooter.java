@@ -12,7 +12,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.churrolib.SimulationRegistry;
+import frc.churrolib.simulation.SimulationRegistry;
 import frc.robot.Hardware;
 
 public class Pipeshooter extends SubsystemBase {

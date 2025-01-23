@@ -97,6 +97,10 @@
     "src/main/java/com/": true,
     "src/main/java/net/": true,
     "src/main/java/org/": true,
+    // Churrobots: hide the parts of churrolib that students
+    // don't need to deal with yet
+    "**/churrolib/simulation/": true,
+    "**/churrolib/vendor/": true,
     // Churrobots: pathplanner and deploy dirs shouldn't be edited
     // since they are edited directly by the PathPlanner app.
     "**/.pathplanner": true,

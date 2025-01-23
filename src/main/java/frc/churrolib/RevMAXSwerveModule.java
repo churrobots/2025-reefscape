@@ -7,6 +7,7 @@ package frc.churrolib;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import frc.churrolib.simulation.SimulationRegistry;
 import frc.robot.Hardware;
 
 import com.revrobotics.spark.SparkMax;
