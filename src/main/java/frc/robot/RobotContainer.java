@@ -33,8 +33,8 @@ public class RobotContainer {
 
   // NOTE: eventually we will migrate over to the YAGSL drivetrain, but for now
   // we are keeping both so we can switch back in the worst case scenario
-  // DrivetrainWithYAGSL drivetrain = new DrivetrainWithYAGSL();
-  DrivetrainWithTemplate drivetrain = new DrivetrainWithTemplate();
+  DrivetrainWithYAGSL drivetrain = new DrivetrainWithYAGSL();
+  // DrivetrainWithTemplate drivetrain = new DrivetrainWithTemplate();
 
   void bindCommandsForTeleop() {
 
