@@ -12,6 +12,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.churrolib.LogitechX3D;
@@ -44,25 +46,28 @@ public class RobotContainer {
     Command coralIntaker = new RunCommand(() -> pipeshooter.coralIntake(), pipeshooter);
     Command coralFeeder = new RunCommand(() -> pipeshooter.feedCoral(), pipeshooter);
 
+    boolean isBlueAlliance = DriverStation.getAlliance().orElseGet(() -> Alliance.Blue) == Alliance.Blue;
+    double negateForBlue = isBlueAlliance ? -1 : 1;
+
     Command fastFieldRelativeDriverFlightstickControl = drivetrain.createFieldRelativeDriveCommand(
-        () -> driverFlightstickController.getY() * Hardware.DriverStation.fastDriveScale,
-        () -> driverFlightstickController.getX() * Hardware.DriverStation.fastDriveScale,
-        () -> driverFlightstickController.getTwist() * Hardware.DriverStation.fastDriveScale);
+        () -> negateForBlue * driverFlightstickController.getY() * Hardware.DriverStation.fastDriveScale,
+        () -> negateForBlue * driverFlightstickController.getX() * Hardware.DriverStation.fastDriveScale,
+        () -> -1 * driverFlightstickController.getTwist() * Hardware.DriverStation.fastDriveScale);
 
     Command slowFieldRelativeDriverFlightstickControl = drivetrain.createFieldRelativeDriveCommand(
-        () -> driverFlightstickController.getY() * Hardware.DriverStation.slowDriveScale,
-        () -> driverFlightstickController.getX() * Hardware.DriverStation.slowDriveScale,
-        () -> driverFlightstickController.getTwist() * Hardware.DriverStation.slowDriveScale);
+        () -> negateForBlue * driverFlightstickController.getY() * Hardware.DriverStation.slowDriveScale,
+        () -> negateForBlue * driverFlightstickController.getX() * Hardware.DriverStation.slowDriveScale,
+        () -> -1 * driverFlightstickController.getTwist() * Hardware.DriverStation.slowDriveScale);
 
     Command fastFieldRelativeDriverXboxControl = drivetrain.createFieldRelativeDriveCommand(
-        () -> driverXboxController.getLeftY() * Hardware.DriverStation.fastDriveScale,
-        () -> driverXboxController.getLeftX() * Hardware.DriverStation.fastDriveScale,
-        () -> driverXboxController.getRightX() * Hardware.DriverStation.fastDriveScale);
+        () -> negateForBlue * driverXboxController.getLeftY() * Hardware.DriverStation.fastDriveScale,
+        () -> negateForBlue * driverXboxController.getLeftX() * Hardware.DriverStation.fastDriveScale,
+        () -> -1 * driverXboxController.getRightX() * Hardware.DriverStation.fastDriveScale);
 
     Command slowFieldRelativeDriverXboxControl = drivetrain.createFieldRelativeDriveCommand(
-        () -> driverXboxController.getLeftY() * Hardware.DriverStation.slowDriveScale,
-        () -> driverXboxController.getLeftX() * Hardware.DriverStation.slowDriveScale,
-        () -> driverXboxController.getRightX() * Hardware.DriverStation.slowDriveScale);
+        () -> negateForBlue * driverXboxController.getLeftY() * Hardware.DriverStation.slowDriveScale,
+        () -> negateForBlue * driverXboxController.getLeftX() * Hardware.DriverStation.slowDriveScale,
+        () -> -1 * driverXboxController.getRightX() * Hardware.DriverStation.slowDriveScale);
 
     if (Hardware.DriverStation.driverUsesFlightstick) {
 
