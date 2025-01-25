@@ -66,10 +66,10 @@
       "axisCount": 2,
       "buttonCount": 4,
       "buttonKeys": [
-        -1,
         44,
         46,
-        47
+        47,
+        39
       ],
       "povCount": 0
     },
