@@ -9,6 +9,8 @@
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
+      "/SmartDashboard/Alerts": "Alerts",
+      "/SmartDashboard/Auto Chooser": "String Chooser",
       "/SmartDashboard/Encoders": "Alerts",
       "/SmartDashboard/Field": "Field2d",
       "/SmartDashboard/IMU": "Alerts",
@@ -20,6 +22,11 @@
       "/SmartDashboard/TestShooter": "Mechanism2d"
     },
     "windows": {
+      "/SmartDashboard/Auto Chooser": {
+        "window": {
+          "visible": true
+        }
+      },
       "/SmartDashboard/Field": {
         "OdometryPose": {
           "arrowColor": [
@@ -131,11 +138,18 @@
   "NetworkTables": {
     "transitory": {
       "SmartDashboard": {
+        "Auto Chooser": {
+          "open": true,
+          "string[]##v_/SmartDashboard/Auto Chooser/options": {
+            "open": true
+          }
+        },
         "Field": {
           "double[]##v_/SmartDashboard/Field/Robot": {
             "open": true
           }
-        }
+        },
+        "open": true
       },
       "SwerveModuleState[]##v_DesiredStates": {
         "SwerveModuleState##v_[0]": {

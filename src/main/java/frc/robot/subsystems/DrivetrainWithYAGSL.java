@@ -238,17 +238,15 @@ public class DrivetrainWithYAGSL extends SubsystemBase {
   }
 
   public void resetPose(Pose2d newPose) {
-    // FIXME: needs to be implemented
+    m_swerveDrive.resetOdometry(newPose);
   }
 
   public ChassisSpeeds getRobotRelativeSpeeds() {
-    // FIXME: needs to be implemented
-    var fakeSpeeds = new ChassisSpeeds();
-    return fakeSpeeds;
+    return m_swerveDrive.getRobotVelocity();
   }
 
   public void setRobotRelativeSpeeds(ChassisSpeeds speeds) {
-    // FIXME: needs to be implemented
+    m_swerveDrive.drive(speeds);
   }
 
   public void stop() {
