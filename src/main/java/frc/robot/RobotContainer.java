@@ -100,6 +100,16 @@ public class RobotContainer {
         () -> -1 * MathUtil.applyDeadband(driverXboxController.getRightX(), xboxDeadband)
             * Hardware.DriverStation.slowDriveScale);
 
+    Command slowRobotRelativeOperatorXboxControl = drivetrain.createRobotRelativeDriveCommand(
+        () -> allianceRelativeFactor.getAsDouble()
+            * MathUtil.applyDeadband(operatorXboxController.getLeftY(), xboxDeadband)
+            * Hardware.DriverStation.slowDriveScale,
+        () -> allianceRelativeFactor.getAsDouble()
+            * MathUtil.applyDeadband(operatorXboxController.getLeftX(), xboxDeadband)
+            * Hardware.DriverStation.slowDriveScale,
+        () -> -1 * MathUtil.applyDeadband(operatorXboxController.getRightX(), xboxDeadband)
+            * Hardware.DriverStation.slowDriveScale);
+
     if (Hardware.DriverStation.driverUsesFlightstick) {
 
       drivetrain.setDefaultCommand(fastFieldRelativeDriverFlightstickControl);
@@ -118,7 +128,7 @@ public class RobotContainer {
       driverXboxController.b().whileTrue(coralFeeder);
     }
 
-    operatorXboxController.b().whileTrue(coralFeeder);
+    operatorXboxController.b().whileTrue(slowRobotRelativeOperatorXboxControl);
 
     // TODO: setup any camera feeds or other driver tools here
 
