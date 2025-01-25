@@ -250,12 +250,6 @@ public class DrivetrainWithTemplate extends SubsystemBase {
     double xSpeedCommanded;
     double ySpeedCommanded;
 
-    var alliance = DriverStation.getAlliance();
-    if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
-      xSpeed = -1 * xSpeed;
-      ySpeed = -1 * ySpeed;
-    }
-
     if (rateLimit) {
       // Convert XY to polar for rate limiting
       double inputTranslationDir = Math.atan2(ySpeed, xSpeed);

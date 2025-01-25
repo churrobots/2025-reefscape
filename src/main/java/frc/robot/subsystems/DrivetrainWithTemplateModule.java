@@ -76,8 +76,8 @@ public class DrivetrainWithTemplateModule {
   private final IdleMode kDrivingMotorIdleMode = IdleMode.kBrake;
   private final IdleMode kTurningMotorIdleMode = IdleMode.kBrake;
 
-  private final int kDrivingMotorCurrentLimit = 50; // amps
-  private final int kTurningMotorCurrentLimit = 20; // amps
+  private final int kDrivingMotorCurrentLimit = Hardware.DrivetrainWithTemplate.kDrivingMotorCurrentLimitInAmps;
+  private final int kTurningMotorCurrentLimit = Hardware.DrivetrainWithTemplate.kTurningMotorCurrentLimitInAmps;
 
   /**
    * Constructs a MAXSwerveModule and configures the driving and turning motor,

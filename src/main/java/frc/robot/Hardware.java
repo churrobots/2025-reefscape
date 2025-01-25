@@ -132,6 +132,9 @@ public final class Hardware {
     public static final double kMagnitudeSlewRate = 4.5; // percent per second (1 = 100%)
     public static final double kRotationalSlewRate = 6; // percent per second (1 = 100%)
 
+    // Current limits
+    public static final int kDrivingMotorCurrentLimitInAmps = 50;
+    public static final int kTurningMotorCurrentLimitInAmps = 20;
   }
 
   public static class DriverStation {
