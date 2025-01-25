@@ -47,7 +47,7 @@ public final class Hardware {
   public final class Drivetrain {
     // NOTE: eventually we will migrate over to the YAGSL drivetrain, but for now
     // we are keeping both so we can switch back in the worst case scenario
-    public static final boolean useYAGSL = false;
+    public static final boolean useYAGSL = true;
     public static final double maxSpeedMetersPerSecond = 6.04;
   }
 
