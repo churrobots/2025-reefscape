@@ -50,10 +50,11 @@ public class RobotContainer {
 
     DoubleSupplier allianceRelativeFactor = () -> {
       boolean isRedAlliance = DriverStation.getAlliance().orElseGet(() -> Alliance.Red) == Alliance.Red;
+      double yagslInvert = Hardware.Drivetrain.useYAGSL ? -1 : 1;
       if (isRedAlliance) {
-        return 1.0;
+        return 1.0 * yagslInvert;
       } else {
-        return -1.0;
+        return -1.0 * yagslInvert;
       }
     };
     double flightstickDeadband = Hardware.DriverStation.driverFlightstickDeadband;
