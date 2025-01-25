@@ -180,6 +180,7 @@ public class RobotContainer {
     ////////////////////////////////////////////////////////////////////////////////
 
     Elastic.enableDashboardToBeDownloadedFromRobotDeployDirectory();
+    SmartDashboard.putString("Robot Name", Hardware.robotName);
 
   }
 
