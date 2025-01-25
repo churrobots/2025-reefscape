@@ -8,6 +8,7 @@ import java.util.function.Supplier;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -164,7 +165,14 @@ public class RobotSimulator {
                 * speedReductionPercentageSoSpinningIsVisibleToHumanEye);
 
     // Show where the template drive thinks things are.
-    m_vizField.getObject("GenericSwerveRobot").setPose(m_swerveSim.getRobotPose());
+    // If we're using YAGSL, that simulation will already be using setRobotPose(),
+    // so we need to identify this pose as a different pose (TemplateRobotPose) to
+    // distinguish it in the simulation GUI.
+    if (Hardware.Drivetrain.useYAGSL) {
+      m_vizField.getObject("TemplateRobotPose").setPose(m_swerveSim.getRobotPose());
+    } else {
+      m_vizField.setRobotPose(m_swerveSim.getRobotPose());
+    }
 
   }
 }
