@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 import com.pathplanner.lib.auto.NamedCommands;
@@ -47,39 +48,53 @@ public class RobotContainer {
     Command coralIntaker = new RunCommand(() -> pipeshooter.coralIntake(), pipeshooter);
     Command coralFeeder = new RunCommand(() -> pipeshooter.feedCoral(), pipeshooter);
 
-    boolean isBlueAlliance = DriverStation.getAlliance().orElseGet(() -> Alliance.Blue) == Alliance.Blue;
-    double negateForBlue = isBlueAlliance ? -1 : 1;
+    DoubleSupplier allianceRelativeFactor = () -> {
+      boolean isRedAlliance = DriverStation.getAlliance().orElseGet(() -> Alliance.Red) == Alliance.Red;
+      if (isRedAlliance) {
+        return 1.0;
+      } else {
+        return -1.0;
+      }
+    };
     double flightstickDeadband = Hardware.DriverStation.driverFlightstickDeadband;
     double xboxDeadband = Hardware.DriverStation.driverXboxDeadband;
 
     Command fastFieldRelativeDriverFlightstickControl = drivetrain.createFieldRelativeDriveCommand(
-        () -> negateForBlue * MathUtil.applyDeadband(driverFlightstickController.getY(), flightstickDeadband)
+        () -> allianceRelativeFactor.getAsDouble()
+            * MathUtil.applyDeadband(driverFlightstickController.getY(), flightstickDeadband)
             * Hardware.DriverStation.fastDriveScale,
-        () -> negateForBlue * MathUtil.applyDeadband(driverFlightstickController.getX(), flightstickDeadband)
+        () -> allianceRelativeFactor.getAsDouble()
+            * MathUtil.applyDeadband(driverFlightstickController.getX(), flightstickDeadband)
             * Hardware.DriverStation.fastDriveScale,
         () -> -1 * MathUtil.applyDeadband(driverFlightstickController.getTwist(), flightstickDeadband)
             * Hardware.DriverStation.fastDriveScale);
 
     Command slowFieldRelativeDriverFlightstickControl = drivetrain.createFieldRelativeDriveCommand(
-        () -> negateForBlue * MathUtil.applyDeadband(driverFlightstickController.getY(), flightstickDeadband)
+        () -> allianceRelativeFactor.getAsDouble()
+            * MathUtil.applyDeadband(driverFlightstickController.getY(), flightstickDeadband)
             * Hardware.DriverStation.slowDriveScale,
-        () -> negateForBlue * MathUtil.applyDeadband(driverFlightstickController.getX(), flightstickDeadband)
+        () -> allianceRelativeFactor.getAsDouble()
+            * MathUtil.applyDeadband(driverFlightstickController.getX(), flightstickDeadband)
             * Hardware.DriverStation.slowDriveScale,
         () -> -1 * MathUtil.applyDeadband(driverFlightstickController.getTwist(), flightstickDeadband)
             * Hardware.DriverStation.slowDriveScale);
 
     Command fastFieldRelativeDriverXboxControl = drivetrain.createFieldRelativeDriveCommand(
-        () -> negateForBlue * MathUtil.applyDeadband(driverXboxController.getLeftY(), xboxDeadband)
+        () -> allianceRelativeFactor.getAsDouble()
+            * MathUtil.applyDeadband(driverXboxController.getLeftY(), xboxDeadband)
             * Hardware.DriverStation.fastDriveScale,
-        () -> negateForBlue * MathUtil.applyDeadband(driverXboxController.getLeftX(), xboxDeadband)
+        () -> allianceRelativeFactor.getAsDouble()
+            * MathUtil.applyDeadband(driverXboxController.getLeftX(), xboxDeadband)
             * Hardware.DriverStation.fastDriveScale,
         () -> -1 * MathUtil.applyDeadband(driverXboxController.getRightX(), xboxDeadband)
             * Hardware.DriverStation.fastDriveScale);
 
     Command slowFieldRelativeDriverXboxControl = drivetrain.createFieldRelativeDriveCommand(
-        () -> negateForBlue * MathUtil.applyDeadband(driverXboxController.getLeftY(), xboxDeadband)
+        () -> allianceRelativeFactor.getAsDouble()
+            * MathUtil.applyDeadband(driverXboxController.getLeftY(), xboxDeadband)
             * Hardware.DriverStation.slowDriveScale,
-        () -> negateForBlue * MathUtil.applyDeadband(driverXboxController.getLeftX(), xboxDeadband)
+        () -> allianceRelativeFactor.getAsDouble()
+            * MathUtil.applyDeadband(driverXboxController.getLeftX(), xboxDeadband)
             * Hardware.DriverStation.slowDriveScale,
         () -> -1 * MathUtil.applyDeadband(driverXboxController.getRightX(), xboxDeadband)
             * Hardware.DriverStation.slowDriveScale);
