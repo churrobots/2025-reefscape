@@ -18,7 +18,7 @@ public final class Hardware {
   public static final String ROBOT_CANELO = "canelo";
   public static final String ROBOT_ALPHA = "alpha";
   public static final String ROBOT_COMPETITION = "competition";
-  public static final String ROBOT_DEFAULT = RobotBase.isSimulation() ? ROBOT_CANELO : ROBOT_COMPETITION;
+  public static final String ROBOT_DEFAULT = RobotBase.isSimulation() ? ROBOT_ALPHA : ROBOT_COMPETITION;
   public static final String robotName = NetworkTableInstance
       .getDefault()
       .getEntry("robotName")
