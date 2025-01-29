@@ -56,12 +56,17 @@
     },
     "###Joysticks": {
       "Collapsed": "0",
-      "Pos": "325,579",
+      "Pos": "518,622",
       "Size": "796,207"
     },
     "###Keyboard 0 Settings": {
       "Collapsed": "0",
       "Pos": "1010,233",
+      "Size": "300,560"
+    },
+    "###Keyboard 1 Settings": {
+      "Collapsed": "0",
+      "Pos": "847,252",
       "Size": "300,560"
     },
     "###NetworkTables": {
