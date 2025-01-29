@@ -44,6 +44,11 @@ public final class Hardware {
     public static final double maxHeight = 1.0;
   }
 
+  public final class Elbow {
+    public static final int neoMotorCAN = 50;
+    
+    //TODO: Get actual CAN id 
+ }
   public final class Drivetrain {
     // NOTE: eventually we will migrate over to the YAGSL drivetrain, but for now
     // we are keeping both so we can switch back in the worst case scenario
