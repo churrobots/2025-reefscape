@@ -30,7 +30,7 @@ public final class Hardware {
   }
 
   public final class Shooter {
-    public static final int falconMotorCAN = 10;
+    public static final int falconMotorCAN = 30;
     public static final double gearboxReduction = 5.0;
     public static final double simMomentOfInertia = 0.01;
   }

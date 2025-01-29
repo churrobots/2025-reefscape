@@ -26,8 +26,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.churrolib.LogitechX3D;
 import frc.churrolib.vendor.Elastic;
 import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Pipeshooter;
 
 // Need if using USB camera to roboRIO.
 // import edu.wpi.first.cameraserver.CameraServer;
@@ -36,8 +34,6 @@ import frc.robot.subsystems.Pipeshooter;
 
 public class RobotContainer {
 
-  Intake intake = new Intake();
-  Pipeshooter pipeshooter = new Pipeshooter();
   Drivetrain drivetrain = new Drivetrain();
 
   void bindCommandsForTeleop() {
@@ -49,11 +45,6 @@ public class RobotContainer {
     // TODO: confirm WASD is simulating joystick axes pos/neg directions correctly
     // TODO: figure out how sim handles the initial pose, and recalibrated poses
     Command recalibrateDriveTrain = new RunCommand(() -> drivetrain.recalibrateDrivetrain(), drivetrain);
-    // Command bestIntake = new RunCommand(() -> intake.yoink(), intake);
-    // Command coralIntaker = new RunCommand(() -> pipeshooter.coralIntake(),
-    // pipeshooter);
-    // Command coralFeeder = new RunCommand(() -> pipeshooter.feedCoral(),
-    // pipeshooter);
 
     DoubleSupplier allianceRelativeFactor = () -> {
       boolean isRedAlliance = DriverStation.getAlliance().orElseGet(() -> Alliance.Red) == Alliance.Red;
@@ -122,17 +113,12 @@ public class RobotContainer {
       drivetrain.setDefaultCommand(fastFieldRelativeDriverFlightstickControl);
       driverFlightstickController.button(2).whileTrue(slowFieldRelativeDriverFlightstickControl);
       driverFlightstickController.button(5).whileTrue(recalibrateDriveTrain);
-      // driverFlightstickController.button(7).whileTrue(bestIntake);
-      // driverFlightstickController.button(8).whileTrue(coralIntaker);
-      // driverFlightstickController.button(9).whileTrue(coralFeeder);
 
     } else {
 
       drivetrain.setDefaultCommand(fastFieldRelativeDriverXboxControl);
       driverXboxController.leftBumper().whileTrue(slowFieldRelativeDriverXboxControl);
       driverXboxController.back().whileTrue(recalibrateDriveTrain);
-      // driverXboxController.a().whileTrue(coralIntaker);
-      // driverXboxController.b().whileTrue(coralFeeder);
     }
 
     operatorXboxController.b().whileTrue(slowRobotRelativeOperatorXboxControl);
