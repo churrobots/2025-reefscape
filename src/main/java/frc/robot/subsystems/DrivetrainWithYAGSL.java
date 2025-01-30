@@ -12,6 +12,7 @@ import static edu.wpi.first.units.Units.Meter;
 
 import edu.wpi.first.wpilibj2.command.Command;
 
+import com.ctre.phoenix6.hardware.Pigeon2;
 import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -98,9 +99,7 @@ public class DrivetrainWithYAGSL extends SubsystemBase {
   }
 
   private void _registerHardwardWithOldSimulation() {
-    // FIXME: it's not a pigeon2
-    // SimulationRegistry.registerHardware((WPI_PigeonIMU)
-    // m_swerveDrive.getGyro().getIMU());
+    SimulationRegistry.registerHardware((Pigeon2) m_swerveDrive.getGyro().getIMU());
     SimulationRegistry.registerHardware((SparkMax) m_swerveDrive.getModules()[0].getDriveMotor().getMotor());
     SimulationRegistry.registerHardware((SparkMax) m_swerveDrive.getModules()[0].getAngleMotor().getMotor());
     SimulationRegistry.registerHardware((SparkMax) m_swerveDrive.getModules()[1].getDriveMotor().getMotor());
