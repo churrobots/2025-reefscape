@@ -59,7 +59,6 @@ public class RobotContainer {
         return -1.0 * yagslInvert;
       }
     };
-    double flightstickDeadband = Hardware.DriverStation.driverFlightstickDeadband;
     double xboxDeadband = Hardware.DriverStation.driverXboxDeadband;
 
     Command fastFieldRelativeDriverXboxControl = drivetrain.createFieldRelativeDriveCommand(
