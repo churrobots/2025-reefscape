@@ -45,16 +45,10 @@ public class RobotContainer {
 
     CommandXboxController driverXboxController = new CommandXboxController(Hardware.DriverStation.driverXboxPort);
     CommandXboxController operatorXboxController = new CommandXboxController(Hardware.DriverStation.operatorXboxPort);
-    LogitechX3D driverFlightstickController = new LogitechX3D(Hardware.DriverStation.driverFlightstickPort);
 
     // TODO: confirm WASD is simulating joystick axes pos/neg directions correctly
     // TODO: figure out how sim handles the initial pose, and recalibrated poses
     Command recalibrateDriveTrain = new RunCommand(() -> drivetrain.recalibrateDrivetrain(), drivetrain);
-    // Command bestIntake = new RunCommand(() -> intake.yoink(), intake);
-    // Command coralIntaker = new RunCommand(() -> pipeshooter.coralIntake(),
-    // pipeshooter);
-    // Command coralFeeder = new RunCommand(() -> pipeshooter.feedCoral(),
-    // pipeshooter);
 
     DoubleSupplier allianceRelativeFactor = () -> {
       boolean isRedAlliance = DriverStation.getAlliance().orElseGet(() -> Alliance.Red) == Alliance.Red;
@@ -67,26 +61,6 @@ public class RobotContainer {
     };
     double flightstickDeadband = Hardware.DriverStation.driverFlightstickDeadband;
     double xboxDeadband = Hardware.DriverStation.driverXboxDeadband;
-
-    Command fastFieldRelativeDriverFlightstickControl = drivetrain.createFieldRelativeDriveCommand(
-        () -> allianceRelativeFactor.getAsDouble()
-            * MathUtil.applyDeadband(driverFlightstickController.getY(), flightstickDeadband)
-            * Hardware.DriverStation.fastDriveScale,
-        () -> allianceRelativeFactor.getAsDouble()
-            * MathUtil.applyDeadband(driverFlightstickController.getX(), flightstickDeadband)
-            * Hardware.DriverStation.fastDriveScale,
-        () -> -1 * MathUtil.applyDeadband(driverFlightstickController.getTwist(), flightstickDeadband)
-            * Hardware.DriverStation.fastDriveScale);
-
-    Command slowFieldRelativeDriverFlightstickControl = drivetrain.createFieldRelativeDriveCommand(
-        () -> allianceRelativeFactor.getAsDouble()
-            * MathUtil.applyDeadband(driverFlightstickController.getY(), flightstickDeadband)
-            * Hardware.DriverStation.slowDriveScale,
-        () -> allianceRelativeFactor.getAsDouble()
-            * MathUtil.applyDeadband(driverFlightstickController.getX(), flightstickDeadband)
-            * Hardware.DriverStation.slowDriveScale,
-        () -> -1 * MathUtil.applyDeadband(driverFlightstickController.getTwist(), flightstickDeadband)
-            * Hardware.DriverStation.slowDriveScale);
 
     Command fastFieldRelativeDriverXboxControl = drivetrain.createFieldRelativeDriveCommand(
         () -> allianceRelativeFactor.getAsDouble()
@@ -120,25 +94,15 @@ public class RobotContainer {
         () -> -1 * MathUtil.applyDeadband(operatorXboxController.getRightX(), xboxDeadband)
             * Hardware.DriverStation.slowDriveScale);
 
-    if (Hardware.DriverStation.driverUsesFlightstick) {
+    drivetrain.setDefaultCommand(fastFieldRelativeDriverXboxControl);
+    driverXboxController.leftBumper().whileTrue(slowFieldRelativeDriverXboxControl);
+    driverXboxController.back().whileTrue(recalibrateDriveTrain);
 
-      drivetrain.setDefaultCommand(fastFieldRelativeDriverFlightstickControl);
-      driverFlightstickController.button(2).whileTrue(slowFieldRelativeDriverFlightstickControl);
-      driverFlightstickController.button(5).whileTrue(recalibrateDriveTrain);
-      // driverFlightstickController.button(7).whileTrue(bestIntake);
-      // driverFlightstickController.button(8).whileTrue(coralIntaker);
-      // driverFlightstickController.button(9).whileTrue(coralFeeder);
 
-    } else {
 
-      drivetrain.setDefaultCommand(fastFieldRelativeDriverXboxControl);
-      driverXboxController.leftBumper().whileTrue(slowFieldRelativeDriverXboxControl);
-      driverXboxController.back().whileTrue(recalibrateDriveTrain);
-      // driverXboxController.a().whileTrue(coralIntaker);
-      // driverXboxController.b().whileTrue(coralFeeder);
-    }
 
-    operatorXboxController.rightBumper().whileTrue(slowRobotRelativeOperatorXboxControl);
+
+    ///////////////////////////// CAMERA SETUP ////////////////////////////////////
 
     // TODO: setup any camera feeds or other driver tools here
 
@@ -148,8 +112,6 @@ public class RobotContainer {
 
     // TODO(Controls): create a JSON Elastic Dashboard layout to be stored on
     // the robot and copied to the Driver Station.
-
-    ///////////////////////////// CAMERA SETUP ////////////////////////////////////
 
     // Camera Option 1: Microsoft Lifecam HD 3000 webcam plugged directly into
     // roboRIO over USB.
