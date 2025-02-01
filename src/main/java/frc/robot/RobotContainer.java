@@ -27,7 +27,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.churrolib.LogitechX3D;
 import frc.churrolib.vendor.Elastic;
 import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Pipeshooter;
 
 // Need if using USB camera to roboRIO.
@@ -39,7 +38,6 @@ import edu.wpi.first.util.PixelFormat;
 
 public class RobotContainer {
 
-  Intake intake = new Intake();
   Pipeshooter pipeshooter = new Pipeshooter();
   Drivetrain drivetrain = new Drivetrain();
 
@@ -206,7 +204,7 @@ public class RobotContainer {
                   new org.opencv.core.Point(centerX, 0),
                   new org.opencv.core.Point(centerX, mat.rows()),
                   new Scalar(0, 255, 0), 2);
- 
+
               // Crosshair horizontal line
               Imgproc.line(mat,
                   new org.opencv.core.Point(0, centerY),
