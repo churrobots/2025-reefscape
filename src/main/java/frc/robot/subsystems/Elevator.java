@@ -31,6 +31,14 @@ public class Elevator extends SubsystemBase {
     });
   }
 
+  public Command moveToRecieve() {
+    return run(() -> {
+      double desiredOutputInRotations = 4;
+      double requiredInputRotations = Hardware.Elevator.gearboxReduction * desiredOutputInRotations;
+      m_elevatorMotorLeader.setPosition(requiredInputRotations);
+    });
+  }
+
   public Command move1Beta() {
     return run(() -> {
       double desiredOutputInRotations = 8;

@@ -27,6 +27,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.churrolib.LogitechX3D;
 import frc.churrolib.vendor.Elastic;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Elbow;
+import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Pipeshooter;
 
 // Need if using USB camera to roboRIO.
@@ -40,6 +42,8 @@ public class RobotContainer {
 
   Pipeshooter pipeshooter = new Pipeshooter();
   Drivetrain drivetrain = new Drivetrain();
+  Elevator elevator = new Elevator();
+  Elbow elbow = new Elbow();
 
   void bindCommandsForTeleop() {
 
@@ -97,9 +101,23 @@ public class RobotContainer {
     driverXboxController.leftBumper().whileTrue(slowFieldRelativeDriverXboxControl);
     driverXboxController.back().whileTrue(recalibrateDriveTrain);
 
+    operatorXboxController.leftBumper().whileTrue(slowRobotRelativeOperatorXboxControl);
+    operatorXboxController.rightBumper().whileTrue(pipeshooter.shootCoral());
 
+    //commands for the elbow positioning
 
+    Command moveElbowAndElevatorToRecieve = elbow.recieve().alongWith(elevator.moveToRecieve())
+        .alongWith(pipeshooter.intakeCoral());
+    operatorXboxController.a().whileTrue(moveElbowAndElevatorToRecieve);
 
+    Command moveElbowAndElevatorTo1 = elbow.move1Beta().alongWith(elevator.move1Beta());
+    operatorXboxController.x().onTrue(moveElbowAndElevatorTo1);
+
+    Command moveElbowAndElevatorTo2 = elbow.move2Sigma().alongWith(elevator.move2Sigma());
+    operatorXboxController.y().onTrue(moveElbowAndElevatorTo2);
+
+    Command moveElbowAndElevatorTo3 = elbow.move3Alpha().alongWith(elevator.move3Alpha());
+    operatorXboxController.b().onTrue(moveElbowAndElevatorTo3);
 
     ///////////////////////////// CAMERA SETUP ////////////////////////////////////
 
@@ -213,6 +231,7 @@ public class RobotContainer {
     SendableChooser<Command> autoChooser = new SendableChooser<Command>();
     SmartDashboard.putData(autoChooser);
     return autoChooser::getSelected;
+
   }
 
 }
