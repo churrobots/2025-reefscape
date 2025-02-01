@@ -27,6 +27,7 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -54,6 +55,8 @@ public class RobotContainer {
   Drivetrain drivetrain = new Drivetrain();
   Elevator elevator = new Elevator();
   Elbow elbow = new Elbow();
+  Command moveElbowAndElevatorTo1 = elbow.move1Beta().alongWith(elevator.move1Beta());
+  
 
   void bindCommandsForTeleop() {
 
@@ -273,10 +276,12 @@ public class RobotContainer {
     }
 
     // TODO: make real commands for auto to use
-    NamedCommands.registerCommand("move1Beta", new InstantCommand());
-    NamedCommands.registerCommand("move2Sigma", new InstantCommand());
-    NamedCommands.registerCommand("move3Alpha", new InstantCommand());
-    NamedCommands.registerCommand("waitForTeammates", new InstantCommand());
+    NamedCommands.registerCommand("move1Beta", elbow.move1Beta());
+    NamedCommands.registerCommand("move2Sigma", elbow.move2Sigma());
+    NamedCommands.registerCommand("move3Alpha", elbow.move3Alpha());
+    NamedCommands.registerCommand("intakePipeshooter", pipeshooter.intakeCoral());
+    NamedCommands.registerCommand("shootCoral", pipeshooter.shootCoral());
+    NamedCommands.registerCommand("waitForTeammates", new WaitCommand(9));
     SendableChooser<Command> autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
     return autoChooser::getSelected;
