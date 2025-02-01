@@ -24,20 +24,15 @@ public final class Hardware {
       .getEntry("robotName")
       .getString(ROBOT_DEFAULT);
 
-  public final class Intake {
-    public static final int brushedMotorCAN = 11;
-    public static final double gearboxReduction = 1.0;
-  }
-
   public final class Shooter {
-    public static final int falconMotorCAN = 10;
+    public static final int falconMotorCAN = 14;
     public static final double gearboxReduction = 5.0;
     public static final double simMomentOfInertia = 0.01;
   }
 
   public final class Elevator {
-    public static final int leaderFalconMotorCAN = 18;
-    public static final int followerFalconMotorCAN = 24;
+    public static final int leaderFalconMotorCAN = 15;
+    public static final int followerFalconMotorCAN = 16;
     public static final double gearboxReduction = 5.0;
     public static final double simCarriageMass = 0.01;
     public static final double minHeight = 0.0;
@@ -45,8 +40,7 @@ public final class Hardware {
   }
 
   public final class Elbow {
-    public static final int neoMotorCAN = 50;
-
+    public static final int neoMotorCAN = 17;
     // TODO: Get actual CAN id
   }
 

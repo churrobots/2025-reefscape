@@ -152,6 +152,76 @@
   },
   "Plot": {
     "Plot <0>": {
+      "plots": [
+        {
+          "axis": [
+            {
+              "label": "Voltage",
+              "lockMax": true,
+              "lockMin": true,
+              "max": 15.0,
+              "min": -15.0
+            },
+            {
+              "label": "Position Value",
+              "lockMax": true,
+              "lockMin": true,
+              "max": 150.0,
+              "min": -150.0
+            },
+            {
+              "label": "Position Percent",
+              "lockMax": true,
+              "lockMin": true,
+              "min": -1.0
+            }
+          ],
+          "backgroundColor": [
+            0.10000000149011612,
+            0.10000000149011612,
+            0.10000000149011612,
+            1.0
+          ],
+          "height": 309,
+          "name": "Motors",
+          "series": [
+            {
+              "color": [
+                0.0,
+                0.7777777910232544,
+                0.2851850986480713,
+                1.0
+              ],
+              "id": "CANMotor:Talon FX (v6)[14]-motorVoltage",
+              "name": "PipeShooter (Voltage)"
+            },
+            {
+              "color": [
+                0.9333333373069763,
+                0.21224690973758698,
+                0.1607407182455063,
+                1.0
+              ],
+              "id": "CANEncoder:Talon FX (v6)[15]/Rotor Sensor-position",
+              "name": "Elevator Falcon Leader (Position)",
+              "yAxis": 1
+            },
+            {
+              "color": [
+                0.0,
+                0.5666666030883789,
+                1.0,
+                1.0
+              ],
+              "id": "SPARK MAX [17]-Setpoint",
+              "name": "Elbow Neo (Position)",
+              "yAxis": 2
+            }
+          ],
+          "yaxis2": true,
+          "yaxis3": true
+        }
+      ],
       "window": {
         "name": "Overview Graphs"
       }
