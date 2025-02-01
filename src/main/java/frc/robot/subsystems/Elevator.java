@@ -13,7 +13,7 @@ import frc.robot.Hardware;
 
 public class Elevator extends SubsystemBase {
 
-  final TalonFX m_elevatorMotor = new TalonFX(Hardware.Elevator.leaderFalconMotorCAN);
+  final TalonFX m_elevatorMotorLeader = new TalonFX(Hardware.Elevator.leaderFalconMotorCAN);
   final TalonFX m_elevatorMotorFollow = new TalonFX(Hardware.Elevator.followerFalconMotorCAN);
 
   public Elevator() {
@@ -23,7 +23,7 @@ public class Elevator extends SubsystemBase {
 
   public Command stop() {
     return run(() -> {
-      m_elevatorMotor.stopMotor();
+      m_elevatorMotorLeader.stopMotor();
       m_elevatorMotorFollow.stopMotor();
     });
   }
@@ -32,7 +32,7 @@ public class Elevator extends SubsystemBase {
     return run(() -> {
       double desiredOutputInRotations = 8;
       double requiredInputRotations = Hardware.Elevator.gearboxReduction * desiredOutputInRotations;
-      m_elevatorMotor.setPosition(requiredInputRotations);
+      m_elevatorMotorLeader.setPosition(requiredInputRotations);
     });
   }
 
@@ -40,7 +40,7 @@ public class Elevator extends SubsystemBase {
     return run(() -> {
       double desiredOutputInRotations = 16;
       double requiredInputRotations = Hardware.Elevator.gearboxReduction * desiredOutputInRotations;
-      m_elevatorMotor.setPosition(requiredInputRotations);
+      m_elevatorMotorLeader.setPosition(requiredInputRotations);
     });
   }
 
@@ -48,12 +48,8 @@ public class Elevator extends SubsystemBase {
     return run(() -> {
       double desiredOutputInRotations = 24;
       double requiredInputRotations = Hardware.Elevator.gearboxReduction * desiredOutputInRotations;
-      m_elevatorMotor.setPosition(requiredInputRotations);
+      m_elevatorMotorLeader.setPosition(requiredInputRotations);
     });
   }
 
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-  }
 }
