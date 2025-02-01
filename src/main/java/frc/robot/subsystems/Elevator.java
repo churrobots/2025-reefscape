@@ -9,6 +9,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.churrolib.simulation.SimulationRegistry;
 import frc.robot.Hardware;
 
 public class Elevator extends SubsystemBase {
@@ -18,7 +19,9 @@ public class Elevator extends SubsystemBase {
 
   public Elevator() {
     setDefaultCommand(stop());
-    // TODO: add PID values
+    SimulationRegistry.registerHardware(m_elevatorMotorLeader);
+    SimulationRegistry.registerHardware(m_elevatorMotorFollow);
+    // TODO: add PID configuration
   }
 
   public Command stop() {

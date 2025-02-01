@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import frc.churrolib.simulation.SimulationRegistry;
 import frc.robot.Hardware;
 
 import com.revrobotics.spark.SparkClosedLoopController;
@@ -16,7 +17,8 @@ public class Elbow extends SubsystemBase {
 
   public Elbow() {
     setDefaultCommand(recieve());
-    // TODO: add PID values
+    SimulationRegistry.registerHardware(m_elbowMotor);
+    // TODO: add PID configuration
   }
 
   public Command recieve() {

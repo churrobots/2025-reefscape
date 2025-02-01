@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.churrolib.simulation.SimulationRegistry;
 import frc.robot.Hardware;
 
 // TODO(Controls): (1) Clarify the below understanding of the general robot design. Understand what sensors will be part of each subsystem.
@@ -27,13 +28,13 @@ public class Pipeshooter extends SubsystemBase {
 
   public Pipeshooter() {
     setDefaultCommand(stop());
+    SimulationRegistry.registerHardware(m_pipeShooterMotor);
+    // TODO: add PID configuration
   }
 
   public Command stop() {
     return run(() -> {
       m_pipeShooterMotor.set(0);
-      ;
-      ;
     });
   }
 
