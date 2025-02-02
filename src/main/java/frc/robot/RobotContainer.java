@@ -36,6 +36,7 @@ import frc.robot.subsystems.Pipeshooter;
 public class RobotContainer {
 
   Drivetrain drivetrain = new Drivetrain();
+  Pipeshooter pipeshooter = new Pipeshooter();
 
   void bindCommandsForTeleop() {
 
