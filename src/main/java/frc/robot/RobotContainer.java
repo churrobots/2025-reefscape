@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.churrolib.LogitechX3D;
 import frc.churrolib.vendor.Elastic;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Pipeshooter;
 
 // Need if using USB camera to roboRIO.
 // import edu.wpi.first.cameraserver.CameraServer;
@@ -48,11 +49,10 @@ public class RobotContainer {
 
     DoubleSupplier allianceRelativeFactor = () -> {
       boolean isRedAlliance = DriverStation.getAlliance().orElseGet(() -> Alliance.Red) == Alliance.Red;
-      double yagslInvert = Hardware.Drivetrain.useYAGSL ? -1 : 1;
       if (isRedAlliance) {
-        return 1.0 * yagslInvert;
+        return 1.0;
       } else {
-        return -1.0 * yagslInvert;
+        return -1.0;
       }
     };
     double flightstickDeadband = Hardware.DriverStation.driverFlightstickDeadband;
@@ -85,7 +85,7 @@ public class RobotContainer {
         () -> allianceRelativeFactor.getAsDouble()
             * MathUtil.applyDeadband(driverXboxController.getLeftX(), xboxDeadband)
             * Hardware.DriverStation.fastDriveScale,
-        () -> 1 * MathUtil.applyDeadband(driverXboxController.getRightX(), xboxDeadband)
+        () -> -1 * MathUtil.applyDeadband(driverXboxController.getRightX(), xboxDeadband)
             * Hardware.DriverStation.fastDriveScale);
 
     Command slowFieldRelativeDriverXboxControl = drivetrain.createFieldRelativeDriveCommand(
@@ -95,7 +95,7 @@ public class RobotContainer {
         () -> allianceRelativeFactor.getAsDouble()
             * MathUtil.applyDeadband(driverXboxController.getLeftX(), xboxDeadband)
             * Hardware.DriverStation.slowDriveScale,
-        () -> 1 * MathUtil.applyDeadband(driverXboxController.getRightX(), xboxDeadband)
+        () -> -1 * MathUtil.applyDeadband(driverXboxController.getRightX(), xboxDeadband)
             * Hardware.DriverStation.slowDriveScale);
 
     Command slowRobotRelativeOperatorXboxControl = drivetrain.createRobotRelativeDriveCommand(
