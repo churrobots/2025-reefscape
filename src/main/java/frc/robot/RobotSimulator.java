@@ -47,6 +47,8 @@ public class RobotSimulator {
     m_shooterSim = new CTRESingleFalconRollerSim(
         coralMotor, Hardware.Shooter.gearboxReduction, Hardware.Shooter.simMomentOfInertia);
 
+    double moduleXOffsetAbsoluteValueInMeters = Hardware.DrivetrainWithTemplate.kTrackWidth / 2;
+    double moduleYOffsetAbsoluteValueInMeters = Hardware.DrivetrainWithTemplate.kWheelBase / 2;
     m_revTemplateSimFL = new RevMAXSwerveModuleSim(
         SimulationRegistry.getSparkMax(Hardware.DrivetrainWithTemplate.frontLeftDrivingMotorCAN),
         Hardware.DrivetrainWithTemplate.drivingMotorGearboxReduction,
@@ -54,7 +56,8 @@ public class RobotSimulator {
         SimulationRegistry.getSparkMax(Hardware.DrivetrainWithTemplate.frontLeftTurningMotorCAN),
         Hardware.DrivetrainWithTemplate.turningMotorGearboxReduction,
         Hardware.DrivetrainWithTemplate.turningEncoderVelocityFactor,
-        Hardware.DrivetrainWithTemplate.kFrontLeftChassisAngularOffset);
+        Hardware.DrivetrainWithTemplate.kFrontLeftChassisAngularOffset,
+        new Translation2d(moduleYOffsetAbsoluteValueInMeters, moduleXOffsetAbsoluteValueInMeters));
     m_revTemplateSimFR = new RevMAXSwerveModuleSim(
         SimulationRegistry.getSparkMax(Hardware.DrivetrainWithTemplate.frontRightDrivingMotorCAN),
         Hardware.DrivetrainWithTemplate.drivingMotorGearboxReduction,
@@ -62,7 +65,8 @@ public class RobotSimulator {
         SimulationRegistry.getSparkMax(Hardware.DrivetrainWithTemplate.frontRightTurningMotorCAN),
         Hardware.DrivetrainWithTemplate.turningMotorGearboxReduction,
         Hardware.DrivetrainWithTemplate.turningEncoderVelocityFactor,
-        Hardware.DrivetrainWithTemplate.kFrontRightChassisAngularOffset);
+        Hardware.DrivetrainWithTemplate.kFrontRightChassisAngularOffset,
+        new Translation2d(moduleXOffsetAbsoluteValueInMeters, -1 * moduleYOffsetAbsoluteValueInMeters));
     m_revTemplateSimRL = new RevMAXSwerveModuleSim(
         SimulationRegistry.getSparkMax(Hardware.DrivetrainWithTemplate.rearLeftDrivingMotorCAN),
         Hardware.DrivetrainWithTemplate.drivingMotorGearboxReduction,
@@ -70,7 +74,8 @@ public class RobotSimulator {
         SimulationRegistry.getSparkMax(Hardware.DrivetrainWithTemplate.rearLeftTurningMotorCAN),
         Hardware.DrivetrainWithTemplate.turningMotorGearboxReduction,
         Hardware.DrivetrainWithTemplate.turningEncoderVelocityFactor,
-        Hardware.DrivetrainWithTemplate.kRearLeftChassisAngularOffset);
+        Hardware.DrivetrainWithTemplate.kRearLeftChassisAngularOffset,
+        new Translation2d(-1 * moduleYOffsetAbsoluteValueInMeters, moduleXOffsetAbsoluteValueInMeters));
     m_revTemplateSimRR = new RevMAXSwerveModuleSim(
         SimulationRegistry.getSparkMax(Hardware.DrivetrainWithTemplate.rearRightDrivingMotorCAN),
         Hardware.DrivetrainWithTemplate.drivingMotorGearboxReduction,
@@ -78,7 +83,8 @@ public class RobotSimulator {
         SimulationRegistry.getSparkMax(Hardware.DrivetrainWithTemplate.rearRightTurningMotorCAN),
         Hardware.DrivetrainWithTemplate.turningMotorGearboxReduction,
         Hardware.DrivetrainWithTemplate.turningEncoderVelocityFactor,
-        Hardware.DrivetrainWithTemplate.kRearRightChassisAngularOffset);
+        Hardware.DrivetrainWithTemplate.kRearRightChassisAngularOffset,
+        new Translation2d(-1 * moduleYOffsetAbsoluteValueInMeters, -1 * moduleXOffsetAbsoluteValueInMeters));
 
     // Setup visualizations
     // Visualize this as a yellow box, so you can see it spinning.
@@ -151,10 +157,19 @@ public class RobotSimulator {
     // If we're using YAGSL, that simulation will already be using setRobotPose(),
     // so we need to identify this pose as a different pose (TemplateRobotPose) to
     // distinguish it in the simulation GUI.
+    Pose2d robotPose = m_swerveSim.getRobotPose();
+    Pose2d[] modulePoses = {
+        m_revTemplateSimFL.getModulePose(robotPose),
+        m_revTemplateSimFR.getModulePose(robotPose),
+        m_revTemplateSimRL.getModulePose(robotPose),
+        m_revTemplateSimRR.getModulePose(robotPose),
+    };
     if (Hardware.Drivetrain.useYAGSL) {
-      m_vizField.getObject("TemplateRobotPose").setPose(m_swerveSim.getRobotPose());
+      m_vizField.getObject("TemplateRobotPose").setPose(robotPose);
+      m_vizField.getObject("TemplateRobotXModules").setPoses(modulePoses);
     } else {
-      m_vizField.setRobotPose(m_swerveSim.getRobotPose());
+      m_vizField.setRobotPose(robotPose);
+      m_vizField.getObject("XModules").setPoses(modulePoses);
     }
 
   }
