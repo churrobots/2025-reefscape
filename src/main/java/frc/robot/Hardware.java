@@ -119,14 +119,32 @@ public final class Hardware {
     // because native units are RPM
 
     // Chassis configuration
-    public static final double kTrackWidth = Units.inchesToMeters(18.5);
-    public static final double kWheelBase = Units.inchesToMeters(23.5);
+    public static final double kTrackWidth = switch (robotName) {
+      case ROBOT_CANELO -> Units.inchesToMeters(18.5);
+      default -> Units.inchesToMeters(26.5);
+    };
+    public static final double kWheelBase = switch (robotName) {
+      case ROBOT_CANELO -> Units.inchesToMeters(23.5);
+      default -> Units.inchesToMeters(26.5);
+    };
 
     // Offsets of the turning motor of each module, relative to chassis (radians).
-    public static final double kFrontLeftChassisAngularOffset = -Math.PI / 2;
-    public static final double kFrontRightChassisAngularOffset = 0;
-    public static final double kRearLeftChassisAngularOffset = Math.PI;
-    public static final double kRearRightChassisAngularOffset = Math.PI / 2;
+    public static final double kFrontLeftChassisAngularOffset = switch (robotName) {
+      case ROBOT_CANELO -> -Math.PI / 2;
+      default -> 0;
+    };
+    public static final double kFrontRightChassisAngularOffset = switch (robotName) {
+      case ROBOT_CANELO -> 0;
+      default -> 0;
+    };
+    public static final double kRearLeftChassisAngularOffset = switch (robotName) {
+      case ROBOT_CANELO -> Math.PI;
+      default -> Math.PI;
+    };
+    public static final double kRearRightChassisAngularOffset = switch (robotName) {
+      case ROBOT_CANELO -> Math.PI / 2;
+      default -> Math.PI;
+    };
 
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
