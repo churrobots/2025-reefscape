@@ -57,6 +57,7 @@ public class DrivetrainWithYAGSL extends SubsystemBase {
 
   // YAGSL Swerve
   private final SwerveDrive m_swerveDrive;
+  // private Vision m_vision;
 
   public DrivetrainWithYAGSL() {
     setDefaultCommand(new RunCommand(this::stop, this));
@@ -80,7 +81,7 @@ public class DrivetrainWithYAGSL extends SubsystemBase {
     }
 
     // TODO: see if this helps us debug
-    // _registerHardwardWithOldSimulation();
+    _registerHardwardWithOldSimulation();
 
     // m_swerveDrive.setHeadingCorrection(false); // Heading correction should only
     // be used while controlling the robot via
@@ -96,6 +97,10 @@ public class DrivetrainWithYAGSL extends SubsystemBase {
     // 1); // Enable if you want to resynchronize your absolute encoders and motor
     // encoders
     // // periodically when they are not moving.
+
+    // Setup vision
+    // m_vision = new Vision(m_swerveDrive::getPose, m_swerveDrive.field);
+
   }
 
   private void _registerHardwardWithOldSimulation() {
@@ -112,6 +117,9 @@ public class DrivetrainWithYAGSL extends SubsystemBase {
 
   @Override
   public void periodic() {
+    // TODO: bring this back for vision
+    // m_vision.updatePoseEstimation(m_swerveDrive);
+    // m_swerveDrive.updateOdometry();
   }
 
   @Override
