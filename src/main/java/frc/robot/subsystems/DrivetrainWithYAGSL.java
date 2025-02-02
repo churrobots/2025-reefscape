@@ -30,6 +30,7 @@ import frc.robot.Hardware;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.RobotBase;
 import swervelib.parser.SwerveParser;
 import swervelib.SwerveDrive;
 import swervelib.math.SwerveMath;
@@ -62,9 +63,6 @@ public class DrivetrainWithYAGSL extends SubsystemBase {
   public DrivetrainWithYAGSL() {
     setDefaultCommand(new RunCommand(this::stop, this));
     SmartDashboard.putData("Field", m_fieldViz);
-    // m_sim = new GenericSwerveSim(m_gyro, this::getRobotRelativeSpeeds,
-    // m_fieldViz);
-    // ChurroSim.register(m_sim);
     SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
 
     File m_swerveJsonDirectory = new File(Filesystem.getDeployDirectory(),
@@ -81,7 +79,12 @@ public class DrivetrainWithYAGSL extends SubsystemBase {
     }
 
     // TODO: see if this helps us debug
-    _registerHardwardWithOldSimulation();
+    if (RobotBase.isSimulation()) {
+      _registerHardwardWithOldSimulation();
+      // YAGSL recommends disabling certain features during sim
+      m_swerveDrive.setHeadingCorrection(false);
+      m_swerveDrive.setCosineCompensator(false);
+    }
 
     // m_swerveDrive.setHeadingCorrection(false); // Heading correction should only
     // be used while controlling the robot via
