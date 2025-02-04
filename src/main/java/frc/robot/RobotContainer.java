@@ -56,7 +56,6 @@ public class RobotContainer {
   Elevator elevator = new Elevator();
   Elbow elbow = new Elbow();
   Command moveElbowAndElevatorTo1 = elbow.move1Beta().alongWith(elevator.move1Beta());
-  
 
   void bindCommandsForTeleop() {
 
@@ -85,7 +84,7 @@ public class RobotContainer {
         () -> allianceRelativeFactor.getAsDouble()
             * MathUtil.applyDeadband(driverXboxController.getLeftX(), xboxDeadband)
             * Hardware.DriverStation.fastDriveScale,
-        () -> -1 * MathUtil.applyDeadband(driverXboxController.getRightX(), xboxDeadband)
+        () -> MathUtil.applyDeadband(driverXboxController.getRightX(), xboxDeadband)
             * Hardware.DriverStation.fastDriveScale);
 
     Command slowFieldRelativeDriverXboxControl = drivetrain.createFieldRelativeDriveCommand(
@@ -95,7 +94,7 @@ public class RobotContainer {
         () -> allianceRelativeFactor.getAsDouble()
             * MathUtil.applyDeadband(driverXboxController.getLeftX(), xboxDeadband)
             * Hardware.DriverStation.slowDriveScale,
-        () -> -1 * MathUtil.applyDeadband(driverXboxController.getRightX(), xboxDeadband)
+        () -> MathUtil.applyDeadband(driverXboxController.getRightX(), xboxDeadband)
             * Hardware.DriverStation.slowDriveScale);
 
     Command slowRobotRelativeOperatorXboxControl = drivetrain.createRobotRelativeDriveCommand(
@@ -117,7 +116,7 @@ public class RobotContainer {
     operatorXboxController.leftBumper().whileTrue(slowRobotRelativeOperatorXboxControl);
     operatorXboxController.rightBumper().whileTrue(pipeshooter.shootCoral());
 
-    //commands for the elbow positioning
+    // commands for the elbow positioning
 
     Command moveElbowAndElevatorToRecieve = elbow.recieve().alongWith(elevator.moveToRecieve())
         .alongWith(pipeshooter.intakeCoral());
@@ -129,8 +128,14 @@ public class RobotContainer {
     Command moveElbowAndElevatorTo2 = elbow.move2Sigma().alongWith(elevator.move2Sigma());
     operatorXboxController.y().onTrue(moveElbowAndElevatorTo2);
 
-    Command moveElbowAndElevatorTo3 = elbow.move3Alpha().alongWith(elevator.move3Alpha());
+    Command moveElbowAndElevatorTo3 = elbow.move2Sigma().alongWith(elevator.move3Alpha());
     operatorXboxController.b().onTrue(moveElbowAndElevatorTo3);
+
+    Command moveElbowAndElevatorToL2Algae = elbow.moveAlgae().alongWith(elevator.move2Sigma());
+    operatorXboxController.povDown().onTrue(moveElbowAndElevatorToL2Algae);
+
+    Command moveElbowAndElevatorToL3Algae = elbow.moveAlgae().alongWith(elevator.move3Alpha());
+    operatorXboxController.povUp().onTrue(moveElbowAndElevatorToL3Algae);
 
     ///////////////////////////// CAMERA SETUP ////////////////////////////////////
 
@@ -278,7 +283,7 @@ public class RobotContainer {
     // TODO: make real commands for auto to use
     NamedCommands.registerCommand("move1Beta", elbow.move1Beta());
     NamedCommands.registerCommand("move2Sigma", elbow.move2Sigma());
-    NamedCommands.registerCommand("move3Alpha", elbow.move3Alpha());
+    NamedCommands.registerCommand("moveAlgae", elbow.moveAlgae());
     NamedCommands.registerCommand("intakePipeshooter", pipeshooter.intakeCoral());
     NamedCommands.registerCommand("shootCoral", pipeshooter.shootCoral());
     NamedCommands.registerCommand("waitForTeammates", new WaitCommand(9));
