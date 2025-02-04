@@ -22,7 +22,7 @@ public class Elbow extends SubsystemBase {
   SparkMaxConfig config = new SparkMaxConfig();
 
   class Constants {
-    static final double kP = 1.0;
+    static final double kP = .0001;
     static final double kI = 0.0;
     static final double kD = 0.0;
   }

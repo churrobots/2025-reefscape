@@ -33,7 +33,7 @@ public class Elevator extends SubsystemBase {
     SimulationRegistry.registerHardware(m_elevatorMotorFollow);
     // TODO: add PID configuration
 
-    var slot0Configs = new Slot0Configs();
+    Slot0Configs slot0Configs = new Slot0Configs();
     slot0Configs.kP = Constants.kP;
     slot0Configs.kI = Constants.kI;
     slot0Configs.kD = Constants.kD;
@@ -57,7 +57,6 @@ public class Elevator extends SubsystemBase {
       // create a position closed-loop request, voltage output, slot 0 configs
       final PositionVoltage m_request = new PositionVoltage(0).withSlot(0);
 
-      // set position to 10 rotations
       m_elevatorMotorLeader.setControl(m_request.withPosition(requiredInputRotations));
     });
   }
@@ -70,7 +69,6 @@ public class Elevator extends SubsystemBase {
       // create a position closed-loop request, voltage output, slot 0 configs
       final PositionVoltage m_request = new PositionVoltage(0).withSlot(0);
 
-      // set position to 10 rotations
       m_elevatorMotorLeader.setControl(m_request.withPosition(requiredInputRotations));
     });
   }
@@ -83,7 +81,6 @@ public class Elevator extends SubsystemBase {
       // create a position closed-loop request, voltage output, slot 0 configs
       final PositionVoltage m_request = new PositionVoltage(0).withSlot(0);
 
-      // set position to 10 rotations
       m_elevatorMotorLeader.setControl(m_request.withPosition(requiredInputRotations));
     });
   }
@@ -96,7 +93,6 @@ public class Elevator extends SubsystemBase {
       // create a position closed-loop request, voltage output, slot 0 configs
       final PositionVoltage m_request = new PositionVoltage(0).withSlot(0);
 
-      // set position to 10 rotations
       m_elevatorMotorLeader.setControl(m_request.withPosition(requiredInputRotations));
     });
   }
