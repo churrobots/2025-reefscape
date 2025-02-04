@@ -164,7 +164,7 @@ public final class Hardware {
     public static final int driverFlightstickPort = 2;
     public static final double driverXboxDeadband = 0.1;
     public static final double driverFlightstickDeadband = 0.1;
-    public static final boolean driverUsesFlightstick = RobotBase.isSimulation() ? false : true;
+    public static final boolean driverUsesFlightstick = false;
     public static final double fastDriveScale = 1.0;
     public static final double slowDriveScale = 0.25;
   }
