@@ -7,7 +7,12 @@ package frc.robot;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -21,7 +26,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.churrolib.LogitechX3D;
 import frc.churrolib.vendor.Elastic;
 import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Pipeshooter;
 
 // Need if using USB camera to roboRIO.
@@ -31,9 +35,8 @@ import frc.robot.subsystems.Pipeshooter;
 
 public class RobotContainer {
 
-  Intake intake = new Intake();
-  Pipeshooter pipeshooter = new Pipeshooter();
   Drivetrain drivetrain = new Drivetrain();
+  Pipeshooter pipeshooter = new Pipeshooter();
 
   void bindCommandsForTeleop() {
 
@@ -44,69 +47,63 @@ public class RobotContainer {
     // TODO: confirm WASD is simulating joystick axes pos/neg directions correctly
     // TODO: figure out how sim handles the initial pose, and recalibrated poses
     Command recalibrateDriveTrain = new RunCommand(() -> drivetrain.recalibrateDrivetrain(), drivetrain);
-    // Command bestIntake = new RunCommand(() -> intake.yoink(), intake);
-    // Command coralIntaker = new RunCommand(() -> pipeshooter.coralIntake(),
-    // pipeshooter);
-    // Command coralFeeder = new RunCommand(() -> pipeshooter.feedCoral(),
-    // pipeshooter);
 
     DoubleSupplier allianceRelativeFactor = () -> {
-      boolean isRedAlliance = DriverStation.getAlliance().orElseGet(() -> Alliance.Red) == Alliance.Red;
-      double yagslInvert = Hardware.Drivetrain.useYAGSL ? -1 : 1;
-      if (isRedAlliance) {
-        return 1.0 * yagslInvert;
+      boolean isBlueAlliance = DriverStation.getAlliance().orElseGet(() -> Alliance.Blue) == Alliance.Blue;
+      if (isBlueAlliance) {
+        return 1.0;
       } else {
-        return -1.0 * yagslInvert;
+        return -1.0;
       }
     };
     double flightstickDeadband = Hardware.DriverStation.driverFlightstickDeadband;
     double xboxDeadband = Hardware.DriverStation.driverXboxDeadband;
 
     Command fastFieldRelativeDriverFlightstickControl = drivetrain.createFieldRelativeDriveCommand(
-        () -> allianceRelativeFactor.getAsDouble()
+        () -> -1 * allianceRelativeFactor.getAsDouble()
             * MathUtil.applyDeadband(driverFlightstickController.getY(), flightstickDeadband)
             * Hardware.DriverStation.fastDriveScale,
-        () -> allianceRelativeFactor.getAsDouble()
+        () -> -1 * allianceRelativeFactor.getAsDouble()
             * MathUtil.applyDeadband(driverFlightstickController.getX(), flightstickDeadband)
             * Hardware.DriverStation.fastDriveScale,
         () -> -1 * MathUtil.applyDeadband(driverFlightstickController.getTwist(), flightstickDeadband)
             * Hardware.DriverStation.fastDriveScale);
 
     Command slowFieldRelativeDriverFlightstickControl = drivetrain.createFieldRelativeDriveCommand(
-        () -> allianceRelativeFactor.getAsDouble()
+        () -> -1 * allianceRelativeFactor.getAsDouble()
             * MathUtil.applyDeadband(driverFlightstickController.getY(), flightstickDeadband)
             * Hardware.DriverStation.slowDriveScale,
-        () -> allianceRelativeFactor.getAsDouble()
+        () -> -1 * allianceRelativeFactor.getAsDouble()
             * MathUtil.applyDeadband(driverFlightstickController.getX(), flightstickDeadband)
             * Hardware.DriverStation.slowDriveScale,
         () -> -1 * MathUtil.applyDeadband(driverFlightstickController.getTwist(), flightstickDeadband)
             * Hardware.DriverStation.slowDriveScale);
 
     Command fastFieldRelativeDriverXboxControl = drivetrain.createFieldRelativeDriveCommand(
-        () -> allianceRelativeFactor.getAsDouble()
+        () -> -1 * allianceRelativeFactor.getAsDouble()
             * MathUtil.applyDeadband(driverXboxController.getLeftY(), xboxDeadband)
             * Hardware.DriverStation.fastDriveScale,
-        () -> allianceRelativeFactor.getAsDouble()
+        () -> -1 * allianceRelativeFactor.getAsDouble()
             * MathUtil.applyDeadband(driverXboxController.getLeftX(), xboxDeadband)
             * Hardware.DriverStation.fastDriveScale,
         () -> -1 * MathUtil.applyDeadband(driverXboxController.getRightX(), xboxDeadband)
             * Hardware.DriverStation.fastDriveScale);
 
     Command slowFieldRelativeDriverXboxControl = drivetrain.createFieldRelativeDriveCommand(
-        () -> allianceRelativeFactor.getAsDouble()
+        () -> -1 * allianceRelativeFactor.getAsDouble()
             * MathUtil.applyDeadband(driverXboxController.getLeftY(), xboxDeadband)
             * Hardware.DriverStation.slowDriveScale,
-        () -> allianceRelativeFactor.getAsDouble()
+        () -> -1 * allianceRelativeFactor.getAsDouble()
             * MathUtil.applyDeadband(driverXboxController.getLeftX(), xboxDeadband)
             * Hardware.DriverStation.slowDriveScale,
         () -> -1 * MathUtil.applyDeadband(driverXboxController.getRightX(), xboxDeadband)
             * Hardware.DriverStation.slowDriveScale);
 
     Command slowRobotRelativeOperatorXboxControl = drivetrain.createRobotRelativeDriveCommand(
-        () -> allianceRelativeFactor.getAsDouble()
+        () -> -1 * allianceRelativeFactor.getAsDouble()
             * MathUtil.applyDeadband(operatorXboxController.getLeftY(), xboxDeadband)
             * Hardware.DriverStation.slowDriveScale,
-        () -> allianceRelativeFactor.getAsDouble()
+        () -> -1 * allianceRelativeFactor.getAsDouble()
             * MathUtil.applyDeadband(operatorXboxController.getLeftX(), xboxDeadband)
             * Hardware.DriverStation.slowDriveScale,
         () -> -1 * MathUtil.applyDeadband(operatorXboxController.getRightX(), xboxDeadband)
@@ -117,17 +114,12 @@ public class RobotContainer {
       drivetrain.setDefaultCommand(fastFieldRelativeDriverFlightstickControl);
       driverFlightstickController.button(2).whileTrue(slowFieldRelativeDriverFlightstickControl);
       driverFlightstickController.button(5).whileTrue(recalibrateDriveTrain);
-      // driverFlightstickController.button(7).whileTrue(bestIntake);
-      // driverFlightstickController.button(8).whileTrue(coralIntaker);
-      // driverFlightstickController.button(9).whileTrue(coralFeeder);
 
     } else {
 
       drivetrain.setDefaultCommand(fastFieldRelativeDriverXboxControl);
       driverXboxController.leftBumper().whileTrue(slowFieldRelativeDriverXboxControl);
       driverXboxController.back().whileTrue(recalibrateDriveTrain);
-      // driverXboxController.a().whileTrue(coralIntaker);
-      // driverXboxController.b().whileTrue(coralFeeder);
     }
 
     operatorXboxController.b().whileTrue(slowRobotRelativeOperatorXboxControl);
@@ -185,11 +177,48 @@ public class RobotContainer {
   }
 
   Supplier<Command> bindCommandsForAutonomous() {
+
+    RobotConfig config;
+    try {
+      config = RobotConfig.fromGUISettings();
+      AutoBuilder.configure(
+          drivetrain::getPose, // Robot pose supplier
+          drivetrain::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
+          drivetrain::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+          (speeds, feedforwards) -> drivetrain.setRobotRelativeSpeeds(speeds), // Method that will drive the robot given
+                                                                               // ROBOT RELATIVE ChassisSpeeds. Also
+                                                                               // optionally outputs individual module
+                                                                               // feedforwards
+          new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for
+                                          // holonomic drive trains
+              new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+              new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
+          ),
+          config, // The robot configuration
+          () -> {
+            // Boolean supplier that controls when the path will be mirrored for the red
+            // alliance
+            // This will flip the path being followed to the red side of the field.
+            // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+            boolean isBlueAlliance = DriverStation.getAlliance().orElseGet(() -> Alliance.Blue) == Alliance.Blue;
+            boolean shouldFlip = !isBlueAlliance;
+            return shouldFlip;
+          },
+          drivetrain // Reference to this subsystem to set requirements
+      );
+    } catch (Exception e) {
+      // Handle exception as needed
+      e.printStackTrace();
+    }
+
     // TODO: make real commands for auto to use
-    NamedCommands.registerCommand("doNothing", new InstantCommand());
-    // TODO: use AutoBuilder.buildAutoChooser() instead
-    SendableChooser<Command> autoChooser = new SendableChooser<Command>();
-    SmartDashboard.putData(autoChooser);
+    NamedCommands.registerCommand("move1Beta", new InstantCommand());
+    NamedCommands.registerCommand("move2Sigma", new InstantCommand());
+    NamedCommands.registerCommand("move3Alpha", new InstantCommand());
+    NamedCommands.registerCommand("waitForTeammates", new InstantCommand());
+    SendableChooser<Command> autoChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("Auto Chooser", autoChooser);
     return autoChooser::getSelected;
   }
 

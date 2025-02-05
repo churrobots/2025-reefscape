@@ -18,7 +18,7 @@ public final class Hardware {
   public static final String ROBOT_CANELO = "canelo";
   public static final String ROBOT_ALPHA = "alpha";
   public static final String ROBOT_COMPETITION = "competition";
-  public static final String ROBOT_DEFAULT = RobotBase.isSimulation() ? ROBOT_CANELO : ROBOT_COMPETITION;
+  public static final String ROBOT_DEFAULT = RobotBase.isSimulation() ? ROBOT_ALPHA : ROBOT_COMPETITION;
   public static final String robotName = NetworkTableInstance
       .getDefault()
       .getEntry("robotName")
@@ -30,7 +30,7 @@ public final class Hardware {
   }
 
   public final class Shooter {
-    public static final int falconMotorCAN = 10;
+    public static final int falconMotorCAN = 30;
     public static final double gearboxReduction = 5.0;
     public static final double simMomentOfInertia = 0.01;
   }
@@ -48,7 +48,10 @@ public final class Hardware {
   public final class Drivetrain {
     // NOTE: eventually we will migrate over to the YAGSL drivetrain, but for now
     // we are keeping both so we can switch back in the worst case scenario
-    public static final boolean useYAGSL = false;
+    public static final boolean useYAGSL = switch (robotName) {
+      case ROBOT_CANELO -> false;
+      default -> true;
+    };
     public static final double maxSpeedMetersPerSecond = 6.04;
   }
 
@@ -117,14 +120,32 @@ public final class Hardware {
     // because native units are RPM
 
     // Chassis configuration
-    public static final double kTrackWidth = Units.inchesToMeters(18.5);
-    public static final double kWheelBase = Units.inchesToMeters(23.5);
+    public static final double kTrackWidth = switch (robotName) {
+      case ROBOT_CANELO -> Units.inchesToMeters(18.5);
+      default -> Units.inchesToMeters(26.5);
+    };
+    public static final double kWheelBase = switch (robotName) {
+      case ROBOT_CANELO -> Units.inchesToMeters(23.5);
+      default -> Units.inchesToMeters(26.5);
+    };
 
     // Offsets of the turning motor of each module, relative to chassis (radians).
-    public static final double kFrontLeftChassisAngularOffset = -Math.PI / 2;
-    public static final double kFrontRightChassisAngularOffset = 0;
-    public static final double kRearLeftChassisAngularOffset = Math.PI;
-    public static final double kRearRightChassisAngularOffset = Math.PI / 2;
+    public static final double kFrontLeftChassisAngularOffset = switch (robotName) {
+      case ROBOT_CANELO -> -Math.PI / 2;
+      default -> 0;
+    };
+    public static final double kFrontRightChassisAngularOffset = switch (robotName) {
+      case ROBOT_CANELO -> 0;
+      default -> 0;
+    };
+    public static final double kRearLeftChassisAngularOffset = switch (robotName) {
+      case ROBOT_CANELO -> Math.PI;
+      default -> Math.PI;
+    };
+    public static final double kRearRightChassisAngularOffset = switch (robotName) {
+      case ROBOT_CANELO -> Math.PI / 2;
+      default -> Math.PI;
+    };
 
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
@@ -144,7 +165,7 @@ public final class Hardware {
     public static final int driverFlightstickPort = 2;
     public static final double driverXboxDeadband = 0.1;
     public static final double driverFlightstickDeadband = 0.1;
-    public static final boolean driverUsesFlightstick = RobotBase.isSimulation() ? false : true;
+    public static final boolean driverUsesFlightstick = false;
     public static final double fastDriveScale = 1.0;
     public static final double slowDriveScale = 0.25;
   }

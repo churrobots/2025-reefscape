@@ -5,10 +5,14 @@
 package frc.churrolib.simulation;
 
 import com.revrobotics.spark.SparkBase;
+
 // TODO: stop using PatchedSparkSim once RevLib fixes their SparkSim bugs
 import com.revrobotics.spark.PatchedSparkSim;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
@@ -34,6 +38,7 @@ public class RevMAXSwerveModuleSim {
   final double m_drivingEncoderVelocityFactor;
   final double m_turningEncoderVelocityFactor;
   final double m_turningAngularOffset;
+  final Translation2d m_offsetFromRobotCenter;
 
   public RevMAXSwerveModuleSim(
       SparkBase drivingMotorController,
@@ -42,7 +47,8 @@ public class RevMAXSwerveModuleSim {
       SparkBase turningMotorController,
       double turningMotorReduction,
       double turningEncoderVelocityFactor,
-      double turningAngularOffset) {
+      double turningAngularOffset,
+      Translation2d offsetFromRobotCenter) {
 
     // Start with the motor controller sims.
     m_drivingMotorController = drivingMotorController;
@@ -58,6 +64,7 @@ public class RevMAXSwerveModuleSim {
     m_turningMotorReduction = turningMotorReduction;
     m_turningEncoderVelocityFactor = turningEncoderVelocityFactor;
     m_turningAngularOffset = turningAngularOffset;
+    m_offsetFromRobotCenter = offsetFromRobotCenter;
 
     // Add the physics sims.
     // TODO: VecBuilder was weird, figure out if we need to add noise back in
@@ -86,6 +93,11 @@ public class RevMAXSwerveModuleSim {
     return new SwerveModuleState(
         drivingEncoderVelocityRPM,
         new Rotation2d(turningEncoderPosition - m_turningAngularOffset));
+  }
+
+  public Pose2d getModulePose(Pose2d robotPose) {
+    return robotPose.plus(
+        new Transform2d(m_offsetFromRobotCenter, getSimulatedState().angle));
   }
 
   public void iterate(double timeDeltaInSeconds) {

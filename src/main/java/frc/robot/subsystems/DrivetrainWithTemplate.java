@@ -177,15 +177,11 @@ public class DrivetrainWithTemplate extends SubsystemBase {
    * This is helpful for resetting field-oriented driving.
    */
   public void recalibrateDrivetrain() {
+    Pose2d currentPose = getPose();
+    Translation2d currentTranslation = currentPose.getTranslation();
     double recalibratedAngleRadians = 0;
-    var alliance = DriverStation.getAlliance();
-    if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
-      recalibratedAngleRadians = Math.PI;
-    }
-    var currentPose = getPose();
-    var currentTranslation = currentPose.getTranslation();
-    var recalibratedRotation = new Rotation2d(recalibratedAngleRadians);
-    var recalibratedPose = new Pose2d(currentTranslation, recalibratedRotation);
+    Rotation2d recalibratedRotation = new Rotation2d(recalibratedAngleRadians);
+    Pose2d recalibratedPose = new Pose2d(currentTranslation, recalibratedRotation);
     resetPose(recalibratedPose);
   }
 
