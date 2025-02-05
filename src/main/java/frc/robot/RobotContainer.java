@@ -67,38 +67,37 @@ public class RobotContainer {
     Command recalibrateDriveTrain = new RunCommand(() -> drivetrain.recalibrateDrivetrain(), drivetrain);
 
     DoubleSupplier allianceRelativeFactor = () -> {
-      boolean isRedAlliance = DriverStation.getAlliance().orElseGet(() -> Alliance.Red) == Alliance.Red;
-      double yagslInvert = Hardware.Drivetrain.useYAGSL ? -1 : 1;
-      if (isRedAlliance) {
-        return 1.0 * yagslInvert;
+      boolean isBlueAlliance = DriverStation.getAlliance().orElseGet(() -> Alliance.Blue) == Alliance.Blue;
+      if (isBlueAlliance) {
+        return 1.0;
       } else {
-        return -1.0 * yagslInvert;
+        return -1.0;
       }
     };
     double xboxDeadband = Hardware.DriverStation.driverXboxDeadband;
 
     Command fastFieldRelativeDriverXboxControl = drivetrain.createFieldRelativeDriveCommand(
-        () -> allianceRelativeFactor.getAsDouble()
+        () -> -1 * allianceRelativeFactor.getAsDouble()
             * MathUtil.applyDeadband(driverXboxController.getLeftY(), xboxDeadband)
             * Hardware.DriverStation.fastDriveScale,
-        () -> allianceRelativeFactor.getAsDouble()
+        () -> -1 * allianceRelativeFactor.getAsDouble()
             * MathUtil.applyDeadband(driverXboxController.getLeftX(), xboxDeadband)
             * Hardware.DriverStation.fastDriveScale,
         () -> MathUtil.applyDeadband(driverXboxController.getRightX(), xboxDeadband)
             * Hardware.DriverStation.fastDriveScale);
 
     Command slowFieldRelativeDriverXboxControl = drivetrain.createFieldRelativeDriveCommand(
-        () -> allianceRelativeFactor.getAsDouble()
+        () -> -1 * allianceRelativeFactor.getAsDouble()
             * MathUtil.applyDeadband(driverXboxController.getLeftY(), xboxDeadband)
             * Hardware.DriverStation.slowDriveScale,
-        () -> allianceRelativeFactor.getAsDouble()
+        () -> -1 * allianceRelativeFactor.getAsDouble()
             * MathUtil.applyDeadband(driverXboxController.getLeftX(), xboxDeadband)
             * Hardware.DriverStation.slowDriveScale,
         () -> MathUtil.applyDeadband(driverXboxController.getRightX(), xboxDeadband)
             * Hardware.DriverStation.slowDriveScale);
 
     Command slowRobotRelativeOperatorXboxControl = drivetrain.createRobotRelativeDriveCommand(
-        () -> allianceRelativeFactor.getAsDouble()
+        () -> -1 * allianceRelativeFactor.getAsDouble()
             * MathUtil.applyDeadband(operatorXboxController.getLeftY(), xboxDeadband)
             * Hardware.DriverStation.slowDriveScale
             * -1,
@@ -267,11 +266,9 @@ public class RobotContainer {
             // This will flip the path being followed to the red side of the field.
             // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-            var alliance = DriverStation.getAlliance();
-            if (alliance.isPresent()) {
-              return alliance.get() == DriverStation.Alliance.Red;
-            }
-            return false;
+            boolean isBlueAlliance = DriverStation.getAlliance().orElseGet(() -> Alliance.Blue) == Alliance.Blue;
+            boolean shouldFlip = !isBlueAlliance;
+            return shouldFlip;
           },
           drivetrain // Reference to this subsystem to set requirements
       );

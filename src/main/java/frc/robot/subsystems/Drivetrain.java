@@ -8,6 +8,7 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Hardware;
@@ -19,9 +20,11 @@ public class Drivetrain extends SubsystemBase {
 
   public Drivetrain() {
     if (Hardware.Drivetrain.useYAGSL) {
+      SmartDashboard.putString("DrivetrainType", "YAGSL");
       m_drivetrainWithYAGSL = new DrivetrainWithYAGSL();
       m_drivetrainWithTemplate = null;
     } else {
+      SmartDashboard.putString("DrivetrainType", "Template");
       m_drivetrainWithTemplate = new DrivetrainWithTemplate();
       m_drivetrainWithYAGSL = null;
     }
