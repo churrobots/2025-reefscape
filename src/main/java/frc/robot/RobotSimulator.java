@@ -13,8 +13,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
@@ -22,7 +20,7 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
-import frc.churrolib.CTREDoubleFalconElevatorSim;
+import frc.churrolib.simulation.CTREDoubleFalconElevatorSim;
 import frc.churrolib.simulation.CTRESingleFalconRollerSim;
 import frc.churrolib.simulation.GenericSwerveSim;
 import frc.churrolib.simulation.RevMAXSwerveModuleSim;
@@ -182,8 +180,7 @@ public class RobotSimulator {
         m_revTemplateSimRR.getModulePose(robotPose),
     };
     if (Hardware.Drivetrain.useYAGSL) {
-      m_vizField.getObject("TemplateRobotPose").setPose(robotPose);
-      m_vizField.getObject("TemplateRobotXModules").setPoses(modulePoses);
+      // Skip the generic visualization, YAGSL provides its own viz
     } else {
       m_vizField.setRobotPose(robotPose);
       m_vizField.getObject("XModules").setPoses(modulePoses);
