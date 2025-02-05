@@ -12,6 +12,7 @@ import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Hardware;
 
 /** Add your docs here. */
@@ -56,13 +57,18 @@ public class CTREDoubleFalconElevatorSim {
   public void iterate(double timeDeltaInSeconds) {
     double leaderOutputVoltage = m_leaderMotor.get() * RobotController.getBatteryVoltage();
     double followerOutputVoltage = m_followerMotor.get() * RobotController.getBatteryVoltage();
-    // FIXME: why?
     // m_elevatorPhysicsSim.setInput(leaderOutputVoltage, followerOutputVoltage);
     m_elevatorPhysicsSim.setInput(leaderOutputVoltage);
     m_elevatorPhysicsSim.update(timeDeltaInSeconds);
 
-    m_leaderSimState.setRotorVelocity(m_elevatorPhysicsSim.getVelocityMetersPerSecond());
-    m_leaderSimState.setRawRotorPosition(m_elevatorPhysicsSim.getPositionMeters());
+    double metersPerSecond = m_elevatorPhysicsSim.getVelocityMetersPerSecond();
+    double rotationsPerSecond = metersPerSecond / (Hardware.Elevator.sprocketPitchDiameter * Math.PI);
+    m_leaderSimState.setRotorVelocity(rotationsPerSecond);
+    double positionInMeters = m_elevatorPhysicsSim.getPositionMeters();
+    double positionInRotations = positionInMeters / (Hardware.Elevator.sprocketPitchDiameter * Math.PI);
+    m_leaderSimState.setRawRotorPosition(positionInRotations);
+    SmartDashboard.putNumber("Elevator Velocity", rotationsPerSecond);
+    SmartDashboard.putNumber("Elevator Rotations", positionInRotations);
     // TODO: what about the follower?
   }
 
