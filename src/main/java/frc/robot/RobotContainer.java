@@ -13,13 +13,11 @@ import org.opencv.imgproc.Imgproc;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-//import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import edu.wpi.first.wpilibj2.command.Command;
-//import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -35,7 +33,6 @@ import frc.robot.subsystems.Elbow;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Pipeshooter;
 
-// Need if using USB camera to roboRIO.
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.CvSink;
 import edu.wpi.first.cscore.CvSource;
@@ -44,10 +41,10 @@ import edu.wpi.first.util.PixelFormat;
 
 public class RobotContainer {
 
-  Pipeshooter pipeshooter = new Pipeshooter();
+  Pipeshooter pipeshooter = Hardware.Shooter.isEnabled ? new Pipeshooter() : null;
+  Elevator elevator = Hardware.Elevator.isEnabled ? new Elevator() : null;
+  Elbow elbow = Hardware.Elbow.isEnabled ? new Elbow() : null;
   Drivetrain drivetrain = new Drivetrain();
-  Elevator elevator = new Elevator();
-  Elbow elbow = new Elbow();
 
   void bindCommandsForTeleop() {
 
@@ -105,28 +102,32 @@ public class RobotContainer {
     driverXboxController.back().whileTrue(recalibrateDriveTrain);
 
     operatorXboxController.leftBumper().whileTrue(slowRobotRelativeOperatorXboxControl);
-    operatorXboxController.rightBumper().whileTrue(pipeshooter.shootCoral());
+
+    if (pipeshooter != null) {
+      operatorXboxController.rightBumper().whileTrue(pipeshooter.shootCoral());
+    }
 
     // commands for the elbow positioning
+    if (elbow != null && elevator != null) {
+      Command moveElbowAndElevatorToRecieve = elbow.recieve().alongWith(elevator.moveToRecieve())
+          .alongWith(pipeshooter.intakeCoral());
+      operatorXboxController.a().whileTrue(moveElbowAndElevatorToRecieve);
 
-    Command moveElbowAndElevatorToRecieve = elbow.recieve().alongWith(elevator.moveToRecieve())
-        .alongWith(pipeshooter.intakeCoral());
-    operatorXboxController.a().whileTrue(moveElbowAndElevatorToRecieve);
+      Command moveElbowAndElevatorTo1 = elbow.move1Beta().alongWith(elevator.move1Beta());
+      operatorXboxController.x().onTrue(moveElbowAndElevatorTo1);
 
-    Command moveElbowAndElevatorTo1 = elbow.move1Beta().alongWith(elevator.move1Beta());
-    operatorXboxController.x().onTrue(moveElbowAndElevatorTo1);
+      Command moveElbowAndElevatorTo2 = elbow.move2Sigma().alongWith(elevator.move2Sigma());
+      operatorXboxController.y().onTrue(moveElbowAndElevatorTo2);
 
-    Command moveElbowAndElevatorTo2 = elbow.move2Sigma().alongWith(elevator.move2Sigma());
-    operatorXboxController.y().onTrue(moveElbowAndElevatorTo2);
+      Command moveElbowAndElevatorTo3 = elbow.move2Sigma().alongWith(elevator.move3Alpha());
+      operatorXboxController.b().onTrue(moveElbowAndElevatorTo3);
 
-    Command moveElbowAndElevatorTo3 = elbow.move2Sigma().alongWith(elevator.move3Alpha());
-    operatorXboxController.b().onTrue(moveElbowAndElevatorTo3);
+      Command moveElbowAndElevatorToL2Algae = elbow.moveAlgae().alongWith(elevator.move2Sigma());
+      operatorXboxController.povDown().onTrue(moveElbowAndElevatorToL2Algae);
 
-    Command moveElbowAndElevatorToL2Algae = elbow.moveAlgae().alongWith(elevator.move2Sigma());
-    operatorXboxController.povDown().onTrue(moveElbowAndElevatorToL2Algae);
-
-    Command moveElbowAndElevatorToL3Algae = elbow.moveAlgae().alongWith(elevator.move3Alpha());
-    operatorXboxController.povUp().onTrue(moveElbowAndElevatorToL3Algae);
+      Command moveElbowAndElevatorToL3Algae = elbow.moveAlgae().alongWith(elevator.move3Alpha());
+      operatorXboxController.povUp().onTrue(moveElbowAndElevatorToL3Algae);
+    }
 
     ///////////////////////////// CAMERA SETUP ////////////////////////////////////
 
@@ -270,11 +271,13 @@ public class RobotContainer {
     }
 
     // TODO: make real commands for auto to use
-    NamedCommands.registerCommand("move1Beta", elbow.move1Beta());
-    NamedCommands.registerCommand("move2Sigma", elbow.move2Sigma());
-    NamedCommands.registerCommand("moveAlgae", elbow.moveAlgae());
-    NamedCommands.registerCommand("intakePipeshooter", pipeshooter.intakeCoral());
-    NamedCommands.registerCommand("shootCoral", pipeshooter.shootCoral());
+    if (elbow != null && pipeshooter != null && elevator != null) {
+      NamedCommands.registerCommand("move1Beta", elbow.move1Beta());
+      NamedCommands.registerCommand("move2Sigma", elbow.move2Sigma());
+      NamedCommands.registerCommand("moveAlgae", elbow.moveAlgae());
+      NamedCommands.registerCommand("intakePipeshooter", pipeshooter.intakeCoral());
+      NamedCommands.registerCommand("shootCoral", pipeshooter.shootCoral());
+    }
     NamedCommands.registerCommand("waitForTeammates", new WaitCommand(9));
     SendableChooser<Command> autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
