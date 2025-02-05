@@ -13,6 +13,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
@@ -20,6 +22,7 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
+import frc.churrolib.CTREDoubleFalconElevatorSim;
 import frc.churrolib.simulation.CTRESingleFalconRollerSim;
 import frc.churrolib.simulation.GenericSwerveSim;
 import frc.churrolib.simulation.RevMAXSwerveModuleSim;
@@ -37,6 +40,10 @@ public class RobotSimulator {
   // modules.
   final GenericSwerveSim m_swerveSim;
 
+  final CTREDoubleFalconElevatorSim m_elevatorSim;
+
+  // TODO: look at Quixlib Link2d helper
+  // final Link2d m_vizElevator;
   final Mechanism2d m_vizRoller;
   final MechanismRoot2d m_vizAxle;
   final MechanismLigament2d m_vizWheels;
@@ -49,6 +56,15 @@ public class RobotSimulator {
 
     double moduleXOffsetAbsoluteValueInMeters = Hardware.DrivetrainWithTemplate.kTrackWidth / 2;
     double moduleYOffsetAbsoluteValueInMeters = Hardware.DrivetrainWithTemplate.kWheelBase / 2;
+    m_elevatorSim = new CTREDoubleFalconElevatorSim(
+        SimulationRegistry.getTalonFX(Hardware.Elevator.leaderFalconMotorCAN),
+        SimulationRegistry.getTalonFX(Hardware.Elevator.followerFalconMotorCAN),
+        Hardware.Elevator.gearboxReduction,
+        Hardware.Elevator.simCarriageMass,
+        Hardware.Elevator.sprocketPitchDiameter * 0.5,
+        Hardware.Elevator.minHeightInMeters,
+        Hardware.Elevator.maxHeightInMeters);
+
     m_revTemplateSimFL = new RevMAXSwerveModuleSim(
         SimulationRegistry.getSparkMax(Hardware.DrivetrainWithTemplate.frontLeftDrivingMotorCAN),
         Hardware.DrivetrainWithTemplate.drivingMotorGearboxReduction,
@@ -134,6 +150,7 @@ public class RobotSimulator {
 
   public void iterate(double timeDeltaInSeconds) {
     m_shooterSim.iterate(timeDeltaInSeconds);
+    m_elevatorSim.iterate(timeDeltaInSeconds);
     m_revTemplateSimFL.iterate(timeDeltaInSeconds);
     m_revTemplateSimFR.iterate(timeDeltaInSeconds);
     m_revTemplateSimRL.iterate(timeDeltaInSeconds);

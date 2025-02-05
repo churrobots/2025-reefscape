@@ -35,8 +35,9 @@ public final class Hardware {
     public static final int followerFalconMotorCAN = 16;
     public static final double gearboxReduction = 5.0;
     public static final double simCarriageMass = 0.01;
-    public static final double minHeight = 0.0;
-    public static final double maxHeight = 1.0;
+    public static final double sprocketPitchDiameter = Units.inchesToMeters(1.273); // 16T #25
+    public static final double minHeightInMeters = 0.0;
+    public static final double maxHeightInMeters = 0.5;
   }
 
   public final class Elbow {
