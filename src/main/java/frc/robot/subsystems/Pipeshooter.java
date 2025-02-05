@@ -41,6 +41,7 @@ public class Pipeshooter extends SubsystemBase {
   public Command intakeCoral() {
     return run(() -> {
       m_pipeShooterMotor.set(1);
+
     });
   }
 
