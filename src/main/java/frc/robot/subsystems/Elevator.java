@@ -17,6 +17,7 @@ public class Elevator extends SubsystemBase {
 
   final TalonFX m_elevatorMotorLeader = new TalonFX(Hardware.Elevator.leaderFalconMotorCAN);
   final TalonFX m_elevatorMotorFollow = new TalonFX(Hardware.Elevator.followerFalconMotorCAN);
+  final Slot0Configs slot0Configs = new Slot0Configs();
 
   class Constants {
     // PID numbers from:
@@ -31,7 +32,6 @@ public class Elevator extends SubsystemBase {
     SimulationRegistry.registerHardware(m_elevatorMotorLeader);
     SimulationRegistry.registerHardware(m_elevatorMotorFollow);
 
-    Slot0Configs slot0Configs = new Slot0Configs();
     slot0Configs.kP = Constants.kP;
     slot0Configs.kI = Constants.kI;
     slot0Configs.kD = Constants.kD;

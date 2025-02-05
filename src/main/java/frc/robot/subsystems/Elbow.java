@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Elbow extends SubsystemBase {
   final SparkMax m_elbowMotor = new SparkMax(Hardware.Elbow.neoMotorCAN, MotorType.kBrushless);
   final SparkClosedLoopController m_elbowController = m_elbowMotor.getClosedLoopController();
-  SparkMaxConfig config = new SparkMaxConfig();
+  final SparkMaxConfig config = new SparkMaxConfig();
 
   class Constants {
     static final double kP = .0001;
