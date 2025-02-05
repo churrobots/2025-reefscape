@@ -30,7 +30,7 @@ public final class Hardware {
     public static final double simMomentOfInertia = 0.01;
     public static boolean isEnabled = switch (robotName) {
       case ROBOT_SIMULATION -> true;
-      default -> false;
+      default -> true;
     };
   }
 
@@ -44,7 +44,7 @@ public final class Hardware {
     public static final double maxHeightInMeters = 0.5;
     public static boolean isEnabled = switch (robotName) {
       case ROBOT_SIMULATION -> true;
-      default -> false;
+      default -> true;
     };
   }
 
@@ -53,7 +53,7 @@ public final class Hardware {
     // TODO: Get actual CAN id
     public static boolean isEnabled = switch (robotName) {
       case ROBOT_SIMULATION -> true;
-      default -> false;
+      default -> true;
     };
   }
 
@@ -77,6 +77,7 @@ public final class Hardware {
     };
     public static final boolean debugTelemetry = switch (robotName) {
       case ROBOT_COMPETITION -> false;
+      case ROBOT_ALPHA -> false;
       default -> true;
     };
   }
@@ -182,6 +183,10 @@ public final class Hardware {
     public static final double driverXboxDeadband = 0.1;
     public static final double fastDriveScale = 1.0;
     public static final double slowDriveScale = 0.25;
+    public static final boolean useLowQualityCamera = switch (robotName) {
+      case ROBOT_ALPHA -> true;
+      default -> false;
+    };
   }
 
 }
