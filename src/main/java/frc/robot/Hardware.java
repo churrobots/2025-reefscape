@@ -15,19 +15,23 @@ public final class Hardware {
   // a persisted string in NetworkTables, so that we know which
   // robot we got deployed to, in case there are specific constants
   // that have different values between those robots.
+  public static final String ROBOT_SIMULATION = "simulation";
   public static final String ROBOT_CANELO = "canelo";
   public static final String ROBOT_ALPHA = "alpha";
   public static final String ROBOT_COMPETITION = "competition";
-  public static final String ROBOT_DEFAULT = RobotBase.isSimulation() ? ROBOT_ALPHA : ROBOT_COMPETITION;
   public static final String robotName = NetworkTableInstance
       .getDefault()
       .getEntry("robotName")
-      .getString(ROBOT_DEFAULT);
+      .getString(RobotBase.isSimulation() ? ROBOT_SIMULATION : ROBOT_COMPETITION);
 
   public final class Shooter {
     public static final int falconMotorCAN = 14;
     public static final double gearboxReduction = 5.0;
     public static final double simMomentOfInertia = 0.01;
+    public static boolean isEnabled = switch (robotName) {
+      case ROBOT_SIMULATION -> true;
+      default -> true;
+    };
   }
 
   public final class Elevator {
@@ -38,11 +42,19 @@ public final class Hardware {
     public static final double sprocketPitchDiameter = Units.inchesToMeters(1.273); // 16T #25
     public static final double minHeightInMeters = 0.0;
     public static final double maxHeightInMeters = 0.5;
+    public static boolean isEnabled = switch (robotName) {
+      case ROBOT_SIMULATION -> true;
+      default -> true;
+    };
   }
 
   public final class Elbow {
     public static final int neoMotorCAN = 17;
     // TODO: Get actual CAN id
+    public static boolean isEnabled = switch (robotName) {
+      case ROBOT_SIMULATION -> true;
+      default -> true;
+    };
   }
 
   public final class Drivetrain {
@@ -60,7 +72,13 @@ public final class Hardware {
       case ROBOT_CANELO -> "yagsl-configs/canelo";
       case ROBOT_ALPHA -> "yagsl-configs/alpha";
       case ROBOT_COMPETITION -> "yagsl-configs/competition";
+      case ROBOT_SIMULATION -> "yagsl-configs/alpha";
       default -> "yagsl-configs/competition";
+    };
+    public static final boolean debugTelemetry = switch (robotName) {
+      case ROBOT_COMPETITION -> false;
+      case ROBOT_ALPHA -> false;
+      default -> true;
     };
   }
 
@@ -165,6 +183,10 @@ public final class Hardware {
     public static final double driverXboxDeadband = 0.1;
     public static final double fastDriveScale = 1.0;
     public static final double slowDriveScale = 0.25;
+    public static final boolean useLowQualityCamera = switch (robotName) {
+      case ROBOT_ALPHA -> true;
+      default -> false;
+    };
   }
 
 }
