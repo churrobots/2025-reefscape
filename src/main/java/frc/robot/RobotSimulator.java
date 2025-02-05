@@ -50,9 +50,9 @@ public class RobotSimulator {
   final Field2d m_vizField;
 
   public RobotSimulator() {
-    TalonFX coralMotor = SimulationRegistry.getTalonFX(Hardware.Shooter.falconMotorCAN);
+    TalonFX coralMotor = SimulationRegistry.getTalonFX(Hardware.Pipeshooter.falconMotorCAN);
     m_shooterSim = new CTRESingleFalconRollerSim(
-        coralMotor, Hardware.Shooter.gearboxReduction, Hardware.Shooter.simMomentOfInertia);
+        coralMotor, Hardware.Pipeshooter.gearboxReduction, Hardware.Pipeshooter.simMomentOfInertia);
 
     double moduleXOffsetAbsoluteValueInMeters = Hardware.DrivetrainWithTemplate.kTrackWidth / 2;
     double moduleYOffsetAbsoluteValueInMeters = Hardware.DrivetrainWithTemplate.kWheelBase / 2;

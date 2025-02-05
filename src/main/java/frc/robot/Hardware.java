@@ -24,7 +24,7 @@ public final class Hardware {
       .getEntry("robotName")
       .getString(RobotBase.isSimulation() ? ROBOT_SIMULATION : ROBOT_COMPETITION);
 
-  public final class Shooter {
+  public final class Pipeshooter {
     public static final int falconMotorCAN = 14;
     public static final double gearboxReduction = 5.0;
     public static final double simMomentOfInertia = 0.01;

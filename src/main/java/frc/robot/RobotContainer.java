@@ -42,7 +42,7 @@ import edu.wpi.first.util.PixelFormat;
 
 public class RobotContainer {
 
-  Pipeshooter pipeshooter = Hardware.Shooter.isEnabled ? new Pipeshooter() : null;
+  Pipeshooter pipeshooter = Hardware.Pipeshooter.isEnabled ? new Pipeshooter() : null;
   Elevator elevator = Hardware.Elevator.isEnabled ? new Elevator() : null;
   Elbow elbow = Hardware.Elbow.isEnabled ? new Elbow() : null;
   Drivetrain drivetrain = new Drivetrain();
