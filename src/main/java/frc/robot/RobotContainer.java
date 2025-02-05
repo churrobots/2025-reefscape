@@ -8,24 +8,18 @@ import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 import org.opencv.core.Mat;
-import org.opencv.core.Point;
-import org.opencv.core.Scalar;
-import org.opencv.imgproc.Imgproc;
-
-import org.opencv.core.Mat;
-import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.commands.PathPlannerAuto;
+//import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
+//import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -35,7 +29,6 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.churrolib.LogitechX3D;
 import frc.churrolib.vendor.Elastic;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elbow;
@@ -55,7 +48,6 @@ public class RobotContainer {
   Drivetrain drivetrain = new Drivetrain();
   Elevator elevator = new Elevator();
   Elbow elbow = new Elbow();
-  Command moveElbowAndElevatorTo1 = elbow.move1Beta().alongWith(elevator.move1Beta());
 
   void bindCommandsForTeleop() {
 
