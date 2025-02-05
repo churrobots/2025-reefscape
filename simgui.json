@@ -1,5 +1,17 @@
 {
   "HALProvider": {
+    "Other Devices": {
+      "Talon FX (v6)[15]": {
+        "header": {
+          "open": true
+        }
+      },
+      "Talon FX (v6)[15]/Rotor Sensor": {
+        "header": {
+          "open": true
+        }
+      }
+    },
     "Timing": {
       "window": {
         "visible": false
