@@ -9,43 +9,39 @@ import java.util.function.Supplier;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.churrolib.LogitechX3D;
 import frc.churrolib.vendor.Elastic;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Elbow;
+import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.OperatorCamera;
 import frc.robot.subsystems.Pipeshooter;
-
-// Need if using USB camera to roboRIO.
-// import edu.wpi.first.cameraserver.CameraServer;
-// import edu.wpi.first.cscore.UsbCamera;
-// import edu.wpi.first.util.PixelFormat;
 
 public class RobotContainer {
 
-  Drivetrain drivetrain = new Drivetrain();
   Pipeshooter pipeshooter = new Pipeshooter();
+  Elevator elevator = new Elevator();
+  Elbow elbow = new Elbow();
+  Drivetrain drivetrain = new Drivetrain();
+  OperatorCamera operatorCamera = new OperatorCamera();
 
   void bindCommandsForTeleop() {
 
     CommandXboxController driverXboxController = new CommandXboxController(Hardware.DriverStation.driverXboxPort);
     CommandXboxController operatorXboxController = new CommandXboxController(Hardware.DriverStation.operatorXboxPort);
-    LogitechX3D driverFlightstickController = new LogitechX3D(Hardware.DriverStation.driverFlightstickPort);
 
-    // TODO: confirm WASD is simulating joystick axes pos/neg directions correctly
-    // TODO: figure out how sim handles the initial pose, and recalibrated poses
     Command recalibrateDriveTrain = new RunCommand(() -> drivetrain.recalibrateDrivetrain(), drivetrain);
 
     DoubleSupplier allianceRelativeFactor = () -> {
@@ -56,28 +52,7 @@ public class RobotContainer {
         return -1.0;
       }
     };
-    double flightstickDeadband = Hardware.DriverStation.driverFlightstickDeadband;
     double xboxDeadband = Hardware.DriverStation.driverXboxDeadband;
-
-    Command fastFieldRelativeDriverFlightstickControl = drivetrain.createFieldRelativeDriveCommand(
-        () -> -1 * allianceRelativeFactor.getAsDouble()
-            * MathUtil.applyDeadband(driverFlightstickController.getY(), flightstickDeadband)
-            * Hardware.DriverStation.fastDriveScale,
-        () -> -1 * allianceRelativeFactor.getAsDouble()
-            * MathUtil.applyDeadband(driverFlightstickController.getX(), flightstickDeadband)
-            * Hardware.DriverStation.fastDriveScale,
-        () -> -1 * MathUtil.applyDeadband(driverFlightstickController.getTwist(), flightstickDeadband)
-            * Hardware.DriverStation.fastDriveScale);
-
-    Command slowFieldRelativeDriverFlightstickControl = drivetrain.createFieldRelativeDriveCommand(
-        () -> -1 * allianceRelativeFactor.getAsDouble()
-            * MathUtil.applyDeadband(driverFlightstickController.getY(), flightstickDeadband)
-            * Hardware.DriverStation.slowDriveScale,
-        () -> -1 * allianceRelativeFactor.getAsDouble()
-            * MathUtil.applyDeadband(driverFlightstickController.getX(), flightstickDeadband)
-            * Hardware.DriverStation.slowDriveScale,
-        () -> -1 * MathUtil.applyDeadband(driverFlightstickController.getTwist(), flightstickDeadband)
-            * Hardware.DriverStation.slowDriveScale);
 
     Command fastFieldRelativeDriverXboxControl = drivetrain.createFieldRelativeDriveCommand(
         () -> -1 * allianceRelativeFactor.getAsDouble()
@@ -109,67 +84,41 @@ public class RobotContainer {
         () -> -1 * MathUtil.applyDeadband(operatorXboxController.getRightX(), xboxDeadband)
             * Hardware.DriverStation.slowDriveScale);
 
-    if (Hardware.DriverStation.driverUsesFlightstick) {
+    drivetrain.setDefaultCommand(fastFieldRelativeDriverXboxControl);
+    driverXboxController.leftBumper().whileTrue(slowFieldRelativeDriverXboxControl);
+    driverXboxController.back().whileTrue(recalibrateDriveTrain);
 
-      drivetrain.setDefaultCommand(fastFieldRelativeDriverFlightstickControl);
-      driverFlightstickController.button(2).whileTrue(slowFieldRelativeDriverFlightstickControl);
-      driverFlightstickController.button(5).whileTrue(recalibrateDriveTrain);
+    operatorXboxController.leftBumper().whileTrue(slowRobotRelativeOperatorXboxControl);
 
-    } else {
-
-      drivetrain.setDefaultCommand(fastFieldRelativeDriverXboxControl);
-      driverXboxController.leftBumper().whileTrue(slowFieldRelativeDriverXboxControl);
-      driverXboxController.back().whileTrue(recalibrateDriveTrain);
+    if (pipeshooter != null) {
+      operatorXboxController.rightBumper().whileTrue(pipeshooter.shootCoral());
     }
 
-    operatorXboxController.b().whileTrue(slowRobotRelativeOperatorXboxControl);
+    // commands for the elbow positioning
+    Command moveElbowAndElevatorToRecieve = elbow.recieve().alongWith(elevator.moveToRecieve())
+        .alongWith(pipeshooter.intakeCoral());
+    operatorXboxController.a().whileTrue(moveElbowAndElevatorToRecieve);
 
-    // TODO: setup any camera feeds or other driver tools here
+    Command moveElbowAndElevatorTo1 = elbow.move1Beta().alongWith(elevator.move1Beta());
+    operatorXboxController.x().onTrue(moveElbowAndElevatorTo1);
 
-    // Elastic Dashboard setup notes:
-    // Set Settings->Network->IP Address Mode to
-    // "RoboRIO mDNS (roboRIO-###-FRC.local)"
+    Command moveElbowAndElevatorTo2 = elbow.move2Sigma().alongWith(elevator.move2Sigma());
+    operatorXboxController.y().onTrue(moveElbowAndElevatorTo2);
 
-    // TODO(Controls): create a JSON Elastic Dashboard layout to be stored on
-    // the robot and copied to the Driver Station.
+    Command moveElbowAndElevatorTo3 = elbow.move2Sigma().alongWith(elevator.move3Alpha());
+    operatorXboxController.b().onTrue(moveElbowAndElevatorTo3);
 
-    ///////////////////////////// CAMERA SETUP ////////////////////////////////////
+    Command moveElbowAndElevatorToL2Algae = elbow.moveAlgae().alongWith(elevator.move2Sigma());
+    operatorXboxController.povDown().onTrue(moveElbowAndElevatorToL2Algae);
 
-    // Camera Option 1: Microsoft Lifecam HD 3000 webcam plugged directly into
-    // roboRIO over USB.
-    //
-    // Viewing in Elastic Dashboard:
-    // Appears as CameraPublisher->"USB Camera 0".
-    // Set Elastic CameraStream widget properties to FPS=30, Resolution=320x240,
-    // Quality=0. Should get around 30fps.
-    //
-    // Notes:
-    // - This camera has a hardware maximum of 30fps.
-    // - There are some wavy effects on the image when moving quickly, potentially
-    // due to rolling shutter?
+    Command moveElbowAndElevatorToL3Algae = elbow.moveAlgae().alongWith(elevator.move3Alpha());
+    operatorXboxController.povUp().onTrue(moveElbowAndElevatorToL3Algae);
 
-    // UsbCamera frontCam = CameraServer.startAutomaticCapture();
-    // frontCam.setVideoMode(PixelFormat.kYUYV, 320, 240, 30);
-    // frontCam.setExposureManual(30);
-
-    // Camera Option 2: Arducam OV9281 connected over USB to the OrangePi running
-    // PhotonVision. OrangePi is connected over Ethernet to the robot router.
-    // For now, power the OrangePi via an external USB C power brick.
-    //
-    // Configure camera via photonvision: http://photonvision.local:5800/#/dashboard
-    // Camera Name="Churrovision".
-    // Recommend resolution of either 320x240 @ 100Hz MJPEG , or 640x480 @ 100Hz
-    // MJPEG
-    //
-    // Viewing in Elastic Dashboard:
-    // Appears as CameraPublisher->"photonvision_Port_1184_Output_MJPEG_Server".
-    // Set Elastic CameraStream FPS/Resolution to match whatever was configured on
-    // the photonvision dashboard. At Quality=0, observed ~50fps for the 640x480,
-    // ~100fps for the 320x240.
-    //
-    // No code needed for Option 2.
-
-    ////////////////////////////////////////////////////////////////////////////////
+    if (Hardware.DriverStation.useLowQualityCamera) {
+      operatorCamera.startLowQualityStream();
+    } else {
+      operatorCamera.startHighQualityStream();
+    }
 
     Elastic.enableDashboardToBeDownloadedFromRobotDeployDirectory();
     SmartDashboard.putString("Robot Name", Hardware.robotName);
@@ -200,7 +149,6 @@ public class RobotContainer {
             // alliance
             // This will flip the path being followed to the red side of the field.
             // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-
             boolean isBlueAlliance = DriverStation.getAlliance().orElseGet(() -> Alliance.Blue) == Alliance.Blue;
             boolean shouldFlip = !isBlueAlliance;
             return shouldFlip;
@@ -213,13 +161,17 @@ public class RobotContainer {
     }
 
     // TODO: make real commands for auto to use
-    NamedCommands.registerCommand("move1Beta", new InstantCommand());
-    NamedCommands.registerCommand("move2Sigma", new InstantCommand());
-    NamedCommands.registerCommand("move3Alpha", new InstantCommand());
-    NamedCommands.registerCommand("waitForTeammates", new InstantCommand());
+    NamedCommands.registerCommand("move1Beta", elbow.move1Beta());
+    NamedCommands.registerCommand("move2Sigma", elbow.move2Sigma());
+    NamedCommands.registerCommand("moveAlgae", elbow.moveAlgae());
+    NamedCommands.registerCommand("intakePipeshooter", pipeshooter.intakeCoral());
+    NamedCommands.registerCommand("shootCoral", pipeshooter.shootCoral());
+    NamedCommands.registerCommand("waitForTeammates", new WaitCommand(9));
+
     SendableChooser<Command> autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
     return autoChooser::getSelected;
+
   }
 
 }
