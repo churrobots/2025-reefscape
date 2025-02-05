@@ -39,6 +39,11 @@
       "Pos": "414,201",
       "Size": "179,179"
     },
+    "###/SmartDashboard/Auto Chooser": {
+      "Collapsed": "0",
+      "Pos": "60,60",
+      "Size": "256,50"
+    },
     "###/SmartDashboard/Field": {
       "Collapsed": "0",
       "Pos": "350,21",
@@ -56,12 +61,17 @@
     },
     "###Joysticks": {
       "Collapsed": "0",
-      "Pos": "325,579",
+      "Pos": "518,622",
       "Size": "796,207"
     },
     "###Keyboard 0 Settings": {
       "Collapsed": "0",
-      "Pos": "1010,233",
+      "Pos": "1012,234",
+      "Size": "300,560"
+    },
+    "###Keyboard 1 Settings": {
+      "Collapsed": "0",
+      "Pos": "847,252",
       "Size": "300,560"
     },
     "###NetworkTables": {

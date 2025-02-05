@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
+import frc.churrolib.simulation.CTREDoubleFalconElevatorSim;
 import frc.churrolib.simulation.CTRESingleFalconRollerSim;
 import frc.churrolib.simulation.GenericSwerveSim;
 import frc.churrolib.simulation.RevMAXSwerveModuleSim;
@@ -37,18 +38,31 @@ public class RobotSimulator {
   // modules.
   final GenericSwerveSim m_swerveSim;
 
+  final CTREDoubleFalconElevatorSim m_elevatorSim;
+
+  // TODO: look at Quixlib Link2d helper
+  // final Link2d m_vizElevator;
   final Mechanism2d m_vizRoller;
   final MechanismRoot2d m_vizAxle;
   final MechanismLigament2d m_vizWheels;
   final Field2d m_vizField;
 
   public RobotSimulator() {
-    TalonFX coralMotor = SimulationRegistry.getTalonFX(Hardware.Shooter.falconMotorCAN);
+    TalonFX coralMotor = SimulationRegistry.getTalonFX(Hardware.Pipeshooter.falconMotorCAN);
     m_shooterSim = new CTRESingleFalconRollerSim(
-        coralMotor, Hardware.Shooter.gearboxReduction, Hardware.Shooter.simMomentOfInertia);
+        coralMotor, Hardware.Pipeshooter.gearboxReduction, Hardware.Pipeshooter.simMomentOfInertia);
 
     double moduleXOffsetAbsoluteValueInMeters = Hardware.DrivetrainWithTemplate.kTrackWidth / 2;
     double moduleYOffsetAbsoluteValueInMeters = Hardware.DrivetrainWithTemplate.kWheelBase / 2;
+    m_elevatorSim = new CTREDoubleFalconElevatorSim(
+        SimulationRegistry.getTalonFX(Hardware.Elevator.leaderFalconMotorCAN),
+        SimulationRegistry.getTalonFX(Hardware.Elevator.followerFalconMotorCAN),
+        Hardware.Elevator.gearboxReduction,
+        Hardware.Elevator.simCarriageMass,
+        Hardware.Elevator.sprocketPitchDiameter * 0.5,
+        Hardware.Elevator.minHeightInMeters,
+        Hardware.Elevator.maxHeightInMeters);
+
     m_revTemplateSimFL = new RevMAXSwerveModuleSim(
         SimulationRegistry.getSparkMax(Hardware.DrivetrainWithTemplate.frontLeftDrivingMotorCAN),
         Hardware.DrivetrainWithTemplate.drivingMotorGearboxReduction,
@@ -134,6 +148,7 @@ public class RobotSimulator {
 
   public void iterate(double timeDeltaInSeconds) {
     m_shooterSim.iterate(timeDeltaInSeconds);
+    m_elevatorSim.iterate(timeDeltaInSeconds);
     m_revTemplateSimFL.iterate(timeDeltaInSeconds);
     m_revTemplateSimFR.iterate(timeDeltaInSeconds);
     m_revTemplateSimRL.iterate(timeDeltaInSeconds);
@@ -165,8 +180,7 @@ public class RobotSimulator {
         m_revTemplateSimRR.getModulePose(robotPose),
     };
     if (Hardware.Drivetrain.useYAGSL) {
-      m_vizField.getObject("TemplateRobotPose").setPose(robotPose);
-      m_vizField.getObject("TemplateRobotXModules").setPoses(modulePoses);
+      // Skip the generic visualization, YAGSL provides its own viz
     } else {
       m_vizField.setRobotPose(robotPose);
       m_vizField.getObject("XModules").setPoses(modulePoses);

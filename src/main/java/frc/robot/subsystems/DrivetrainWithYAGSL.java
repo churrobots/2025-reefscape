@@ -63,7 +63,11 @@ public class DrivetrainWithYAGSL extends SubsystemBase {
   public DrivetrainWithYAGSL() {
     setDefaultCommand(new RunCommand(this::stop, this));
     SmartDashboard.putData("Field", m_fieldViz);
-    SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
+    if (Hardware.DrivetrainWithYAGSL.debugTelemetry == true) {
+      SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
+    } else {
+      SwerveDriveTelemetry.verbosity = TelemetryVerbosity.LOW;
+    }
 
     File m_swerveJsonDirectory = new File(Filesystem.getDeployDirectory(),
         Hardware.DrivetrainWithYAGSL.swerveConfigDeployPath);
