@@ -56,7 +56,9 @@ public class CTREDoubleFalconElevatorSim {
   public void iterate(double timeDeltaInSeconds) {
     double leaderOutputVoltage = m_leaderMotor.get() * RobotController.getBatteryVoltage();
     double followerOutputVoltage = m_followerMotor.get() * RobotController.getBatteryVoltage();
-    m_elevatorPhysicsSim.setInput(leaderOutputVoltage, followerOutputVoltage);
+    // FIXME: why?
+    // m_elevatorPhysicsSim.setInput(leaderOutputVoltage, followerOutputVoltage);
+    m_elevatorPhysicsSim.setInput(leaderOutputVoltage);
     m_elevatorPhysicsSim.update(timeDeltaInSeconds);
 
     m_leaderSimState.setRotorVelocity(m_elevatorPhysicsSim.getVelocityMetersPerSecond());
