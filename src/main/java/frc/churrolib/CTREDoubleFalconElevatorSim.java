@@ -29,7 +29,8 @@ public class CTREDoubleFalconElevatorSim {
       double simCarriageMass,
       double sprocketPitchDiameter,
       double minHeightInMeters,
-      double maxHeightInMeters) {
+      double maxHeightInMeters,
+      double startingHeightMeters) {
 
     m_leaderMotor = leaderMotor;
     m_followerMotor = followerMotor;
@@ -46,7 +47,7 @@ public class CTREDoubleFalconElevatorSim {
         minHeightInMeters,
         maxHeightInMeters,
         true,
-        0);
+        startingHeightMeters);
   }
 
   public double getElevatorPositionInMeters() {

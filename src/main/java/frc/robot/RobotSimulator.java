@@ -63,7 +63,8 @@ public class RobotSimulator {
         Hardware.Elevator.simCarriageMass,
         Hardware.Elevator.sprocketPitchDiameter * 0.5,
         Hardware.Elevator.minHeightInMeters,
-        Hardware.Elevator.maxHeightInMeters);
+        Hardware.Elevator.maxHeightInMeters,  
+        Hardware.Elevator.minHeightInMeters);
 
     m_revTemplateSimFL = new RevMAXSwerveModuleSim(
         SimulationRegistry.getSparkMax(Hardware.DrivetrainWithTemplate.frontLeftDrivingMotorCAN),
