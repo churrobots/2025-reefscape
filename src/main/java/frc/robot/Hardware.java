@@ -28,10 +28,6 @@ public final class Hardware {
     public static final int falconMotorCAN = 14;
     public static final double gearboxReduction = 5.0;
     public static final double simMomentOfInertia = 0.01;
-    public static boolean isEnabled = switch (robotName) {
-      case ROBOT_SIMULATION -> true;
-      default -> true;
-    };
   }
 
   public final class Elevator {
@@ -42,19 +38,10 @@ public final class Hardware {
     public static final double sprocketPitchDiameter = Units.inchesToMeters(1.273); // 16T #25
     public static final double minHeightInMeters = 0.0;
     public static final double maxHeightInMeters = 0.5;
-    public static boolean isEnabled = switch (robotName) {
-      case ROBOT_SIMULATION -> true;
-      default -> true;
-    };
   }
 
   public final class Elbow {
     public static final int neoMotorCAN = 17;
-    // TODO: Get actual CAN id
-    public static boolean isEnabled = switch (robotName) {
-      case ROBOT_SIMULATION -> true;
-      default -> true;
-    };
   }
 
   public final class Drivetrain {
