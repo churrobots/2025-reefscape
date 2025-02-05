@@ -195,6 +195,7 @@ public class DrivetrainWithYAGSL extends SubsystemBase {
       DoubleSupplier headingY) {
     return run(() -> {
 
+      // TODO: is this artificially limiting to 80%?
       Translation2d scaledInputs = SwerveMath.scaleTranslation(new Translation2d(translationX.getAsDouble(),
           translationY.getAsDouble()), 0.8);
 
