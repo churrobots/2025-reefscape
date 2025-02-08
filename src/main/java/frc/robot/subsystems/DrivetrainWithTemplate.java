@@ -7,6 +7,8 @@ package frc.robot.subsystems;
 import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -415,5 +417,9 @@ public class DrivetrainWithTemplate extends SubsystemBase {
 
   public SwerveDriveKinematics getKinematics() {
     return m_kinematics;
+  }
+
+  public Command getAutonomousCommand(String pathName) {
+    return new PathPlannerAuto(pathName);
   }
 }

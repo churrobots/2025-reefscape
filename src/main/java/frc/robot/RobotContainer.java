@@ -26,16 +26,16 @@ import frc.churrolib.vendor.Elastic;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elbow;
 import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.OperatorCamera;
 import frc.robot.subsystems.Pipeshooter;
+import swervelib.telemetry.SwerveDriveTelemetry;
+import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 
 public class RobotContainer {
 
-  Pipeshooter pipeshooter = new Pipeshooter();
-  Elevator elevator = new Elevator();
-  Elbow elbow = new Elbow();
+  // Pipeshooter pipeshooter = new Pipeshooter();
+  // Elevator elevator = new Elevator();
+  // Elbow elbow = new Elbow();
   Drivetrain drivetrain = new Drivetrain();
-  // OperatorCamera operatorCamera = new OperatorCamera();
 
   void bindCommandsForTeleop() {
 
@@ -90,29 +90,35 @@ public class RobotContainer {
 
     operatorXboxController.leftBumper().whileTrue(slowRobotRelativeOperatorXboxControl);
 
-    if (pipeshooter != null) {
-      operatorXboxController.rightBumper().whileTrue(pipeshooter.shootCoral());
-    }
+    // if (pipeshooter != null) {
+    // operatorXboxController.rightBumper().whileTrue(pipeshooter.shootCoral());
+    // }
 
-    // commands for the elbow positioning
-    Command moveElbowAndElevatorToRecieve = elbow.recieve().alongWith(elevator.moveToRecieve())
-        .alongWith(pipeshooter.intakeCoral());
-    operatorXboxController.a().whileTrue(moveElbowAndElevatorToRecieve);
+    // // commands for the elbow positioning
+    // Command moveElbowAndElevatorToRecieve =
+    // elbow.recieve().alongWith(elevator.moveToRecieve())
+    // .alongWith(pipeshooter.intakeCoral());
+    // operatorXboxController.a().whileTrue(moveElbowAndElevatorToRecieve);
 
-    Command moveElbowAndElevatorTo1 = elbow.move1Beta().alongWith(elevator.move1Beta());
-    operatorXboxController.x().onTrue(moveElbowAndElevatorTo1);
+    // Command moveElbowAndElevatorTo1 =
+    // elbow.move1Beta().alongWith(elevator.move1Beta());
+    // operatorXboxController.x().onTrue(moveElbowAndElevatorTo1);
 
-    Command moveElbowAndElevatorTo2 = elbow.move2Sigma().alongWith(elevator.move2Sigma());
-    operatorXboxController.y().onTrue(moveElbowAndElevatorTo2);
+    // Command moveElbowAndElevatorTo2 =
+    // elbow.move2Sigma().alongWith(elevator.move2Sigma());
+    // operatorXboxController.y().onTrue(moveElbowAndElevatorTo2);
 
-    Command moveElbowAndElevatorTo3 = elbow.move2Sigma().alongWith(elevator.move3Alpha());
-    operatorXboxController.b().onTrue(moveElbowAndElevatorTo3);
+    // Command moveElbowAndElevatorTo3 =
+    // elbow.move2Sigma().alongWith(elevator.move3Alpha());
+    // operatorXboxController.b().onTrue(moveElbowAndElevatorTo3);
 
-    Command moveElbowAndElevatorToL2Algae = elbow.moveAlgae().alongWith(elevator.move2Sigma());
-    operatorXboxController.povDown().onTrue(moveElbowAndElevatorToL2Algae);
+    // Command moveElbowAndElevatorToL2Algae =
+    // elbow.moveAlgae().alongWith(elevator.move2Sigma());
+    // operatorXboxController.povDown().onTrue(moveElbowAndElevatorToL2Algae);
 
-    Command moveElbowAndElevatorToL3Algae = elbow.moveAlgae().alongWith(elevator.move3Alpha());
-    operatorXboxController.povUp().onTrue(moveElbowAndElevatorToL3Algae);
+    // Command moveElbowAndElevatorToL3Algae =
+    // elbow.moveAlgae().alongWith(elevator.move3Alpha());
+    // operatorXboxController.povUp().onTrue(moveElbowAndElevatorToL3Algae);
 
     // if (Hardware.DriverStation.useLowQualityCamera) {
     // operatorCamera.startLowQualityStream();
@@ -125,58 +131,77 @@ public class RobotContainer {
 
   }
 
+  public Command getAutonomousCommand() {
+    // An example command will be run in autonomous
+
+    // SendableChooser<Command> autoChooser = AutoBuilder.buildAutoChooser();
+    // SmartDashboard.putData("Auto Chooser", autoChooser);
+    // return autoChooser::getSelected;
+
+    // TODO: fix this to grab the right path
+    return drivetrain.getAutonomousCommand("Path IJ");
+  }
+
   Supplier<Command> bindCommandsForAutonomous() {
+    return () -> getAutonomousCommand();
 
-    RobotConfig config;
-    try {
-      config = RobotConfig.fromGUISettings();
-      AutoBuilder.configure(
-          drivetrain::getPose, // Robot pose supplier
-          drivetrain::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
-          drivetrain::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-          (speeds, feedforwards) -> {
-            drivetrain.drive(speeds, drivetrain.getKinematics().toSwerveModuleStates(speeds),
-                feedforwards.linearForces());
-          },
+    // RobotConfig config;
+    // try {
+    // config = RobotConfig.fromGUISettings();
 
-          // drivetrain.setRobotRelativeSpeeds(speeds), // Method that will drive the
-          // robot given
-          // // ROBOT RELATIVE ChassisSpeeds. Also
-          // // optionally outputs individual module
-          // // feedforwards
-          new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for
-                                          // holonomic drive trains
-              new PIDConstants(0.0020645, 0.0, 0.0), // Translation PID constants
-              new PIDConstants(0.01, 0.0, 0.0) // Rotation PID constants
-          ),
-          config, // The robot configuration
-          () -> {
-            // Boolean supplier that controls when the path will be mirrored for the red
-            // alliance
-            // This will flip the path being followed to the red side of the field.
-            // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-            boolean isBlueAlliance = DriverStation.getAlliance().orElseGet(() -> Alliance.Blue) == Alliance.Blue;
-            boolean shouldFlip = !isBlueAlliance;
-            return shouldFlip;
-          },
-          drivetrain // Reference to this subsystem to set requirements
-      );
-    } catch (Exception e) {
-      // Handle exception as needed
-      e.printStackTrace();
-    }
+    // AutoBuilder.configure(
+    // drivetrain::getPose, // Robot pose supplier
+    // drivetrain::resetPose, // Method to reset odometry (will be called if your
+    // auto has a starting pose)
+    // drivetrain::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT
+    // RELATIVE
+    // // (speeds, feedforwards) -> {
+    // // drivetrain.drive(speeds,
+    // // drivetrain.getKinematics().toSwerveModuleStates(speeds),
+    // // feedforwards.linearForces());
+    // // },
+    // (speeds, feedforwards) -> drivetrain.setRobotRelativeSpeeds(speeds), //
+    // Method that will drive the
+    // // robot given
+    // // // ROBOT RELATIVE ChassisSpeeds. Also
+    // // // optionally outputs individual module
+    // // // feedforwards
+    // new PPHolonomicDriveController( // PPHolonomicController is the built in path
+    // following controller for
+    // // holonomic drive trains
+    // new PIDConstants(0.1, 0.0, 0.0), // Translation PID constants
+    // new PIDConstants(0.01, 0.0, 0.0) // Rotation PID constants
+    // ),
+    // config, // The robot configuration
+    // () -> {
+    // // Boolean supplier that controls when the path will be mirrored for the red
+    // // alliance
+    // // This will flip the path being followed to the red side of the field.
+    // // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+    // boolean isBlueAlliance = DriverStation.getAlliance().orElseGet(() ->
+    // Alliance.Blue) == Alliance.Blue;
+    // boolean shouldFlip = !isBlueAlliance;
+    // return shouldFlip;
+    // },
+    // drivetrain // Reference to this subsystem to set requirements
+    // );
+    // } catch (Exception e) {
+    // // Handle exception as needed
+    // e.printStackTrace();
+    // }
 
-    // TODO: make real commands for auto to use
-    NamedCommands.registerCommand("move1Beta", elbow.move1Beta());
-    NamedCommands.registerCommand("move2Sigma", elbow.move2Sigma());
-    NamedCommands.registerCommand("moveAlgae", elbow.moveAlgae());
-    NamedCommands.registerCommand("intakePipeshooter", pipeshooter.intakeCoral());
-    NamedCommands.registerCommand("shootCoral", pipeshooter.shootCoral());
-    NamedCommands.registerCommand("waitForTeammates", new WaitCommand(9));
+    // // TODO: make real commands for auto to use
+    // // NamedCommands.registerCommand("move1Beta", elbow.move1Beta());
+    // // NamedCommands.registerCommand("move2Sigma", elbow.move2Sigma());
+    // // NamedCommands.registerCommand("moveAlgae", elbow.moveAlgae());
+    // // NamedCommands.registerCommand("intakePipeshooter",
+    // // pipeshooter.intakeCoral());
+    // // NamedCommands.registerCommand("shootCoral", pipeshooter.shootCoral());
+    // NamedCommands.registerCommand("waitForTeammates", new WaitCommand(9));
 
-    SendableChooser<Command> autoChooser = AutoBuilder.buildAutoChooser();
-    SmartDashboard.putData("Auto Chooser", autoChooser);
-    return autoChooser::getSelected;
+    // SendableChooser<Command> autoChooser = AutoBuilder.buildAutoChooser();
+    // SmartDashboard.putData("Auto Chooser", autoChooser);
+    // return autoChooser::getSelected;
 
   }
 
