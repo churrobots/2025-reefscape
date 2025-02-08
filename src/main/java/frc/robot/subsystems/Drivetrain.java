@@ -126,12 +126,4 @@ public class Drivetrain extends SubsystemBase {
       m_drivetrainWithTemplate.drive(robotRelativeVelocity, states, feedforwardForces);
     }
   }
-
-  public Command getAutonomousCommand(String pathName) {
-    if (Hardware.Drivetrain.useYAGSL) {
-      return m_drivetrainWithYAGSL.getAutonomousCommand(pathName);
-    } else {
-      return m_drivetrainWithTemplate.getAutonomousCommand(pathName);
-    }
-  }
 }
