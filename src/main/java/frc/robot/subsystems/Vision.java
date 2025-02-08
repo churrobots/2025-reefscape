@@ -23,9 +23,13 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.NetworkTablesJNI;
+import edu.wpi.first.networktables.StructArrayPublisher;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import frc.robot.Robot;
@@ -44,6 +48,9 @@ public class Vision {
       PoseStrategy.CLOSEST_TO_REFERENCE_POSE, m_robotToCam);
   Supplier<Pose2d> m_currentPose;
   Field2d m_field;
+
+  final StructPublisher<Pose2d> m_publisher = NetworkTableInstance.getDefault()
+      .getStructTopic("VisionPose", Pose2d.struct).publish();
 
   // var result = camera.getLatestResult();
   // boolean hasTargets = result.hasTargets();
@@ -86,6 +93,7 @@ public class Vision {
       if (poseEst.isPresent()) {
         var pose = poseEst.get();
         m_currentPose = () -> pose.estimatedPose.toPose2d();
+        m_publisher.set(pose.estimatedPose.toPose2d());
         swerveDrive.addVisionMeasurement(pose.estimatedPose.toPose2d(),
             pose.timestampSeconds);
       }

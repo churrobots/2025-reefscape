@@ -35,7 +35,7 @@ public class RobotContainer {
   Elevator elevator = new Elevator();
   Elbow elbow = new Elbow();
   Drivetrain drivetrain = new Drivetrain();
-  OperatorCamera operatorCamera = new OperatorCamera();
+  // OperatorCamera operatorCamera = new OperatorCamera();
 
   void bindCommandsForTeleop() {
 
@@ -114,11 +114,11 @@ public class RobotContainer {
     Command moveElbowAndElevatorToL3Algae = elbow.moveAlgae().alongWith(elevator.move3Alpha());
     operatorXboxController.povUp().onTrue(moveElbowAndElevatorToL3Algae);
 
-    if (Hardware.DriverStation.useLowQualityCamera) {
-      operatorCamera.startLowQualityStream();
-    } else {
-      operatorCamera.startHighQualityStream();
-    }
+    // if (Hardware.DriverStation.useLowQualityCamera) {
+    // operatorCamera.startLowQualityStream();
+    // } else {
+    // operatorCamera.startHighQualityStream();
+    // }
 
     Elastic.enableDashboardToBeDownloadedFromRobotDeployDirectory();
     SmartDashboard.putString("Robot Name", Hardware.robotName);
@@ -146,8 +146,8 @@ public class RobotContainer {
           // // feedforwards
           new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for
                                           // holonomic drive trains
-              new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-              new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
+              new PIDConstants(0.0020645, 0.0, 0.0), // Translation PID constants
+              new PIDConstants(0.01, 0.0, 0.0) // Rotation PID constants
           ),
           config, // The robot configuration
           () -> {

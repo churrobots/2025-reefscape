@@ -23,6 +23,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.units.measure.Force;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -52,6 +53,8 @@ public class DrivetrainWithYAGSL extends SubsystemBase {
       .getStructArrayTopic("ActualSwerveStates", SwerveModuleState.struct).publish();
   final StructArrayPublisher<SwerveModuleState> m_desiredSwerveStatePublisher = NetworkTableInstance.getDefault()
       .getStructArrayTopic("DesiredSwerveStates", SwerveModuleState.struct).publish();
+  final StructPublisher<Pose2d> m_posePublisher = NetworkTableInstance.getDefault()
+      .getStructTopic("YagslPose", Pose2d.struct).publish();
   final Field2d m_fieldViz = new Field2d();
 
   // Slew rate filter variables for controlling lateral acceleration
@@ -59,7 +62,7 @@ public class DrivetrainWithYAGSL extends SubsystemBase {
 
   // YAGSL Swerve
   private final SwerveDrive m_swerveDrive;
-  // private Vision m_vision;
+  private Vision m_vision;
 
   public DrivetrainWithYAGSL() {
     setDefaultCommand(new RunCommand(this::stop, this));
@@ -89,19 +92,21 @@ public class DrivetrainWithYAGSL extends SubsystemBase {
       // YAGSL recommends disabling certain features during sim
       m_swerveDrive.setHeadingCorrection(false);
       m_swerveDrive.setCosineCompensator(false);
+
     }
 
-    // m_swerveDrive.setAngularVelocityCompensation(true, true,
-    // 0.1); // Correct for skew that gets worse as angular velocity increases.
-    // Start with a
+    // Correct for skew that gets worse as angular velocity increases. Start with a
     // coefficient of 0.1.
-    // m_swerveDrive.setModuleEncoderAutoSynchronize(false,
-    // 1); // Enable if you want to resynchronize your absolute encoders and motor
-    // encoders
-    // // periodically when they are not moving.
+    m_swerveDrive.setAngularVelocityCompensation(true, true,
+        0.1);
+
+    // Enable if you want to resynchronize your absolute encoders and motor encoders
+    // periodically when they are not moving.
+    m_swerveDrive.setModuleEncoderAutoSynchronize(false,
+        1);
 
     // Setup vision
-    // m_vision = new Vision(m_swerveDrive::getPose, m_swerveDrive.field);
+    m_vision = new Vision(m_swerveDrive::getPose, m_swerveDrive.field);
 
   }
 
@@ -119,9 +124,10 @@ public class DrivetrainWithYAGSL extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // TODO: bring this back for vision
-    // m_vision.updatePoseEstimation(m_swerveDrive);
-    // m_swerveDrive.updateOdometry();
+    m_vision.updatePoseEstimation(m_swerveDrive);
+    m_swerveDrive.updateOdometry();
+    m_posePublisher.set(getPose());
+    m_actualSwerveStatePublisher.set(getModuleStates());
   }
 
   @Override
@@ -188,6 +194,10 @@ public class DrivetrainWithYAGSL extends SubsystemBase {
 
   public SwerveDrive getSwerveDrive() {
     return m_swerveDrive;
+  }
+
+  SwerveModuleState[] getModuleStates() {
+    return m_swerveDrive.getStates();
   }
 
   /**
@@ -273,7 +283,6 @@ public class DrivetrainWithYAGSL extends SubsystemBase {
 
   public void stop() {
     drive(new ChassisSpeeds());
-
   }
 
   /**
