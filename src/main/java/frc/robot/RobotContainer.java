@@ -119,11 +119,11 @@ public class RobotContainer {
     Command moveElbowAndElevatorToL3Algae = elbow.moveAlgae().alongWith(elevator.move3Alpha());
     operatorXboxController.povUp().onTrue(moveElbowAndElevatorToL3Algae);
 
-    if (Hardware.DriverStation.useLowQualityCamera) {
-      operatorCamera.startLowQualityStream();
-    } else {
-      operatorCamera.startHighQualityStream();
-    }
+    // if (Hardware.DriverStation.useLowQualityCamera) {
+    // operatorCamera.startLowQualityStream();
+    // } else {
+    // operatorCamera.startHighQualityStream();
+    // }
 
     Elastic.enableDashboardToBeDownloadedFromRobotDeployDirectory();
     SmartDashboard.putString("Robot Name", Hardware.robotName);
@@ -139,14 +139,20 @@ public class RobotContainer {
           drivetrain::getPose, // Robot pose supplier
           drivetrain::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
           drivetrain::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-          (speeds, feedforwards) -> drivetrain.setRobotRelativeSpeeds(speeds), // Method that will drive the robot given
-                                                                               // ROBOT RELATIVE ChassisSpeeds. Also
-                                                                               // optionally outputs individual module
-                                                                               // feedforwards
+          (speeds, feedforwards) -> {
+            drivetrain.drive(speeds, drivetrain.getKinematics().toSwerveModuleStates(speeds),
+                feedforwards.linearForces());
+          },
+
+          // drivetrain.setRobotRelativeSpeeds(speeds), // Method that will drive the
+          // robot given
+          // // ROBOT RELATIVE ChassisSpeeds. Also
+          // // optionally outputs individual module
+          // // feedforwards
           new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for
                                           // holonomic drive trains
-              new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-              new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
+              new PIDConstants(0.0020645, 0.0, 0.0), // Translation PID constants
+              new PIDConstants(0.01, 0.0, 0.0) // Rotation PID constants
           ),
           config, // The robot configuration
           () -> {

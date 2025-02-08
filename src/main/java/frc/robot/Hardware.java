@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -18,11 +19,11 @@ public final class Hardware {
   public static final String ROBOT_SIMULATION = "simulation";
   public static final String ROBOT_CANELO = "canelo";
   public static final String ROBOT_ALPHA = "alpha";
-  public static final String ROBOT_COMPETITION = "competition";
+  public static final String ROBOT_BETA = "beta";
   public static final String robotName = NetworkTableInstance
       .getDefault()
       .getEntry("robotName")
-      .getString(RobotBase.isSimulation() ? ROBOT_SIMULATION : ROBOT_COMPETITION);
+      .getString(RobotBase.isSimulation() ? ROBOT_SIMULATION : ROBOT_BETA);
 
   public final class Pipeshooter {
     public static final int falconMotorCAN = 14;
@@ -58,15 +59,25 @@ public final class Hardware {
     public static final String swerveConfigDeployPath = switch (robotName) {
       case ROBOT_CANELO -> "yagsl-configs/canelo";
       case ROBOT_ALPHA -> "yagsl-configs/alpha";
-      case ROBOT_COMPETITION -> "yagsl-configs/competition";
+      case ROBOT_BETA -> "yagsl-configs/beta";
       case ROBOT_SIMULATION -> "yagsl-configs/alpha";
-      default -> "yagsl-configs/competition";
+      default -> "yagsl-configs/beta";
     };
     public static final boolean debugTelemetry = switch (robotName) {
-      case ROBOT_COMPETITION -> false;
+      case ROBOT_BETA -> false;
       case ROBOT_ALPHA -> false;
       default -> true;
     };
+    // PathPlanner config values
+    // double wheelRadius = 0;
+    // double maxDriveVelocity = 0;
+    // double wheelCOF = 0;
+    // DCMotor driveMotor = DCMotor.getNEO(1);
+    // double driveCurrentLimit = 0;
+    // double robotMassKg = 0;
+    // double robotMOI = 0;
+    // double trackwidthMeters = 0;
+    // int numMotors = 0;
   }
 
   // NOTE: once we adopt YAGSL we won't need these template vars
