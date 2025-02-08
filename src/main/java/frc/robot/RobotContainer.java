@@ -29,6 +29,7 @@ import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.OperatorCamera;
 import frc.robot.subsystems.Pipeshooter;
 import frc.robot.subsystems.UnnecessaryLEDS;
+import frc.robot.subsystems.UnnecessaryLEDS;
 
 public class RobotContainer {
 
@@ -36,7 +37,6 @@ public class RobotContainer {
   Elevator elevator = new Elevator();
   Elbow elbow = new Elbow();
   Drivetrain drivetrain = new Drivetrain();
-  OperatorCamera operatorCamera = new OperatorCamera();
   UnnecessaryLEDS leds = new UnnecessaryLEDS();
 
   void bindCommandsForTeleop() {
@@ -100,10 +100,6 @@ public class RobotContainer {
     }
 
     // commands for the elbow positioning
-    Command moveElbowAndElevatorToRecieve = elbow.recieve().alongWith(elevator.moveToRecieve())
-        .alongWith(pipeshooter.intakeCoral()).alongWith(leds.jjisbeingasussybakaimpostoramongussus());
-    operatorXboxController.a().whileTrue(moveElbowAndElevatorToRecieve);
-
     Command moveElbowAndElevatorTo1 = elbow.move1Beta().alongWith(elevator.move1Beta().alongWith(leds.green()));
     operatorXboxController.x().onTrue(moveElbowAndElevatorTo1);
 
@@ -118,12 +114,6 @@ public class RobotContainer {
 
     Command moveElbowAndElevatorToL3Algae = elbow.moveAlgae().alongWith(elevator.move3Alpha().alongWith(leds.yellow()));
     operatorXboxController.povUp().onTrue(moveElbowAndElevatorToL3Algae);
-
-    // if (Hardware.DriverStation.useLowQualityCamera) {
-    // operatorCamera.startLowQualityStream();
-    // } else {
-    // operatorCamera.startHighQualityStream();
-    // }
 
     Elastic.enableDashboardToBeDownloadedFromRobotDeployDirectory();
     SmartDashboard.putString("Robot Name", Hardware.robotName);
