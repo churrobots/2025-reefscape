@@ -100,7 +100,11 @@ public class RobotContainer {
     }
 
     // commands for the elbow positioning
-    Command moveElbowAndElevatorTo1 = elbow.move1Beta().alongWith(elevator.move1Beta().alongWith(leds.green()));
+    Command moveElbowAndElevatorToRecieve = elbow.recieve().alongWith(elevator.moveToRecieve())
+        .alongWith(pipeshooter.intakeCoral()).alongWith(leds.jjisbeingasussybakaimpostoramongussus());
+    operatorXboxController.a().whileTrue(moveElbowAndElevatorToRecieve);
+
+    Command moveElbowAndElevatorTo1 = elbow.move1Beta().alongWith(elevator.move1Beta());
     operatorXboxController.x().onTrue(moveElbowAndElevatorTo1);
 
     Command moveElbowAndElevatorTo2 = elbow.move2Sigma().alongWith(elevator.move2Sigma().alongWith(leds.rainbow()));
