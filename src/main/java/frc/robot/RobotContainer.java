@@ -28,6 +28,7 @@ import frc.robot.subsystems.Elbow;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.OperatorCamera;
 import frc.robot.subsystems.Pipeshooter;
+import frc.robot.subsystems.UnnecessaryLEDS;
 
 public class RobotContainer {
 
@@ -36,6 +37,7 @@ public class RobotContainer {
   Elbow elbow = new Elbow();
   Drivetrain drivetrain = new Drivetrain();
   OperatorCamera operatorCamera = new OperatorCamera();
+  UnnecessaryLEDS leds = new UnnecessaryLEDS();
 
   void bindCommandsForTeleop() {
 
@@ -84,11 +86,14 @@ public class RobotContainer {
         () -> -1 * MathUtil.applyDeadband(operatorXboxController.getRightX(), xboxDeadband)
             * Hardware.DriverStation.slowDriveScale);
 
+    Command slowRobotRelativeOperatorXboxControlWithLEDs = slowRobotRelativeOperatorXboxControl.alongWith(
+        leds.yuvrajalliseeisredwhenigoupsettyspaghetti());
+
     drivetrain.setDefaultCommand(fastFieldRelativeDriverXboxControl);
     driverXboxController.leftBumper().whileTrue(slowFieldRelativeDriverXboxControl);
     driverXboxController.back().whileTrue(recalibrateDriveTrain);
 
-    operatorXboxController.leftBumper().whileTrue(slowRobotRelativeOperatorXboxControl);
+    operatorXboxController.leftBumper().whileTrue(slowRobotRelativeOperatorXboxControlWithLEDs);
 
     if (pipeshooter != null) {
       operatorXboxController.rightBumper().whileTrue(pipeshooter.shootCoral());
@@ -96,7 +101,7 @@ public class RobotContainer {
 
     // commands for the elbow positioning
     Command moveElbowAndElevatorToRecieve = elbow.recieve().alongWith(elevator.moveToRecieve())
-        .alongWith(pipeshooter.intakeCoral());
+        .alongWith(pipeshooter.intakeCoral()).alongWith(leds.jjisbeingasussybakaimpostoramongussus());
     operatorXboxController.a().whileTrue(moveElbowAndElevatorToRecieve);
 
     Command moveElbowAndElevatorTo1 = elbow.move1Beta().alongWith(elevator.move1Beta());
