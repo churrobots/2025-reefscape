@@ -29,6 +29,7 @@ import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Pipeshooter;
 import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
+import frc.robot.subsystems.UnnecessaryLEDS;
 
 public class RobotContainer {
 
@@ -36,6 +37,7 @@ public class RobotContainer {
   Elevator elevator = new Elevator();
   Elbow elbow = new Elbow();
   Drivetrain drivetrain = new Drivetrain();
+  UnnecessaryLEDS leds = new UnnecessaryLEDS();
 
   void bindCommandsForTeleop() {
 
@@ -84,11 +86,14 @@ public class RobotContainer {
         () -> -1 * MathUtil.applyDeadband(operatorXboxController.getRightX(), xboxDeadband)
             * Hardware.DriverStation.slowDriveScale);
 
+    Command slowRobotRelativeOperatorXboxControlWithLEDs = slowRobotRelativeOperatorXboxControl.alongWith(
+        leds.yuvrajalliseeisredwhenigoupsettyspaghetti());
+
     drivetrain.setDefaultCommand(fastFieldRelativeDriverXboxControl);
     driverXboxController.leftBumper().whileTrue(slowFieldRelativeDriverXboxControl);
     driverXboxController.back().whileTrue(recalibrateDriveTrain);
 
-    operatorXboxController.leftBumper().whileTrue(slowRobotRelativeOperatorXboxControl);
+    operatorXboxController.leftBumper().whileTrue(slowRobotRelativeOperatorXboxControlWithLEDs);
 
     if (pipeshooter != null) {
       operatorXboxController.rightBumper().whileTrue(pipeshooter.shootCoral());
@@ -96,22 +101,22 @@ public class RobotContainer {
 
     // commands for the elbow positioning
     Command moveElbowAndElevatorToRecieve = elbow.recieve().alongWith(elevator.moveToRecieve())
-        .alongWith(pipeshooter.intakeCoral());
+        .alongWith(pipeshooter.intakeCoral()).alongWith(leds.jjisbeingasussybakaimpostoramongussus());
     operatorXboxController.a().whileTrue(moveElbowAndElevatorToRecieve);
 
-    Command moveElbowAndElevatorTo1 = elbow.move1Beta().alongWith(elevator.move1Beta());
+    Command moveElbowAndElevatorTo1 = elbow.move1Beta().alongWith(elevator.move1Beta().alongWith(leds.green()));
     operatorXboxController.x().onTrue(moveElbowAndElevatorTo1);
 
-    Command moveElbowAndElevatorTo2 = elbow.move2Sigma().alongWith(elevator.move2Sigma());
+    Command moveElbowAndElevatorTo2 = elbow.move2Sigma().alongWith(elevator.move2Sigma().alongWith(leds.rainbow()));
     operatorXboxController.y().onTrue(moveElbowAndElevatorTo2);
 
-    Command moveElbowAndElevatorTo3 = elbow.move2Sigma().alongWith(elevator.move3Alpha());
+    Command moveElbowAndElevatorTo3 = elbow.move2Sigma().alongWith(elevator.move3Alpha().alongWith(leds.blue()));
     operatorXboxController.b().onTrue(moveElbowAndElevatorTo3);
 
-    Command moveElbowAndElevatorToL2Algae = elbow.moveAlgae().alongWith(elevator.move2Sigma());
+    Command moveElbowAndElevatorToL2Algae = elbow.moveAlgae().alongWith(elevator.move2Sigma().alongWith(leds.purple()));
     operatorXboxController.povDown().onTrue(moveElbowAndElevatorToL2Algae);
 
-    Command moveElbowAndElevatorToL3Algae = elbow.moveAlgae().alongWith(elevator.move3Alpha());
+    Command moveElbowAndElevatorToL3Algae = elbow.moveAlgae().alongWith(elevator.move3Alpha().alongWith(leds.yellow()));
     operatorXboxController.povUp().onTrue(moveElbowAndElevatorToL3Algae);
 
     Elastic.enableDashboardToBeDownloadedFromRobotDeployDirectory();
