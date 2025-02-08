@@ -24,7 +24,7 @@ import frc.robot.Hardware;
 
 public class Pipeshooter extends SubsystemBase {
 
-  final TalonFX m_pipeShooterMotor = new TalonFX(Hardware.Shooter.falconMotorCAN);
+  final TalonFX m_pipeShooterMotor = new TalonFX(Hardware.Pipeshooter.falconMotorCAN);
 
   public Pipeshooter() {
     setDefaultCommand(stop());

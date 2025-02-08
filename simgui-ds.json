@@ -62,7 +62,6 @@
           "incKey": 80
         },
         {
-          "decKey": 57,
           "incKey": 79
         },
         {},
@@ -84,7 +83,15 @@
         55,
         56
       ],
-      "povCount": 0
+      "povConfig": [
+        {
+          "key0": 57
+        },
+        {
+          "key180": 48
+        }
+      ],
+      "povCount": 2
     },
     {
       "axisConfig": [
