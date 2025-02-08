@@ -26,8 +26,9 @@ import frc.churrolib.vendor.Elastic;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elbow;
 import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.OperatorCamera;
 import frc.robot.subsystems.Pipeshooter;
+import swervelib.telemetry.SwerveDriveTelemetry;
+import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 import frc.robot.subsystems.UnnecessaryLEDS;
 
 public class RobotContainer {
@@ -36,7 +37,6 @@ public class RobotContainer {
   Elevator elevator = new Elevator();
   Elbow elbow = new Elbow();
   Drivetrain drivetrain = new Drivetrain();
-  OperatorCamera operatorCamera = new OperatorCamera();
   UnnecessaryLEDS leds = new UnnecessaryLEDS();
 
   void bindCommandsForTeleop() {
@@ -119,70 +119,24 @@ public class RobotContainer {
     Command moveElbowAndElevatorToL3Algae = elbow.moveAlgae().alongWith(elevator.move3Alpha().alongWith(leds.yellow()));
     operatorXboxController.povUp().onTrue(moveElbowAndElevatorToL3Algae);
 
-    // if (Hardware.DriverStation.useLowQualityCamera) {
-    // operatorCamera.startLowQualityStream();
-    // } else {
-    // operatorCamera.startHighQualityStream();
-    // }
-
     Elastic.enableDashboardToBeDownloadedFromRobotDeployDirectory();
     SmartDashboard.putString("Robot Name", Hardware.robotName);
 
   }
 
+  public Command getAutonomousCommand() {
+    // An example command will be run in autonomous
+
+    // SendableChooser<Command> autoChooser = AutoBuilder.buildAutoChooser();
+    // SmartDashboard.putData("Auto Chooser", autoChooser);
+    // return autoChooser::getSelected;
+
+    // TODO: fix this to grab the right path
+    return drivetrain.getAutonomousCommand("Path IJ");
+  }
+
   Supplier<Command> bindCommandsForAutonomous() {
-
-    RobotConfig config;
-    try {
-      config = RobotConfig.fromGUISettings();
-      AutoBuilder.configure(
-          drivetrain::getPose, // Robot pose supplier
-          drivetrain::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
-          drivetrain::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-          (speeds, feedforwards) -> {
-            drivetrain.drive(speeds, drivetrain.getKinematics().toSwerveModuleStates(speeds),
-                feedforwards.linearForces());
-          },
-
-          // drivetrain.setRobotRelativeSpeeds(speeds), // Method that will drive the
-          // robot given
-          // // ROBOT RELATIVE ChassisSpeeds. Also
-          // // optionally outputs individual module
-          // // feedforwards
-          new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for
-                                          // holonomic drive trains
-              new PIDConstants(0.0020645, 0.0, 0.0), // Translation PID constants
-              new PIDConstants(0.01, 0.0, 0.0) // Rotation PID constants
-          ),
-          config, // The robot configuration
-          () -> {
-            // Boolean supplier that controls when the path will be mirrored for the red
-            // alliance
-            // This will flip the path being followed to the red side of the field.
-            // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-            boolean isBlueAlliance = DriverStation.getAlliance().orElseGet(() -> Alliance.Blue) == Alliance.Blue;
-            boolean shouldFlip = !isBlueAlliance;
-            return shouldFlip;
-          },
-          drivetrain // Reference to this subsystem to set requirements
-      );
-    } catch (Exception e) {
-      // Handle exception as needed
-      e.printStackTrace();
-    }
-
-    // TODO: make real commands for auto to use
-    NamedCommands.registerCommand("move1Beta", elbow.move1Beta());
-    NamedCommands.registerCommand("move2Sigma", elbow.move2Sigma());
-    NamedCommands.registerCommand("moveAlgae", elbow.moveAlgae());
-    NamedCommands.registerCommand("intakePipeshooter", pipeshooter.intakeCoral());
-    NamedCommands.registerCommand("shootCoral", pipeshooter.shootCoral());
-    NamedCommands.registerCommand("waitForTeammates", new WaitCommand(9));
-
-    SendableChooser<Command> autoChooser = AutoBuilder.buildAutoChooser();
-    SmartDashboard.putData("Auto Chooser", autoChooser);
-    return autoChooser::getSelected;
-
+    return () -> getAutonomousCommand();
   }
 
 }

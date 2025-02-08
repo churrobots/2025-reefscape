@@ -6,6 +6,8 @@ package frc.robot.subsystems;
 
 import java.util.function.DoubleSupplier;
 
+import com.pathplanner.lib.commands.PathPlannerAuto;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -122,6 +124,14 @@ public class Drivetrain extends SubsystemBase {
       m_drivetrainWithYAGSL.drive(robotRelativeVelocity, states, feedforwardForces);
     } else {
       m_drivetrainWithTemplate.drive(robotRelativeVelocity, states, feedforwardForces);
+    }
+  }
+
+  public Command getAutonomousCommand(String pathName) {
+    if (Hardware.Drivetrain.useYAGSL) {
+      return m_drivetrainWithYAGSL.getAutonomousCommand(pathName);
+    } else {
+      return m_drivetrainWithTemplate.getAutonomousCommand(pathName);
     }
   }
 }

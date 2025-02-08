@@ -13,6 +13,12 @@ import static edu.wpi.first.units.Units.Meter;
 import edu.wpi.first.wpilibj2.command.Command;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.commands.PathfindingCommand;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -31,6 +37,7 @@ import frc.churrolib.simulation.SimulationRegistry;
 import frc.robot.Hardware;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
 import swervelib.parser.SwerveParser;
@@ -62,16 +69,16 @@ public class DrivetrainWithYAGSL extends SubsystemBase {
 
   // YAGSL Swerve
   private final SwerveDrive m_swerveDrive;
-  private Vision m_vision;
+  // private Vision m_vision;
 
   public DrivetrainWithYAGSL() {
     setDefaultCommand(new RunCommand(this::stop, this));
     SmartDashboard.putData("Field", m_fieldViz);
-    if (Hardware.DrivetrainWithYAGSL.debugTelemetry == true) {
-      SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
-    } else {
-      SwerveDriveTelemetry.verbosity = TelemetryVerbosity.LOW;
-    }
+    // if (Hardware.DrivetrainWithYAGSL.debugTelemetry == true) {
+    SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
+    // } else {
+    // SwerveDriveTelemetry.verbosity = TelemetryVerbosity.LOW;
+    // }
 
     File m_swerveJsonDirectory = new File(Filesystem.getDeployDirectory(),
         Hardware.DrivetrainWithYAGSL.swerveConfigDeployPath);
@@ -94,7 +101,8 @@ public class DrivetrainWithYAGSL extends SubsystemBase {
       m_swerveDrive.setCosineCompensator(false);
 
     }
-
+    m_swerveDrive.setHeadingCorrection(false);
+    m_swerveDrive.setCosineCompensator(false);
     // Correct for skew that gets worse as angular velocity increases. Start with a
     // coefficient of 0.1.
     m_swerveDrive.setAngularVelocityCompensation(true, true,
@@ -106,8 +114,53 @@ public class DrivetrainWithYAGSL extends SubsystemBase {
         1);
 
     // Setup vision
-    m_vision = new Vision(m_swerveDrive::getPose, m_swerveDrive.field);
+    // m_vision = new Vision(m_swerveDrive::getPose, m_swerveDrive.field);
 
+    setupPathPlanner();
+  }
+
+  public void setupPathPlanner() {
+    // TODO: store this in the RobotConfig class
+    RobotConfig config;
+    try {
+      config = RobotConfig.fromGUISettings();
+
+      AutoBuilder.configure(
+          this::getPose, // Robot pose supplier
+          this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
+          this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+          (speeds, feedforwards) -> {
+            this.drive(speeds,
+                this.getKinematics().toSwerveModuleStates(speeds),
+                feedforwards.linearForces());
+          },
+          // (speeds, feedforwards) -> this.setRobotRelativeSpeeds(speeds), // Method that
+          // will drive the
+          // robot given
+          // // ROBOT RELATIVE ChassisSpeeds. Also
+          // // optionally outputs individual module
+          // // feedforwards
+          new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for
+                                          // holonomic drive trains
+              new PIDConstants(0.1, 0.0, 0.0), // Translation PID constants
+              new PIDConstants(0.01, 0.0, 0.0) // Rotation PID constants
+          ),
+          config, // The robot configuration
+          () -> {
+            // Boolean supplier that controls when the path will be mirrored for the red
+            // alliance
+            // This will flip the path being followed to the red side of the field.
+            // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+            boolean isBlueAlliance = true; // TODO: fix this
+            boolean shouldFlip = !isBlueAlliance;
+            return shouldFlip;
+          },
+          this // Reference to this subsystem to set requirements
+      );
+    } catch (Exception e) {
+      // Handle exception as needed
+      e.printStackTrace();
+    }
   }
 
   private void _registerHardwardWithOldSimulation() {
@@ -124,8 +177,8 @@ public class DrivetrainWithYAGSL extends SubsystemBase {
 
   @Override
   public void periodic() {
-    m_vision.updatePoseEstimation(m_swerveDrive);
-    m_swerveDrive.updateOdometry();
+    // m_vision.updatePoseEstimation(m_swerveDrive);
+    // m_swerveDrive.updateOdometry();
     m_posePublisher.set(getPose());
     m_actualSwerveStatePublisher.set(getModuleStates());
   }
@@ -333,5 +386,9 @@ public class DrivetrainWithYAGSL extends SubsystemBase {
    */
   public Rotation2d getHeading() {
     return getPose().getRotation();
+  }
+
+  public Command getAutonomousCommand(String pathName) {
+    return new PathPlannerAuto(pathName);
   }
 }

@@ -10,7 +10,7 @@
   "defaultMaxAngAccel": 720.0,
   "defaultNominalVoltage": 12.0,
   "robotMass": 51.0,
-  "robotMOI": 6.883,
+  "robotMOI": 2.0,
   "robotTrackwidth": 0.546,
   "driveWheelRadius": 0.042,
   "driveGearing": 3.75,
@@ -26,7 +26,7 @@
   "blModuleY": 0.273,
   "brModuleX": -0.273,
   "brModuleY": -0.273,
-  "bumperOffsetX": 0.0,
-  "bumperOffsetY": 0.0,
+  "bumperOffsetX": 0.3,
+  "bumperOffsetY": 0.3,
   "robotFeatures": []
 }
