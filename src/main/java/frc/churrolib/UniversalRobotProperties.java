@@ -26,7 +26,7 @@ public class UniversalRobotProperties {
     double wheelCOF = 0;
     DCMotor driveMotor = DCMotor.getNEO(1);
     double driveCurrentLimit = 0;
-    double robotMass = 0;
+    double robotMassKg = 0;
     double robotMOI = 0;
     double trackwidthMeters = 0;
     int numMotors = 0;
@@ -37,7 +37,7 @@ public class UniversalRobotProperties {
         driveMotor,
         driveCurrentLimit,
         numMotors);
-    return new RobotConfig(robotMass, robotMOI, moduleConfig, trackwidthMeters);
+    return new RobotConfig(robotMassKg, robotMOI, moduleConfig, trackwidthMeters);
   }
 
   public SwerveDrive getAsYAGSLDrive() {
