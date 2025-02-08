@@ -28,6 +28,11 @@ public class UnnecessaryLEDS extends SubsystemBase {
   final AddressableLED m_hardwareLEDs = new AddressableLED(9);
   final AddressableLEDBuffer m_theoreticalLEDs = new AddressableLEDBuffer(Constants.totalPixels);
   final LEDPattern m_offPattern = LEDPattern.kOff;
+  final LEDPattern m_blue = LEDPattern.solid(Color.kBlue);
+  final LEDPattern m_green = LEDPattern.solid(Color.kGreen);
+  final LEDPattern m_purple = LEDPattern.solid(Color.kPurple);
+  final LEDPattern m_yellow = LEDPattern.solid(Color.kYellow);
+  final LEDPattern m_rainbow = LEDPattern.rainbow(255, 288);
   final LEDPattern m_operatorControlPattern = LEDPattern.solid(Color.kRed);
   final LEDPattern m_driverControlPattern = LEDPattern.solid(Color.kWhiteSmoke);
 
@@ -43,6 +48,36 @@ public class UnnecessaryLEDS extends SubsystemBase {
   public Command disable() {
     return run(() -> {
       applyPattern(m_offPattern);
+    });
+  }
+
+  public Command blue() {
+    return run(() -> {
+      applyPattern(m_blue);
+    });
+  }
+
+  public Command green() {
+    return run(() -> {
+      applyPattern(m_green);
+    });
+  }
+
+  public Command rainbow() {
+    return run(() -> {
+      applyPattern(m_rainbow);
+    });
+  }
+
+  public Command purple() {
+    return run(() -> {
+      applyPattern(m_rainbow);
+    });
+  }
+
+  public Command yellow() {
+    return run(() -> {
+      applyPattern(m_rainbow);
     });
   }
 
