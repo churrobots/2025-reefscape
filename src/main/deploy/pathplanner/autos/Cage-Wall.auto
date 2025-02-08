@@ -5,9 +5,16 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "sequential",
           "data": {
-            "pathName": "cage to GH"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Cage-Wall"
+                }
+              }
+            ]
           }
         }
       ]

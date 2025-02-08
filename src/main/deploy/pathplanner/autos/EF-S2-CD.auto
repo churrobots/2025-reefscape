@@ -7,19 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "cage to GH"
+            "pathName": "Cage-EF"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "GH-source"
+            "pathName": "EF-Source2"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Source to IJ"
+            "pathName": "Source2-CD"
           }
         }
       ]

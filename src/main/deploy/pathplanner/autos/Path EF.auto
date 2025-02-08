@@ -7,13 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "cage to  EF "
+            "pathName": "Cage-EF"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": " EF to cage "
+            "pathName": "EF-Cage"
           }
         }
       ]

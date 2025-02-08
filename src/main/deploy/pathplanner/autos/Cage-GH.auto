@@ -5,16 +5,9 @@
     "data": {
       "commands": [
         {
-          "type": "sequential",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "cage to wall"
-                }
-              }
-            ]
+            "pathName": "Cage-GH"
           }
         }
       ]

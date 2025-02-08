@@ -7,19 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "cage to AB"
+            "pathName": "Cage-EF"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "AB-source"
+            "pathName": "EF-Source2"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Source to KL"
+            "pathName": "Source2-AB"
           }
         }
       ]
