@@ -7,25 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "cage to IJ"
+            "pathName": "cage to  EF "
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "IJ to wall"
+            "pathName": "EF to source2"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Wall to source 1"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Source to KL"
+            "pathName": "source2 to CD"
           }
         }
       ]

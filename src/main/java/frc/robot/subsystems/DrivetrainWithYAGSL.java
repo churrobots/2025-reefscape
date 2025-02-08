@@ -23,6 +23,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
+import edu.wpi.first.units.measure.Force;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.churrolib.simulation.SimulationRegistry;
@@ -90,12 +91,6 @@ public class DrivetrainWithYAGSL extends SubsystemBase {
       m_swerveDrive.setCosineCompensator(false);
     }
 
-    // m_swerveDrive.setHeadingCorrection(false); // Heading correction should only
-    // be used while controlling the robot via
-    // angle.
-    // m_swerveDrive.setCosineCompensator(false); //
-    // !SwerveDriveTelemetry.isSimulation); // Disables cosine compensation
-    // for simulations since it causes discrepancies not seen in real life.
     // m_swerveDrive.setAngularVelocityCompensation(true, true,
     // 0.1); // Correct for skew that gets worse as angular velocity increases.
     // Start with a
@@ -142,9 +137,10 @@ public class DrivetrainWithYAGSL extends SubsystemBase {
     return run(() -> Arrays.asList(m_swerveDrive.getModules())
         .forEach(it -> it.setAngle(0.0)));
   }
-  // void driveRobotRelative(ChassisSpeeds speeds) {
-  // drive(speeds, false);
-  // }
+
+  void driveRobotRelative(ChassisSpeeds speeds) {
+    m_swerveDrive.drive(speeds);
+  }
 
   // YAGSL Reference: https://docs.yagsl.com/configuring-yagsl/code-setup
   /**
@@ -176,6 +172,11 @@ public class DrivetrainWithYAGSL extends SubsystemBase {
     m_swerveDrive.drive(velocity);
   }
 
+  public void drive(
+      ChassisSpeeds robotRelativeVelocity, SwerveModuleState[] states, Force[] feedforwardForces) {
+    m_swerveDrive.drive(robotRelativeVelocity, states, feedforwardForces);
+  }
+
   /**
    * Get the swerve drive kinematics object.
    *
@@ -183,6 +184,10 @@ public class DrivetrainWithYAGSL extends SubsystemBase {
    */
   public SwerveDriveKinematics getKinematics() {
     return m_swerveDrive.kinematics;
+  }
+
+  public SwerveDrive getSwerveDrive() {
+    return m_swerveDrive;
   }
 
   /**
@@ -263,7 +268,7 @@ public class DrivetrainWithYAGSL extends SubsystemBase {
   }
 
   public void setRobotRelativeSpeeds(ChassisSpeeds speeds) {
-    m_swerveDrive.drive(speeds);
+    m_swerveDrive.setChassisSpeeds(speeds);
   }
 
   public void stop() {

@@ -7,13 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "cage to GH"
+            "pathName": "cage to  EF "
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "GH to cage"
+            "pathName": "EF to source2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "source2 to AB"
           }
         }
       ]

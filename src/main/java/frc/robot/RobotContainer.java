@@ -134,10 +134,16 @@ public class RobotContainer {
           drivetrain::getPose, // Robot pose supplier
           drivetrain::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
           drivetrain::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-          (speeds, feedforwards) -> drivetrain.setRobotRelativeSpeeds(speeds), // Method that will drive the robot given
-                                                                               // ROBOT RELATIVE ChassisSpeeds. Also
-                                                                               // optionally outputs individual module
-                                                                               // feedforwards
+          (speeds, feedforwards) -> {
+            drivetrain.drive(speeds, drivetrain.getKinematics().toSwerveModuleStates(speeds),
+                feedforwards.linearForces());
+          },
+
+          // drivetrain.setRobotRelativeSpeeds(speeds), // Method that will drive the
+          // robot given
+          // // ROBOT RELATIVE ChassisSpeeds. Also
+          // // optionally outputs individual module
+          // // feedforwards
           new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for
                                           // holonomic drive trains
               new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants

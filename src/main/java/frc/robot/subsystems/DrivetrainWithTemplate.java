@@ -18,6 +18,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
+import edu.wpi.first.units.measure.Force;
 import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -231,6 +232,11 @@ public class DrivetrainWithTemplate extends SubsystemBase {
     setModuleStates(swerveModuleStates);
   }
 
+  public void drive(
+      ChassisSpeeds robotRelativeVelocity, SwerveModuleState[] states, Force[] feedforwardForces) {
+    drive(robotRelativeVelocity, false);
+  }
+
   /**
    * Method to drive the robot using joystick info.
    *
@@ -241,6 +247,7 @@ public class DrivetrainWithTemplate extends SubsystemBase {
    *                      field.
    * @param rateLimit     Whether to enable rate limiting for smoother control.
    */
+
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean rateLimit) {
 
     double xSpeedCommanded;
@@ -404,5 +411,9 @@ public class DrivetrainWithTemplate extends SubsystemBase {
     } else {
       return _angle;
     }
+  }
+
+  public SwerveDriveKinematics getKinematics() {
+    return m_kinematics;
   }
 }

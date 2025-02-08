@@ -28,6 +28,7 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.networktables.NetworkTablesJNI;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import frc.robot.Robot;
 import swervelib.SwerveDrive;
 
 import java.awt.Desktop;
@@ -80,6 +81,15 @@ public class Vision {
    * @param swerveDrive {@link SwerveDrive} instance.
    */
   public void updatePoseEstimation(SwerveDrive swerveDrive) {
+    for (Cameras camera : Cameras.values()) {
+      Optional<EstimatedRobotPose> poseEst = getEstimatedGlobalPose(camera);
+      if (poseEst.isPresent()) {
+        var pose = poseEst.get();
+        m_currentPose = () -> pose.estimatedPose.toPose2d();
+        swerveDrive.addVisionMeasurement(pose.estimatedPose.toPose2d(),
+            pose.timestampSeconds);
+      }
+    }
 
   }
 
@@ -93,8 +103,10 @@ public class Vision {
    * @return an {@link EstimatedRobotPose} with an estimated pose, timestamp, and
    *         targets used to create the estimate
    */
-  // public Optional<EstimatedRobotPose> getEstimatedGlobalPose(Cameras camera) {
-  // }
+  public Optional<EstimatedRobotPose> getEstimatedGlobalPose(Cameras camera) {
+    Optional<EstimatedRobotPose> poseEst = camera.getEstimatedGlobalPose(m_currentPose.get());
+    return poseEst;
+  }
 
   /**
    * Get distance of the robot from the AprilTag pose.

@@ -7,19 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "cage to IJ"
+            "pathName": "cage to AB"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "IJ to wall"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Wall to source 1"
+            "pathName": "AB-source"
           }
         },
         {
