@@ -13,6 +13,12 @@ import static edu.wpi.first.units.Units.Meter;
 import edu.wpi.first.wpilibj2.command.Command;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.commands.PathfindingCommand;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -23,12 +29,15 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
+import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.units.measure.Force;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.churrolib.simulation.SimulationRegistry;
 import frc.robot.Hardware;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
 import swervelib.parser.SwerveParser;
@@ -51,6 +60,8 @@ public class DrivetrainWithYAGSL extends SubsystemBase {
       .getStructArrayTopic("ActualSwerveStates", SwerveModuleState.struct).publish();
   final StructArrayPublisher<SwerveModuleState> m_desiredSwerveStatePublisher = NetworkTableInstance.getDefault()
       .getStructArrayTopic("DesiredSwerveStates", SwerveModuleState.struct).publish();
+  final StructPublisher<Pose2d> m_posePublisher = NetworkTableInstance.getDefault()
+      .getStructTopic("YagslPose", Pose2d.struct).publish();
   final Field2d m_fieldViz = new Field2d();
 
   // Slew rate filter variables for controlling lateral acceleration
@@ -63,11 +74,11 @@ public class DrivetrainWithYAGSL extends SubsystemBase {
   public DrivetrainWithYAGSL() {
     setDefaultCommand(new RunCommand(this::stop, this));
     SmartDashboard.putData("Field", m_fieldViz);
-    if (Hardware.DrivetrainWithYAGSL.debugTelemetry == true) {
-      SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
-    } else {
-      SwerveDriveTelemetry.verbosity = TelemetryVerbosity.LOW;
-    }
+    // if (Hardware.DrivetrainWithYAGSL.debugTelemetry == true) {
+    SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
+    // } else {
+    // SwerveDriveTelemetry.verbosity = TelemetryVerbosity.LOW;
+    // }
 
     File m_swerveJsonDirectory = new File(Filesystem.getDeployDirectory(),
         Hardware.DrivetrainWithYAGSL.swerveConfigDeployPath);
@@ -88,26 +99,68 @@ public class DrivetrainWithYAGSL extends SubsystemBase {
       // YAGSL recommends disabling certain features during sim
       m_swerveDrive.setHeadingCorrection(false);
       m_swerveDrive.setCosineCompensator(false);
-    }
 
-    // m_swerveDrive.setHeadingCorrection(false); // Heading correction should only
-    // be used while controlling the robot via
-    // angle.
-    // m_swerveDrive.setCosineCompensator(false); //
-    // !SwerveDriveTelemetry.isSimulation); // Disables cosine compensation
-    // for simulations since it causes discrepancies not seen in real life.
-    // m_swerveDrive.setAngularVelocityCompensation(true, true,
-    // 0.1); // Correct for skew that gets worse as angular velocity increases.
-    // Start with a
+    }
+    m_swerveDrive.setHeadingCorrection(false);
+    m_swerveDrive.setCosineCompensator(false);
+    // Correct for skew that gets worse as angular velocity increases. Start with a
     // coefficient of 0.1.
-    // m_swerveDrive.setModuleEncoderAutoSynchronize(false,
-    // 1); // Enable if you want to resynchronize your absolute encoders and motor
-    // encoders
-    // // periodically when they are not moving.
+    m_swerveDrive.setAngularVelocityCompensation(true, true,
+        0.1);
+
+    // Enable if you want to resynchronize your absolute encoders and motor encoders
+    // periodically when they are not moving.
+    m_swerveDrive.setModuleEncoderAutoSynchronize(false,
+        1);
 
     // Setup vision
     // m_vision = new Vision(m_swerveDrive::getPose, m_swerveDrive.field);
 
+    setupPathPlanner();
+  }
+
+  public void setupPathPlanner() {
+    // TODO: store this in the RobotConfig class
+    RobotConfig config;
+    try {
+      config = RobotConfig.fromGUISettings();
+
+      AutoBuilder.configure(
+          this::getPose, // Robot pose supplier
+          this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
+          this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+          (speeds, feedforwards) -> {
+            this.drive(speeds,
+                this.getKinematics().toSwerveModuleStates(speeds),
+                feedforwards.linearForces());
+          },
+          // (speeds, feedforwards) -> this.setRobotRelativeSpeeds(speeds), // Method that
+          // will drive the
+          // robot given
+          // // ROBOT RELATIVE ChassisSpeeds. Also
+          // // optionally outputs individual module
+          // // feedforwards
+          new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for
+                                          // holonomic drive trains
+              new PIDConstants(0.1, 0.0, 0.0), // Translation PID constants
+              new PIDConstants(0.01, 0.0, 0.0) // Rotation PID constants
+          ),
+          config, // The robot configuration
+          () -> {
+            // Boolean supplier that controls when the path will be mirrored for the red
+            // alliance
+            // This will flip the path being followed to the red side of the field.
+            // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+            boolean isBlueAlliance = true; // TODO: fix this
+            boolean shouldFlip = !isBlueAlliance;
+            return shouldFlip;
+          },
+          this // Reference to this subsystem to set requirements
+      );
+    } catch (Exception e) {
+      // Handle exception as needed
+      e.printStackTrace();
+    }
   }
 
   private void _registerHardwardWithOldSimulation() {
@@ -124,9 +177,10 @@ public class DrivetrainWithYAGSL extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // TODO: bring this back for vision
     // m_vision.updatePoseEstimation(m_swerveDrive);
     // m_swerveDrive.updateOdometry();
+    m_posePublisher.set(getPose());
+    m_actualSwerveStatePublisher.set(getModuleStates());
   }
 
   @Override
@@ -142,9 +196,10 @@ public class DrivetrainWithYAGSL extends SubsystemBase {
     return run(() -> Arrays.asList(m_swerveDrive.getModules())
         .forEach(it -> it.setAngle(0.0)));
   }
-  // void driveRobotRelative(ChassisSpeeds speeds) {
-  // drive(speeds, false);
-  // }
+
+  void driveRobotRelative(ChassisSpeeds speeds) {
+    m_swerveDrive.drive(speeds);
+  }
 
   // YAGSL Reference: https://docs.yagsl.com/configuring-yagsl/code-setup
   /**
@@ -176,6 +231,11 @@ public class DrivetrainWithYAGSL extends SubsystemBase {
     m_swerveDrive.drive(velocity);
   }
 
+  public void drive(
+      ChassisSpeeds robotRelativeVelocity, SwerveModuleState[] states, Force[] feedforwardForces) {
+    m_swerveDrive.drive(robotRelativeVelocity, states, feedforwardForces);
+  }
+
   /**
    * Get the swerve drive kinematics object.
    *
@@ -183,6 +243,14 @@ public class DrivetrainWithYAGSL extends SubsystemBase {
    */
   public SwerveDriveKinematics getKinematics() {
     return m_swerveDrive.kinematics;
+  }
+
+  public SwerveDrive getSwerveDrive() {
+    return m_swerveDrive;
+  }
+
+  SwerveModuleState[] getModuleStates() {
+    return m_swerveDrive.getStates();
   }
 
   /**
@@ -263,12 +331,11 @@ public class DrivetrainWithYAGSL extends SubsystemBase {
   }
 
   public void setRobotRelativeSpeeds(ChassisSpeeds speeds) {
-    m_swerveDrive.drive(speeds);
+    m_swerveDrive.setChassisSpeeds(speeds);
   }
 
   public void stop() {
     drive(new ChassisSpeeds());
-
   }
 
   /**
@@ -319,5 +386,9 @@ public class DrivetrainWithYAGSL extends SubsystemBase {
    */
   public Rotation2d getHeading() {
     return getPose().getRotation();
+  }
+
+  public Command getAutonomousCommand(String pathName) {
+    return new PathPlannerAuto(pathName);
   }
 }

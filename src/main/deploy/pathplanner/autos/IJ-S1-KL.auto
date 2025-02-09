@@ -7,13 +7,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Cage-EF"
+            "pathName": "Cage-IJ"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "EF-Cage"
+            "pathName": "IJ-Wall"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Wall-Source1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Source1-KL"
           }
         }
       ]

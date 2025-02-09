@@ -6,12 +6,18 @@ package frc.robot.subsystems;
 
 import java.util.function.DoubleSupplier;
 
+import com.pathplanner.lib.commands.PathPlannerAuto;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.units.measure.Force;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Hardware;
+import swervelib.SwerveDrive;
 
 public class Drivetrain extends SubsystemBase {
 
@@ -104,4 +110,28 @@ public class Drivetrain extends SubsystemBase {
     }
   }
 
+  public SwerveDriveKinematics getKinematics() {
+    if (Hardware.Drivetrain.useYAGSL) {
+      return m_drivetrainWithYAGSL.getKinematics();
+    } else {
+      return m_drivetrainWithTemplate.getKinematics();
+    }
+  }
+
+  public void drive(
+      ChassisSpeeds robotRelativeVelocity, SwerveModuleState[] states, Force[] feedforwardForces) {
+    if (Hardware.Drivetrain.useYAGSL) {
+      m_drivetrainWithYAGSL.drive(robotRelativeVelocity, states, feedforwardForces);
+    } else {
+      m_drivetrainWithTemplate.drive(robotRelativeVelocity, states, feedforwardForces);
+    }
+  }
+
+  public Command getAutonomousCommand(String pathName) {
+    if (Hardware.Drivetrain.useYAGSL) {
+      return m_drivetrainWithYAGSL.getAutonomousCommand(pathName);
+    } else {
+      return m_drivetrainWithTemplate.getAutonomousCommand(pathName);
+    }
+  }
 }

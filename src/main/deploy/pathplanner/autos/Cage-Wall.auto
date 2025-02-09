@@ -5,15 +5,16 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "sequential",
           "data": {
-            "pathName": "Cage-EF"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "EF-Cage"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Cage-Wall"
+                }
+              }
+            ]
           }
         }
       ]
