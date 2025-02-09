@@ -40,14 +40,22 @@ import java.awt.Desktop;
 public class Vision {
   PhotonCamera m_camera = new PhotonCamera("photonvision");
   static AprilTagFieldLayout m_aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
-  // Cam mounted facing forward, half a meter forward of center, half a meter up
-  // from center.
-  Transform3d m_robotToCam = new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0));
-  // example included camera but quick fix said no
+
+  // TODO: Update this to match the camera position on the bot
+  // Currently set to a camera mounted facing forward, 0.5 meters forwards of
+  // center, 0.0 meters right of center, 0.5 meters up from center
+
+  Transform3d m_robotToCam1 = new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0));
   PhotonPoseEstimator m_photonPoseEstimator = new PhotonPoseEstimator(m_aprilTagFieldLayout,
       PoseStrategy.CLOSEST_TO_REFERENCE_POSE, m_robotToCam);
   Supplier<Pose2d> m_currentPose;
   Field2d m_field;
+
+  Camera[] m_cameras =
+      // TODO: Update this to match the camera position on the bot
+      // Currently set to a camera mounted facing forward, 0.5 meters forwards of
+      // center, 0.0 meters right of center, 0.5 meters up from center
+      { new Camera("camera 1", m_robotToCam1) };
 
   final StructPublisher<Pose2d> m_publisher = NetworkTableInstance.getDefault()
       .getStructTopic("VisionPose", Pose2d.struct).publish();
@@ -88,7 +96,7 @@ public class Vision {
    * @param swerveDrive {@link SwerveDrive} instance.
    */
   public void updatePoseEstimation(SwerveDrive swerveDrive) {
-    for (Cameras camera : Cameras.values()) {
+    for (Camera camera : m_cameras) {
       Optional<EstimatedRobotPose> poseEst = getEstimatedGlobalPose(camera);
       if (poseEst.isPresent()) {
         var pose = poseEst.get();
@@ -111,7 +119,7 @@ public class Vision {
    * @return an {@link EstimatedRobotPose} with an estimated pose, timestamp, and
    *         targets used to create the estimate
    */
-  public Optional<EstimatedRobotPose> getEstimatedGlobalPose(Cameras camera) {
+  public Optional<EstimatedRobotPose> getEstimatedGlobalPose(Camera camera) {
     Optional<EstimatedRobotPose> poseEst = camera.getEstimatedGlobalPose(m_currentPose.get());
     return poseEst;
   }
@@ -139,112 +147,6 @@ public class Vision {
    * Update the {@link Field2d} to include tracked targets/
    */
   public void updateVisionField() {
-  }
-
-  /**
-   * Camera Enum to select each camera
-   */
-  enum Cameras {
-    // NEED TO UPDATE THIS currently facing forward
-    // Cam mounted facing forward, half a meter forward of center, half a meter up
-    CAM_1("camera 1", new Rotation3d(0, 0, 0), new Translation3d(0.5, 0.0, 0.5));
-
-    public PhotonPoseEstimator m_photonPoseEstimator;
-    PhotonCamera m_photonCamera;
-    Transform3d m_robotToCam;
-
-    /**
-     * Construct a Photon Camera class with help. Standard deviations are fake
-     * values, experiment and determine
-     * estimation noise on an actual robot.
-     *
-     * @param name                  Name of the PhotonVision camera found in the PV
-     *                              UI.
-     * @param robotToCamRotation    {@link Rotation3d} of the camera.
-     * @param robotToCamTranslation {@link Translation3d} relative to the center of
-     *                              the robot.
-     */
-    Cameras(String name, Rotation3d robotToCamRotation,
-        Translation3d robotToCamTranslation) {
-      // Forward Camera
-      m_photonCamera = new PhotonCamera(name);
-      m_robotToCam = new Transform3d(robotToCamTranslation, robotToCamRotation);
-
-      // Construct PhotonPoseEstimator
-      m_photonPoseEstimator = new PhotonPoseEstimator(Vision.m_aprilTagFieldLayout,
-          PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, m_robotToCam);
-    }
-
-    /**
-     * Get the result with the least ambiguity from the best tracked target within
-     * the Cache. This may not be the most
-     * recent result!
-     *
-     * @return The result in the cache with the least ambiguous best tracked target.
-     *         This is not the most recent result!
-     */
-    // public Optional<PhotonPipelineResult> getBestResult() {
-    // }
-
-    /**
-     * Get the latest result from the current cache.
-     *
-     * @return Empty optional if nothing is found. Latest result if something is
-     *         there.
-     */
-    public Optional<PhotonPipelineResult> getLatestResult() {
-      List<PhotonPipelineResult> allResults = m_photonCamera.getAllUnreadResults();
-      return Optional.of(allResults.get(allResults.size() - 1));
-    }
-
-    /**
-     * Get the estimated robot pose. Updates the current robot pose estimation,
-     * standard deviations, and flushes the
-     * cache of results.
-     *
-     * @return Estimated pose.
-     */
-    public Optional<EstimatedRobotPose> getEstimatedGlobalPose(Pose2d prevEstimatedRobotPose) {
-      m_photonPoseEstimator.setReferencePose(prevEstimatedRobotPose);
-      return m_photonPoseEstimator.update(getLatestResult().get());
-    }
-
-    /**
-     * Update the latest results, cached with a maximum refresh rate of 1req/15ms.
-     * Sorts the list by timestamp.
-     */
-    private void updateUnreadResults() {
-    }
-
-    /**
-     * The latest estimated robot pose on the field from vision data. This may be
-     * empty. This should only be called once
-     * per loop.
-     *
-     * <p>
-     * Also includes updates for the standard deviations, which can (optionally) be
-     * retrieved with
-     * {@link Cameras#updateEstimationStdDevs}
-     *
-     * @return An {@link EstimatedRobotPose} with an estimated pose, estimate
-     *         timestamp, and targets used for
-     *         estimation.
-     */
-    private void updateEstimatedGlobalPose() {
-    }
-
-    /**
-     * Calculates new standard deviations This algorithm is a heuristic that creates
-     * dynamic standard deviations based
-     * on number of tags, estimation strategy, and distance from the tags.
-     *
-     * @param estimatedPose The estimated pose to guess standard deviations for.
-     * @param targets       All targets in this camera frame
-     */
-    private void updateEstimationStdDevs(
-        Optional<EstimatedRobotPose> estimatedPose, List<PhotonTrackedTarget> targets) {
-
-    }
   }
 
 }
