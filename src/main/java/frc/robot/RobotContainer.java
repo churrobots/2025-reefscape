@@ -37,6 +37,7 @@ public class RobotContainer {
   Elevator elevator = new Elevator();
   Elbow elbow = new Elbow();
   Drivetrain drivetrain = new Drivetrain();
+  UnnecessaryLEDS leds = new UnnecessaryLEDS();
 
   void bindCommandsForTeleop() {
 
