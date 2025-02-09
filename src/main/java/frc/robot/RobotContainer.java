@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.churrolib.vendor.Elastic;
 import frc.robot.subsystems.Drivetrain;
@@ -113,8 +114,7 @@ public class RobotContainer {
 
   }
 
-  public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
+  Supplier<Command> bindCommandsForAutonomous() {
     NamedCommands.registerCommand("move1Beta", elbow.move1Beta());
     NamedCommands.registerCommand("move2Sigma", elbow.move2Sigma());
     NamedCommands.registerCommand("moveAlgae", elbow.moveAlgae());
@@ -122,17 +122,10 @@ public class RobotContainer {
     NamedCommands.registerCommand("shootCoral", pipeshooter.shootCoral());
     NamedCommands.registerCommand("waitForTeammates", new WaitCommand(9));
 
-    // SendableChooser<Command> autoChooser = AutoBuilder.buildAutoChooser();
-    // SmartDashboard.putData("Auto Chooser", autoChooser);
-    // return autoChooser::getSelected;
+    SendableChooser<Command> autoChooser = drivetrain.createPathPlannerDropdown();
+    SmartDashboard.putData("Auto Chooser", autoChooser);
 
-    // TODO: fix this to grab the right path
-    return drivetrain.getAutonomousCommand("Path IJ");
-  }
-
-  Supplier<Command> bindCommandsForAutonomous() {
-    drivetrain.setupPathPlanner();
-    return () -> getAutonomousCommand();
+    return autoChooser::getSelected;
   }
 
 }

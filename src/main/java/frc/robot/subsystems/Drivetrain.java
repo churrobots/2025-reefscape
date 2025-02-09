@@ -32,6 +32,7 @@ import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.units.measure.Force;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.churrolib.simulation.SimulationRegistry;
 import frc.robot.Hardware;
@@ -118,7 +119,7 @@ public class Drivetrain extends SubsystemBase {
     // m_vision = new Vision(m_swerveDrive::getPose, m_swerveDrive.field);
   }
 
-  public void setupPathPlanner() {
+  public SendableChooser<Command> createPathPlannerDropdown() {
     // TODO: store this in the RobotConfig class
     RobotConfig config;
     try {
@@ -160,6 +161,7 @@ public class Drivetrain extends SubsystemBase {
       // Handle exception as needed
       e.printStackTrace();
     }
+    return AutoBuilder.buildAutoChooser();
   }
 
   private void _registerHardwardWithOldSimulation() {
