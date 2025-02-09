@@ -1,34 +1,29 @@
 package frc.robot.subsystems;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Supplier;
-
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.simulation.PhotonCameraSim;
+import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation3d;
-
-import java.awt.Desktop;
+import frc.robot.Robot;
 
 public class Camera {
   public PhotonPoseEstimator m_photonPoseEstimator;
   PhotonCamera m_photonCamera;
   Transform3d m_robotToCam;
+
+  // For simulation
+  public PhotonCameraSim m_cameraSim;
 
   /**
    * Construct a Photon Camera class with help. Standard deviations are fake
@@ -46,6 +41,25 @@ public class Camera {
     // Construct PhotonPoseEstimator
     m_photonPoseEstimator = new PhotonPoseEstimator(Vision.m_aprilTagFieldLayout,
         PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, m_robotToCam);
+
+    if (Robot.isSimulation()) {
+      SimCameraProperties cameraProp = new SimCameraProperties();
+      // A 640 x 480 camera with a 100 degree diagonal FOV.
+      cameraProp.setCalibration(960, 720, Rotation2d.fromDegrees(100));
+      // Approximate detection noise with average and standard deviation error in
+      // pixels.
+      cameraProp.setCalibError(0.25, 0.08);
+      // Set the camera image capture framerate (Note: this is limited by robot loop
+      // rate).
+      cameraProp.setFPS(30);
+      // The average and standard deviation in milliseconds of image data latency.
+      cameraProp.setAvgLatencyMs(35);
+      cameraProp.setLatencyStdDevMs(5);
+      m_cameraSim = new PhotonCameraSim(m_photonCamera, cameraProp);
+      m_cameraSim.enableDrawWireframe(true);
+
+    }
+
   }
 
   /**
@@ -67,6 +81,9 @@ public class Camera {
    */
   public Optional<PhotonPipelineResult> getLatestResult() {
     List<PhotonPipelineResult> allResults = m_photonCamera.getAllUnreadResults();
+    if (allResults.size() == 0) {
+      return Optional.empty();
+    }
     return Optional.of(allResults.get(allResults.size() - 1));
   }
 
@@ -79,7 +96,11 @@ public class Camera {
    */
   public Optional<EstimatedRobotPose> getEstimatedGlobalPose(Pose2d prevEstimatedRobotPose) {
     m_photonPoseEstimator.setReferencePose(prevEstimatedRobotPose);
-    return m_photonPoseEstimator.update(getLatestResult().get());
+    Optional<PhotonPipelineResult> latestResult = getLatestResult();
+    if (!latestResult.isPresent()) {
+      return Optional.empty();
+    }
+    return m_photonPoseEstimator.update(latestResult.get());
   }
 
   /**
@@ -118,4 +139,16 @@ public class Camera {
       Optional<EstimatedRobotPose> estimatedPose, List<PhotonTrackedTarget> targets) {
 
   }
+
+  /**
+   * Add camera to {@link VisionSystemSim} for simulated photon vision.
+   *
+   * @param systemSim {@link VisionSystemSim} to use.
+   */
+  public void addToVisionSim(VisionSystemSim systemSim) {
+    if (Robot.isSimulation()) {
+      systemSim.addCamera(m_cameraSim, m_robotToCam);
+    }
+  }
+
 }

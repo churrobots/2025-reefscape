@@ -66,7 +66,7 @@ public class Drivetrain extends SubsystemBase {
 
   // YAGSL Swerve
   private final SwerveDrive m_swerveDrive;
-  // private Vision m_vision;
+  private Vision m_vision;
 
   public Drivetrain() {
     setDefaultCommand(new RunCommand(this::stop, this));
@@ -108,7 +108,9 @@ public class Drivetrain extends SubsystemBase {
         1);
 
     // Setup vision
-    // m_vision = new Vision(m_swerveDrive::getPose, m_swerveDrive.field);
+    if (Hardware.Vision.isEnabled) {
+      m_vision = new Vision(m_swerveDrive::getPose, m_swerveDrive.field);
+    }
   }
 
   public SendableChooser<Command> createPathPlannerDropdown() {
@@ -164,8 +166,10 @@ public class Drivetrain extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // m_vision.updatePoseEstimation(m_swerveDrive);
-    // m_swerveDrive.updateOdometry();
+    if (Hardware.Vision.isEnabled) {
+      m_vision.updatePoseEstimation(m_swerveDrive);
+      m_swerveDrive.updateOdometry();
+    }
     m_posePublisher.set(getPose());
     m_actualSwerveStatePublisher.set(getModuleStates());
   }
