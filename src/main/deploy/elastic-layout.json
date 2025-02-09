@@ -1,35 +1,35 @@
 {
   "version": 1.0,
-  "grid_size": 128,
+  "grid_size": 25,
   "tabs": [
     {
-      "name": "Teleoperated",
+      "name": "Dashboard",
       "grid_layout": {
         "layouts": [],
         "containers": [
           {
-            "title": "IsRedAlliance",
-            "x": 128.0,
-            "y": 0.0,
-            "width": 128.0,
-            "height": 128.0,
+            "title": "Alliance",
+            "x": 1350.0,
+            "y": 125.0,
+            "width": 150.0,
+            "height": 125.0,
             "type": "Boolean Box",
             "properties": {
               "topic": "/FMSInfo/IsRedAlliance",
               "period": 0.06,
               "data_type": "boolean",
-              "true_color": 4283215696,
-              "false_color": 4294198070,
+              "true_color": 4294901760,
+              "false_color": 4282600941,
               "true_icon": "None",
               "false_icon": "None"
             }
           },
           {
             "title": "robotName",
-            "x": 0.0,
-            "y": 0.0,
-            "width": 128.0,
-            "height": 128.0,
+            "x": 1225.0,
+            "y": 125.0,
+            "width": 125.0,
+            "height": 125.0,
             "type": "Text Display",
             "properties": {
               "topic": "robotName",
@@ -39,14 +39,39 @@
             }
           },
           {
-            "title": "USB Camera 0",
-            "x": 256.0,
+            "title": "Auto Chooser",
+            "x": 725.0,
             "y": 0.0,
-            "width": 1024.0,
-            "height": 896.0,
+            "width": 775.0,
+            "height": 125.0,
+            "type": "ComboBox Chooser",
+            "properties": {
+              "topic": "/SmartDashboard/Auto Chooser",
+              "period": 0.06,
+              "sort_options": false
+            }
+          },
+          {
+            "title": "photonvision_Port_1181_Input_MJPEG_Server",
+            "x": 725.0,
+            "y": 125.0,
+            "width": 500.0,
+            "height": 475.0,
             "type": "Camera Stream",
             "properties": {
-              "topic": "/CameraPublisher/USB Camera 0",
+              "topic": "/CameraPublisher/photonvision_Port_1181_Input_MJPEG_Server",
+              "period": 0.06
+            }
+          },
+          {
+            "title": "Operator View",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 725.0,
+            "height": 600.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/photonvision_Port_1183_Input_MJPEG_Server",
               "period": 0.06
             }
           }
