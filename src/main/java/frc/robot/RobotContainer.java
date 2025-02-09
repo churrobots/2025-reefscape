@@ -127,6 +127,12 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
+    NamedCommands.registerCommand("move1Beta", elbow.move1Beta());
+    NamedCommands.registerCommand("move2Sigma", elbow.move2Sigma());
+    NamedCommands.registerCommand("moveAlgae", elbow.moveAlgae());
+    NamedCommands.registerCommand("intakePipeshooter", pipeshooter.intakeCoral());
+    NamedCommands.registerCommand("shootCoral", pipeshooter.shootCoral());
+    NamedCommands.registerCommand("waitForTeammates", new WaitCommand(9));
 
     // SendableChooser<Command> autoChooser = AutoBuilder.buildAutoChooser();
     // SmartDashboard.putData("Auto Chooser", autoChooser);
