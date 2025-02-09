@@ -131,6 +131,7 @@ public class RobotContainer {
   }
 
   Supplier<Command> bindCommandsForAutonomous() {
+    drivetrain.setupPathPlanner();
     return () -> getAutonomousCommand();
   }
 

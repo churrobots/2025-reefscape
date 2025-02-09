@@ -38,6 +38,7 @@ import frc.robot.Hardware;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
 import swervelib.parser.SwerveParser;
@@ -115,8 +116,6 @@ public class Drivetrain extends SubsystemBase {
 
     // Setup vision
     // m_vision = new Vision(m_swerveDrive::getPose, m_swerveDrive.field);
-
-    setupPathPlanner();
   }
 
   public void setupPathPlanner() {
@@ -151,7 +150,7 @@ public class Drivetrain extends SubsystemBase {
             // alliance
             // This will flip the path being followed to the red side of the field.
             // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-            boolean isBlueAlliance = true; // TODO: fix this
+            boolean isBlueAlliance = DriverStation.getAlliance().orElseGet(() -> Alliance.Blue) == Alliance.Blue;
             boolean shouldFlip = !isBlueAlliance;
             return shouldFlip;
           },
