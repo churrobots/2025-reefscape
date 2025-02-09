@@ -23,31 +23,23 @@ import swervelib.SwerveDrive;
 import swervelib.telemetry.SwerveDriveTelemetry;
 
 public class Vision {
-  PhotonCamera m_camera = new PhotonCamera("photonvision");
-  static AprilTagFieldLayout m_aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
-
-  // TODO: Update this to match the camera position on the bot
-  // Currently set to a camera mounted facing forward, 0.5 meters forwards of
-  // center, 0.0 meters right of center, 0.5 meters up from center
-
+  // TODO: Update the Transform3d to match the camera position on the bot
+  // Currently it is set to a camera mounted facing forward, 0.5 meters forwards
+  // of center, 0.0 meters right of center, 0.5 meters up from center
   Transform3d m_robotToCam1 = new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0));
   PhotonPoseEstimator m_photonPoseEstimator = new PhotonPoseEstimator(m_aprilTagFieldLayout,
       PoseStrategy.CLOSEST_TO_REFERENCE_POSE, m_robotToCam1);
+  Camera[] m_cameras = { new Camera("camera 1", m_robotToCam1) };
+
+  static AprilTagFieldLayout m_aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
   Supplier<Pose2d> m_currentPose;
   Field2d m_field;
-
-  Camera[] m_cameras =
-      // TODO: Update this to match the camera position on the bot
-      // Currently set to a camera mounted facing forward, 0.5 meters forwards of
-      // center, 0.0 meters right of center, 0.5 meters up from center
-      { new Camera("camera 1", m_robotToCam1) };
-
   final StructPublisher<Pose2d> m_publisher = NetworkTableInstance.getDefault()
       .getStructTopic("VisionPose", Pose2d.struct).publish();
 
   // For simulation
   VisionSystemSim m_visionSim;
-  // To see simulation:
+  // To see camera streams:
   // Go to
   // * http://localhost:1181/ <-- camera 1 raw stream
   // * http://localhost:1182/ <-- camera 1 processed stream
