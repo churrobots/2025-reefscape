@@ -41,7 +41,7 @@
     },
     "###/SmartDashboard/Auto Chooser": {
       "Collapsed": "0",
-      "Pos": "60,60",
+      "Pos": "1178,364",
       "Size": "256,50"
     },
     "###/SmartDashboard/Field": {
@@ -75,7 +75,7 @@
       "Size": "300,560"
     },
     "###NetworkTables": {
-      "Collapsed": "1",
+      "Collapsed": "0",
       "Pos": "3,40",
       "Size": "341,379"
     },
