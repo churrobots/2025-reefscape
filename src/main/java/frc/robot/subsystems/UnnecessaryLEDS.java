@@ -15,18 +15,18 @@ import frc.robot.Hardware;
 
 public class UnnecessaryLEDS extends SubsystemBase {
 
-  final AddressableLED m_leds = new AddressableLED(Hardware.LEDLights.ledPWM);
+  final AddressableLED m_hardwareLEDs = new AddressableLED(Hardware.LEDLights.ledPWM);
+
   final AddressableLEDBuffer m_pixels = new AddressableLEDBuffer(
-      Hardware.LEDLights.leftPixelCount + Hardware.LEDLights.rightPixelCount);
-
-  AddressableLEDBufferView m_leftPixels = m_pixels
-      .createView(0, Hardware.LEDLights.leftPixelCount - 1);
-
-  AddressableLEDBufferView m_rightPixels = m_pixels
-      .createView(Hardware.LEDLights.leftPixelCount, Hardware.LEDLights.rightPixelCount - 1)
+      Hardware.LEDLights.leftLEDCount + Hardware.LEDLights.rightLEDCount);
+  final AddressableLEDBufferView m_leftPixels = m_pixels
+      .createView(0, Hardware.LEDLights.leftLEDCount - 1);
+  final AddressableLEDBufferView m_rightPixels = m_pixels
+      .createView(Hardware.LEDLights.leftLEDCount, Hardware.LEDLights.rightLEDCount - 1)
       .reversed();
 
   final LEDPattern m_offPattern = LEDPattern.kOff;
+  final LEDPattern m_disabledPattern = LEDPattern.solid(Color.kOrange);
   final LEDPattern m_blue = LEDPattern.solid(Color.kBlue);
   final LEDPattern m_green = LEDPattern.solid(Color.kGreen);
   final LEDPattern m_purple = LEDPattern.solid(Color.kPurple);
@@ -36,9 +36,10 @@ public class UnnecessaryLEDS extends SubsystemBase {
   final LEDPattern m_driverControlPattern = LEDPattern.solid(Color.kWhiteSmoke);
 
   public UnnecessaryLEDS() {
-    m_leds.setLength(m_pixels.getLength());
-    m_leds.start();
+    m_hardwareLEDs.setLength(m_pixels.getLength());
+    m_hardwareLEDs.start();
     setDefaultCommand(disable());
+    applyPattern(m_disabledPattern);
   }
 
   public Command disable() {
@@ -92,6 +93,14 @@ public class UnnecessaryLEDS extends SubsystemBase {
   private void applyPattern(LEDPattern pattern) {
     pattern.applyTo(m_leftPixels);
     pattern.applyTo(m_rightPixels);
-    m_leds.setData(m_pixels);
+  }
+
+  @Override
+  public void periodic() {
+    // Note: when the robot is disabled, it will not be running the
+    // default command, since commands do not run until it's enabled.
+    // By setting the data in periodic(), we can have lights when
+    // the robot is still disabled.
+    m_hardwareLEDs.setData(m_pixels);
   }
 }

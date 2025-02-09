@@ -72,8 +72,8 @@ public final class Hardware {
 
   public final class LEDLights {
     public static final int ledPWM = 9;
-    public static final int leftPixelCount = 144;
-    public static final int rightPixelCount = 144;
+    public static final int leftLEDCount = 144;
+    public static final int rightLEDCount = 144;
   }
 
   public static class DriverStation {
