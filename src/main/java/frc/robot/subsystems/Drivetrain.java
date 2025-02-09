@@ -1,137 +1,394 @@
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
-
+//
 package frc.robot.subsystems;
 
+import java.io.File;
+import java.util.Arrays;
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
+import static edu.wpi.first.units.Units.Meter;
 
+import edu.wpi.first.wpilibj2.command.Command;
+
+import com.ctre.phoenix6.hardware.Pigeon2;
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.commands.PathfindingCommand;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructArrayPublisher;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.units.measure.Force;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.churrolib.simulation.SimulationRegistry;
 import frc.robot.Hardware;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.RobotBase;
+import swervelib.parser.SwerveParser;
 import swervelib.SwerveDrive;
+import swervelib.math.SwerveMath;
+import swervelib.telemetry.SwerveDriveTelemetry;
+import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
+
+// TODO(Controls): Support robot-relative driving so the Operator can use the live camera feed to position the robot for placing coral on the reef.
+// Note: there is a robot-relative boolean on one of the drive APIs that can be used for this purpose.
+// Steps:
+// (1) add a command for robot-relative driving
+// (2) design the user interaction -- does the driver press and hold a button to release driving control to the operator? What controller does the operator use? (Flightstick seems like a good fit).
+// (3) map the joystick axes/buttons accordingly in RobotContainer.java
 
 public class Drivetrain extends SubsystemBase {
 
-  final DrivetrainWithTemplate m_drivetrainWithTemplate;
-  final DrivetrainWithYAGSL m_drivetrainWithYAGSL;
+  // Logging helpers.
+  final StructArrayPublisher<SwerveModuleState> m_actualSwerveStatePublisher = NetworkTableInstance.getDefault()
+      .getStructArrayTopic("ActualSwerveStates", SwerveModuleState.struct).publish();
+  final StructArrayPublisher<SwerveModuleState> m_desiredSwerveStatePublisher = NetworkTableInstance.getDefault()
+      .getStructArrayTopic("DesiredSwerveStates", SwerveModuleState.struct).publish();
+  final StructPublisher<Pose2d> m_posePublisher = NetworkTableInstance.getDefault()
+      .getStructTopic("YagslPose", Pose2d.struct).publish();
+  final Field2d m_fieldViz = new Field2d();
+
+  // Slew rate filter variables for controlling lateral acceleration
+  // and preventing excessive swerve wheel wear.
+
+  // YAGSL Swerve
+  private final SwerveDrive m_swerveDrive;
+  // private Vision m_vision;
 
   public Drivetrain() {
-    if (Hardware.Drivetrain.useYAGSL) {
-      SmartDashboard.putString("DrivetrainType", "YAGSL");
-      m_drivetrainWithYAGSL = new DrivetrainWithYAGSL();
-      m_drivetrainWithTemplate = null;
+    setDefaultCommand(new RunCommand(this::stop, this));
+    SmartDashboard.putData("Field", m_fieldViz);
+    if (Hardware.Drivetrain.debugTelemetry == true) {
+      SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
     } else {
-      SmartDashboard.putString("DrivetrainType", "Template");
-      m_drivetrainWithTemplate = new DrivetrainWithTemplate();
-      m_drivetrainWithYAGSL = null;
+      SwerveDriveTelemetry.verbosity = TelemetryVerbosity.LOW;
+    }
+
+    File m_swerveJsonDirectory = new File(Filesystem.getDeployDirectory(),
+        Hardware.Drivetrain.swerveConfigDeployPath);
+    try {
+      m_swerveDrive = new SwerveParser(
+          m_swerveJsonDirectory).createSwerveDrive(
+              Hardware.Drivetrain.maxSpeedMetersPerSecond,
+              new Pose2d(new Translation2d(Meter.of(1),
+                  Meter.of(4)),
+                  Rotation2d.fromDegrees(0)));
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+
+    // TODO: see if this helps us debug
+    if (RobotBase.isSimulation()) {
+      _registerHardwardWithOldSimulation();
+      // YAGSL recommends disabling certain features during sim
+      m_swerveDrive.setHeadingCorrection(false);
+      m_swerveDrive.setCosineCompensator(false);
+
+    }
+    m_swerveDrive.setHeadingCorrection(false);
+    m_swerveDrive.setCosineCompensator(false);
+    // Correct for skew that gets worse as angular velocity increases. Start with a
+    // coefficient of 0.1.
+    m_swerveDrive.setAngularVelocityCompensation(true, true,
+        0.1);
+
+    // Enable if you want to resynchronize your absolute encoders and motor encoders
+    // periodically when they are not moving.
+    m_swerveDrive.setModuleEncoderAutoSynchronize(false,
+        1);
+
+    // Setup vision
+    // m_vision = new Vision(m_swerveDrive::getPose, m_swerveDrive.field);
+
+    setupPathPlanner();
+  }
+
+  public void setupPathPlanner() {
+    // TODO: store this in the RobotConfig class
+    RobotConfig config;
+    try {
+      config = RobotConfig.fromGUISettings();
+
+      AutoBuilder.configure(
+          this::getPose, // Robot pose supplier
+          this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
+          this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+          (speeds, feedforwards) -> {
+            this.drive(speeds,
+                this.getKinematics().toSwerveModuleStates(speeds),
+                feedforwards.linearForces());
+          },
+          // (speeds, feedforwards) -> this.setRobotRelativeSpeeds(speeds), // Method that
+          // will drive the
+          // robot given
+          // // ROBOT RELATIVE ChassisSpeeds. Also
+          // // optionally outputs individual module
+          // // feedforwards
+          new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for
+                                          // holonomic drive trains
+              new PIDConstants(0.1, 0.0, 0.0), // Translation PID constants
+              new PIDConstants(0.01, 0.0, 0.0) // Rotation PID constants
+          ),
+          config, // The robot configuration
+          () -> {
+            // Boolean supplier that controls when the path will be mirrored for the red
+            // alliance
+            // This will flip the path being followed to the red side of the field.
+            // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+            boolean isBlueAlliance = true; // TODO: fix this
+            boolean shouldFlip = !isBlueAlliance;
+            return shouldFlip;
+          },
+          this // Reference to this subsystem to set requirements
+      );
+    } catch (Exception e) {
+      // Handle exception as needed
+      e.printStackTrace();
     }
   }
 
-  public void setDefaultCommand(Command command) {
-    if (Hardware.Drivetrain.useYAGSL) {
-      m_drivetrainWithYAGSL.setDefaultCommand(command);
-    } else {
-      m_drivetrainWithTemplate.setDefaultCommand(command);
-    }
+  private void _registerHardwardWithOldSimulation() {
+    SimulationRegistry.registerHardware((Pigeon2) m_swerveDrive.getGyro().getIMU());
+    SimulationRegistry.registerHardware((SparkMax) m_swerveDrive.getModules()[0].getDriveMotor().getMotor());
+    SimulationRegistry.registerHardware((SparkMax) m_swerveDrive.getModules()[0].getAngleMotor().getMotor());
+    SimulationRegistry.registerHardware((SparkMax) m_swerveDrive.getModules()[1].getDriveMotor().getMotor());
+    SimulationRegistry.registerHardware((SparkMax) m_swerveDrive.getModules()[1].getAngleMotor().getMotor());
+    SimulationRegistry.registerHardware((SparkMax) m_swerveDrive.getModules()[2].getDriveMotor().getMotor());
+    SimulationRegistry.registerHardware((SparkMax) m_swerveDrive.getModules()[2].getAngleMotor().getMotor());
+    SimulationRegistry.registerHardware((SparkMax) m_swerveDrive.getModules()[3].getDriveMotor().getMotor());
+    SimulationRegistry.registerHardware((SparkMax) m_swerveDrive.getModules()[3].getAngleMotor().getMotor());
   }
 
-  public void recalibrateDrivetrain() {
-    if (Hardware.Drivetrain.useYAGSL) {
-      m_drivetrainWithYAGSL.recalibrateDrivetrain();
-    } else {
-      m_drivetrainWithTemplate.recalibrateDrivetrain();
-    }
+  @Override
+  public void periodic() {
+    // m_vision.updatePoseEstimation(m_swerveDrive);
+    // m_swerveDrive.updateOdometry();
+    m_posePublisher.set(getPose());
+    m_actualSwerveStatePublisher.set(getModuleStates());
   }
 
-  public Command createFieldRelativeDriveCommand(
-      DoubleSupplier translationX,
-      DoubleSupplier translationY,
-      DoubleSupplier angularRotationX) {
-    if (Hardware.Drivetrain.useYAGSL) {
-      return m_drivetrainWithYAGSL.createFieldRelativeDriveCommand(
-          translationX, translationY, angularRotationX);
-    } else {
-      return m_drivetrainWithTemplate.createFieldRelativeDriveCommand(
-          translationX, translationY, angularRotationX);
-    }
+  @Override
+  public void simulationPeriodic() {
   }
 
-  public Command createRobotRelativeDriveCommand(
-      DoubleSupplier translationX,
-      DoubleSupplier translationY,
-      DoubleSupplier angularRotationX) {
-    if (Hardware.Drivetrain.useYAGSL) {
-      return m_drivetrainWithYAGSL.createRobotRelativeDriveCommand(
-          translationX, translationY, angularRotationX);
-    } else {
-      return m_drivetrainWithTemplate.createRobotRelativeDriveCommand(
-          translationX, translationY, angularRotationX);
-    }
+  /**
+   * Returns a Command that centers the modules of the SwerveDrive subsystem.
+   *
+   * @return a Command that centers the modules of the SwerveDrive subsystem
+   */
+  public Command recalibrateDrivetrain() {
+    return run(() -> Arrays.asList(m_swerveDrive.getModules())
+        .forEach(it -> it.setAngle(0.0)));
   }
 
-  public Pose2d getPose() {
-    if (Hardware.Drivetrain.useYAGSL) {
-      return m_drivetrainWithYAGSL.getPose();
-    } else {
-      return m_drivetrainWithTemplate.getPose();
-    }
+  void driveRobotRelative(ChassisSpeeds speeds) {
+    m_swerveDrive.drive(speeds);
   }
 
-  public void resetPose(Pose2d newPose) {
-    if (Hardware.Drivetrain.useYAGSL) {
-      m_drivetrainWithYAGSL.resetPose(newPose);
-    } else {
-      m_drivetrainWithTemplate.resetPose(newPose);
-    }
+  // YAGSL Reference: https://docs.yagsl.com/configuring-yagsl/code-setup
+  /**
+   * Drive the robot given a chassis field oriented velocity.
+   *
+   * @param velocity Velocity according to the field.
+   */
+  public void driveFieldOriented(ChassisSpeeds velocity) {
+    m_swerveDrive.driveFieldOriented(velocity);
   }
 
-  public ChassisSpeeds getRobotRelativeSpeeds() {
-    if (Hardware.Drivetrain.useYAGSL) {
-      return m_drivetrainWithYAGSL.getRobotRelativeSpeeds();
-    } else {
-      return m_drivetrainWithTemplate.getRobotRelativeSpeeds();
-    }
+  /**
+   * Drive the robot given a chassis field oriented velocity.
+   *
+   * @param velocity Velocity according to the field.
+   */
+  public Command driveFieldOriented(Supplier<ChassisSpeeds> velocity) {
+    return run(() -> {
+      m_swerveDrive.driveFieldOriented(velocity.get());
+    });
   }
 
-  public void setRobotRelativeSpeeds(ChassisSpeeds speeds) {
-    if (Hardware.Drivetrain.useYAGSL) {
-      m_drivetrainWithYAGSL.setRobotRelativeSpeeds(speeds);
-    } else {
-      m_drivetrainWithTemplate.driveRobotRelative(speeds);
-    }
-  }
-
-  public SwerveDriveKinematics getKinematics() {
-    if (Hardware.Drivetrain.useYAGSL) {
-      return m_drivetrainWithYAGSL.getKinematics();
-    } else {
-      return m_drivetrainWithTemplate.getKinematics();
-    }
+  /**
+   * Drive according to the chassis robot oriented velocity.
+   *
+   * @param velocity Robot oriented {@link ChassisSpeeds}
+   */
+  public void drive(ChassisSpeeds velocity) {
+    m_swerveDrive.drive(velocity);
   }
 
   public void drive(
       ChassisSpeeds robotRelativeVelocity, SwerveModuleState[] states, Force[] feedforwardForces) {
-    if (Hardware.Drivetrain.useYAGSL) {
-      m_drivetrainWithYAGSL.drive(robotRelativeVelocity, states, feedforwardForces);
-    } else {
-      m_drivetrainWithTemplate.drive(robotRelativeVelocity, states, feedforwardForces);
-    }
+    m_swerveDrive.drive(robotRelativeVelocity, states, feedforwardForces);
+  }
+
+  /**
+   * Get the swerve drive kinematics object.
+   *
+   * @return {@link SwerveDriveKinematics} of the swerve drive.
+   */
+  public SwerveDriveKinematics getKinematics() {
+    return m_swerveDrive.kinematics;
+  }
+
+  public SwerveDrive getSwerveDrive() {
+    return m_swerveDrive;
+  }
+
+  SwerveModuleState[] getModuleStates() {
+    return m_swerveDrive.getStates();
+  }
+
+  /**
+   * Command to drive the robot using translative values and heading as a
+   * setpoint.
+   *
+   * @param translationX Translation in the X direction.
+   * @param translationY Translation in the Y direction.
+   * @param headingX     Heading X to calculate angle of the joystick.
+   * @param headingY     Heading Y to calculate angle of the joystick.
+   * @return Drive command.
+   */
+  public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier headingX,
+      DoubleSupplier headingY) {
+    return run(() -> {
+
+      // TODO: is this artificially limiting to 80%?
+      Translation2d scaledInputs = SwerveMath.scaleTranslation(new Translation2d(translationX.getAsDouble(),
+          translationY.getAsDouble()), 0.8);
+
+      // Make the robot move
+      driveFieldOriented(m_swerveDrive.swerveController.getTargetSpeeds(scaledInputs.getX(), scaledInputs.getY(),
+          headingX.getAsDouble(),
+          headingY.getAsDouble(),
+          m_swerveDrive.getOdometryHeading().getRadians(),
+          m_swerveDrive.getMaximumChassisVelocity()));
+    });
+  }
+
+  /**
+   * Command to drive the robot using translative values and heading as angular
+   * velocity.
+   *
+   * @param translationX     Translation in the X direction.
+   * @param translationY     Translation in the Y direction.
+   * @param angularRotationX Rotation of the robot to set
+   * @return Drive command.
+   */
+  public Command createFieldRelativeDriveCommand(DoubleSupplier translationX, DoubleSupplier translationY,
+      DoubleSupplier angularRotationX) {
+    return run(() -> {
+      // Make the robot move
+      m_swerveDrive.drive(new Translation2d(translationX.getAsDouble() * m_swerveDrive.getMaximumChassisVelocity(),
+          translationY.getAsDouble() * m_swerveDrive.getMaximumChassisVelocity()),
+          angularRotationX.getAsDouble() * m_swerveDrive.getMaximumChassisAngularVelocity(),
+          true,
+          false);
+    });
+  }
+
+  /**
+   * Command to drive the robot using translative values and heading as angular
+   * velocity.
+   *
+   * @param translationX     Translation in the X direction.
+   * @param translationY     Translation in the Y direction.
+   * @param angularRotationX Rotation of the robot to set
+   * @return Drive command.
+   */
+  public Command createRobotRelativeDriveCommand(DoubleSupplier translationX, DoubleSupplier translationY,
+      DoubleSupplier angularRotationX) {
+    return run(() -> {
+      // Make the robot move
+      m_swerveDrive.drive(new Translation2d(translationX.getAsDouble() * m_swerveDrive.getMaximumChassisVelocity(),
+          translationY.getAsDouble() * m_swerveDrive.getMaximumChassisVelocity()),
+          angularRotationX.getAsDouble() * m_swerveDrive.getMaximumChassisAngularVelocity(),
+          false,
+          false);
+    });
+  }
+
+  public void resetPose(Pose2d newPose) {
+    m_swerveDrive.resetOdometry(newPose);
+  }
+
+  public ChassisSpeeds getRobotRelativeSpeeds() {
+    return m_swerveDrive.getRobotVelocity();
+  }
+
+  public void setRobotRelativeSpeeds(ChassisSpeeds speeds) {
+    m_swerveDrive.setChassisSpeeds(speeds);
+  }
+
+  public void stop() {
+    drive(new ChassisSpeeds());
+  }
+
+  /**
+   * Sets the wheels into an X formation to prevent movement.
+   */
+  // public void setXFormation() {
+  // m_frontLeft.setDesiredState(new SwerveModuleState(0,
+  // Rotation2d.fromDegrees(45)));
+  // m_frontRight.setDesiredState(new SwerveModuleState(0,
+  // Rotation2d.fromDegrees(-45)));
+  // m_rearLeft.setDesiredState(new SwerveModuleState(0,
+  // Rotation2d.fromDegrees(-45)));
+  // m_rearRight.setDesiredState(new SwerveModuleState(0,
+  // Rotation2d.fromDegrees(45)));
+  // }
+
+  // /**
+  // * Sets the swerve ModuleStates.
+  // *
+  // * @param desiredStates The desired SwerveModule states.
+  // */
+  // void setModuleStates(SwerveModuleState[] desiredStates) {
+  // SwerveDriveKinematics.desaturateWheelSpeeds(
+  // desiredStates, Constants.kMaxSpeedMetersPerSecond);
+  // m_frontLeft.setDesiredState(desiredStates[0]);
+  // m_frontRight.setDesiredState(desiredStates[1]);
+  // m_rearLeft.setDesiredState(desiredStates[2]);
+  // m_rearRight.setDesiredState(desiredStates[3]);
+  // }
+
+  /**
+   * Gets the current pose (position and rotation) of the robot, as reported by
+   * odometry.
+   *
+   * @return The robot's pose
+   */
+  public Pose2d getPose() {
+    return m_swerveDrive.getPose();
+  }
+
+  /**
+   * Gets the current yaw angle of the robot, as reported by the swerve pose
+   * estimator in the underlying drivebase.
+   * Note, this is not the raw gyro reading, this may be corrected from calls to
+   * resetOdometry().
+   *
+   * @return The yaw angle
+   */
+  public Rotation2d getHeading() {
+    return getPose().getRotation();
   }
 
   public Command getAutonomousCommand(String pathName) {
-    if (Hardware.Drivetrain.useYAGSL) {
-      return m_drivetrainWithYAGSL.getAutonomousCommand(pathName);
-    } else {
-      return m_drivetrainWithTemplate.getAutonomousCommand(pathName);
-    }
+    return new PathPlannerAuto(pathName);
   }
 }

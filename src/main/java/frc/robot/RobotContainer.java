@@ -6,12 +6,7 @@ package frc.robot;
 
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
-
-import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.config.PIDConstants;
-import com.pathplanner.lib.config.RobotConfig;
-import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -20,16 +15,12 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.churrolib.vendor.Elastic;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elbow;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Pipeshooter;
-import swervelib.telemetry.SwerveDriveTelemetry;
-import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
-import frc.robot.subsystems.UnnecessaryLEDS;
 import frc.robot.subsystems.UnnecessaryLEDS;
 
 public class RobotContainer {
@@ -95,10 +86,7 @@ public class RobotContainer {
     driverXboxController.back().whileTrue(recalibrateDriveTrain);
 
     operatorXboxController.leftBumper().whileTrue(slowRobotRelativeOperatorXboxControlWithLEDs);
-
-    if (pipeshooter != null) {
-      operatorXboxController.rightBumper().whileTrue(pipeshooter.shootCoral());
-    }
+    operatorXboxController.rightBumper().whileTrue(pipeshooter.shootCoral());
 
     // commands for the elbow positioning
     Command moveElbowAndElevatorToRecieve = elbow.recieve().alongWith(elevator.moveToRecieve())
