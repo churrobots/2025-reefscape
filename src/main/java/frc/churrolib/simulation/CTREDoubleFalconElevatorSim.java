@@ -39,12 +39,12 @@ public class CTREDoubleFalconElevatorSim {
     m_leaderSimState = leaderMotor.getSimState();
     m_followerSimState = followerMotor.getSimState();
 
+    double sprocketPitchRadius = sprocketPitchDiameter / 2.0;
     m_elevatorPhysicsSim = new ElevatorSim(
         DCMotor.getFalcon500(2),
         gearboxReduction,
         simCarriageMass,
-        // TODO: figure out why Quixilver halved the pitch diameter?
-        sprocketPitchDiameter * 0.5,
+        sprocketPitchRadius,
         minHeightInMeters,
         maxHeightInMeters,
         true,
@@ -58,7 +58,6 @@ public class CTREDoubleFalconElevatorSim {
   public void iterate(double timeDeltaInSeconds) {
     double leaderOutputVoltage = m_leaderMotor.get() * RobotController.getBatteryVoltage();
     double followerOutputVoltage = m_followerMotor.get() * RobotController.getBatteryVoltage();
-    // m_elevatorPhysicsSim.setInput(leaderOutputVoltage, followerOutputVoltage);
     m_elevatorPhysicsSim.setInput(leaderOutputVoltage);
     m_elevatorPhysicsSim.update(timeDeltaInSeconds);
 

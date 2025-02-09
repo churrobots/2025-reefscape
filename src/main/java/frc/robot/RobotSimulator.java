@@ -59,9 +59,9 @@ public class RobotSimulator {
         SimulationRegistry.getTalonFX(Hardware.Elevator.followerFalconMotorCAN),
         Hardware.Elevator.gearboxReduction,
         Hardware.Elevator.simCarriageMass,
-        Hardware.Elevator.sprocketPitchDiameter * 0.5,
+        Hardware.Elevator.sprocketPitchDiameter,
         Hardware.Elevator.minHeightInMeters,
-        Hardware.Elevator.maxHeightInMeters,  
+        Hardware.Elevator.maxHeightInMeters,
         Hardware.Elevator.minHeightInMeters);
 
     m_revTemplateSimFL = new RevMAXSwerveModuleSim(
