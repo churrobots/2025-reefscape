@@ -9,10 +9,10 @@
         "containers": [
           {
             "title": "Alliance",
-            "x": 1350.0,
+            "x": 1175.0,
             "y": 125.0,
-            "width": 150.0,
-            "height": 125.0,
+            "width": 100.0,
+            "height": 100.0,
             "type": "Boolean Box",
             "properties": {
               "topic": "/FMSInfo/IsRedAlliance",
@@ -26,10 +26,10 @@
           },
           {
             "title": "robotName",
-            "x": 1225.0,
+            "x": 1075.0,
             "y": 125.0,
-            "width": 125.0,
-            "height": 125.0,
+            "width": 100.0,
+            "height": 100.0,
             "type": "Text Display",
             "properties": {
               "topic": "robotName",
@@ -42,7 +42,7 @@
             "title": "Auto Chooser",
             "x": 725.0,
             "y": 0.0,
-            "width": 775.0,
+            "width": 550.0,
             "height": 125.0,
             "type": "ComboBox Chooser",
             "properties": {
@@ -55,8 +55,8 @@
             "title": "photonvision_Port_1181_Input_MJPEG_Server",
             "x": 725.0,
             "y": 125.0,
-            "width": 500.0,
-            "height": 475.0,
+            "width": 350.0,
+            "height": 300.0,
             "type": "Camera Stream",
             "properties": {
               "topic": "/CameraPublisher/photonvision_Port_1181_Input_MJPEG_Server",
