@@ -70,6 +70,10 @@ public final class Hardware {
     // int numMotors = 0;
   }
 
+  public final class Vision {
+    public static final boolean isEnabled = false;
+  }
+
   public final class LEDLights {
     public static final int ledPWM = 9;
     public static final int leftLEDCount = 144;
