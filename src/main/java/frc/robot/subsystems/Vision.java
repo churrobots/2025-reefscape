@@ -87,6 +87,7 @@ public class Vision {
        * simulator when updating the vision simulation during the simulation.
        */
       m_visionSim.update(swerveDrive.getSimulationDriveTrainPose().get());
+      m_field.getObject("VisionPose").setPose(swerveDrive.getSimulationDriveTrainPose().get());
     }
 
     for (Camera camera : m_cameras) {

@@ -31,7 +31,8 @@
       "/SmartDashboard/Pigeon 2 (v6) [9]": "Gyro",
       "/SmartDashboard/SendableChooser[0]": "String Chooser",
       "/SmartDashboard/Swerve Drive": "Alerts",
-      "/SmartDashboard/TestShooter": "Mechanism2d"
+      "/SmartDashboard/TestShooter": "Mechanism2d",
+      "/SmartDashboard/VisionSystemSim-Vision/Sim Field": "Field2d"
     },
     "windows": {
       "/SmartDashboard/Auto Chooser": {
@@ -121,6 +122,24 @@
           "weight": 0.0,
           "width": 0.30000001192092896
         },
+        "VisionPose": {
+          "arrowColor": [
+            0.31111109256744385,
+            0.7244445085525513,
+            1.0,
+            255.0
+          ],
+          "color": [
+            0.48888885974884033,
+            0.7614814639091492,
+            1.0,
+            255.0
+          ],
+          "length": 1.0,
+          "style": "Box/Image",
+          "weight": 2.0,
+          "width": 1.0
+        },
         "XModules": {
           "arrowColor": [
             255.0,
@@ -153,6 +172,93 @@
         }
       },
       "/SmartDashboard/TestShooter": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/VisionSystemSim-Vision/Sim Field": {
+        "Robot": {
+          "arrowColor": [
+            255.0,
+            246.50001525878906,
+            0.0,
+            255.0
+          ],
+          "color": [
+            255.0,
+            238.0,
+            0.0,
+            255.0
+          ]
+        },
+        "VisionEstimation": {
+          "arrowColor": [
+            0.0,
+            161.50003051757813,
+            255.0,
+            255.0
+          ],
+          "color": [
+            0.0,
+            203.99998474121094,
+            255.0,
+            255.0
+          ]
+        },
+        "apriltag": {
+          "arrowColor": [
+            0.674012303352356,
+            0.9944444298744202,
+            0.674012303352356,
+            255.0
+          ],
+          "color": [
+            1.0,
+            0.5277777910232544,
+            0.5277777910232544,
+            255.0
+          ]
+        },
+        "bottom": 1638,
+        "builtin": "2025 Reefscape",
+        "cameras": {
+          "arrowColor": [
+            255.0,
+            0.0,
+            229.50003051757813,
+            255.0
+          ],
+          "arrowSize": 24,
+          "arrowWeight": 1.0,
+          "color": [
+            212.5000457763672,
+            0.0,
+            255.0,
+            255.0
+          ],
+          "length": 0.4000000059604645,
+          "weight": 1.0,
+          "width": 0.4000000059604645
+        },
+        "height": 8.051901817321777,
+        "left": 534,
+        "right": 3466,
+        "top": 291,
+        "visibleTargetPoses": {
+          "arrowColor": [
+            0.0,
+            0.9944444298744202,
+            0.0,
+            255.0
+          ],
+          "color": [
+            0.9888888597488403,
+            0.0,
+            0.0,
+            255.0
+          ]
+        },
+        "width": 17.54825210571289,
         "window": {
           "visible": true
         }
