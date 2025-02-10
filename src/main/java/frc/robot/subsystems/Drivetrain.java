@@ -32,6 +32,7 @@ import edu.wpi.first.units.measure.Force;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.churrolib.UniversalRobotProperties;
 import frc.churrolib.simulation.SimulationRegistry;
 import frc.robot.Hardware;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -66,6 +67,7 @@ public class Drivetrain extends SubsystemBase {
 
   // YAGSL Swerve
   private final SwerveDrive m_swerveDrive;
+  private final File m_swerveJsonDirectory;
   private Vision m_vision;
 
   public Drivetrain() {
@@ -77,7 +79,7 @@ public class Drivetrain extends SubsystemBase {
       SwerveDriveTelemetry.verbosity = TelemetryVerbosity.LOW;
     }
 
-    File m_swerveJsonDirectory = new File(Filesystem.getDeployDirectory(),
+    m_swerveJsonDirectory = new File(Filesystem.getDeployDirectory(),
         Hardware.Drivetrain.swerveConfigDeployPath);
     try {
       m_swerveDrive = new SwerveParser(
@@ -117,7 +119,9 @@ public class Drivetrain extends SubsystemBase {
     // TODO: store this in the RobotConfig class
     RobotConfig config;
     try {
-      config = RobotConfig.fromGUISettings();
+      UniversalRobotProperties robotProperties = new UniversalRobotProperties(m_swerveJsonDirectory,
+          Hardware.Drivetrain.maxSpeedMetersPerSecond, Hardware.Drivetrain.robotMOI);
+      config = robotProperties.getAsPathPlannerConfig();
 
       AutoBuilder.configure(
           this::getPose, // Robot pose supplier

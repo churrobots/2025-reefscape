@@ -46,6 +46,14 @@ public final class Hardware {
 
   public final class Drivetrain {
     public static final double maxSpeedMetersPerSecond = 6.04;
+    // TODO: Update the MOIs to match the robots.
+    public static final double robotMOI = switch (robotName) {
+      case ROBOT_CANELO -> 6.0;
+      case ROBOT_ALPHA -> 2.0;
+      case ROBOT_BETA -> 6.0;
+      case ROBOT_SIMULATION -> 2.0;
+      default -> 6.0;
+    };
     public static final String swerveConfigDeployPath = switch (robotName) {
       case ROBOT_CANELO -> "yagsl-configs/canelo";
       case ROBOT_ALPHA -> "yagsl-configs/alpha";
