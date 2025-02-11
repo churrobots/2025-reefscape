@@ -32,7 +32,7 @@ import edu.wpi.first.units.measure.Force;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.churrolib.simulation.SimulationRegistry;
+import frc.churrolib.HardwareRegistry;
 import frc.robot.Hardware;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -90,9 +90,22 @@ public class Drivetrain extends SubsystemBase {
       throw new RuntimeException(e);
     }
 
+    HardwareRegistry.registerHardware(m_swerveDrive.getGyro().getIMU());
+    HardwareRegistry.registerHardware(m_swerveDrive.getModules()[0].getDriveMotor().getMotor());
+    HardwareRegistry.registerHardware(m_swerveDrive.getModules()[0].getAngleMotor().getMotor());
+    HardwareRegistry.registerHardware(m_swerveDrive.getModules()[1].getDriveMotor().getMotor());
+    HardwareRegistry.registerHardware(m_swerveDrive.getModules()[1].getAngleMotor().getMotor());
+    HardwareRegistry.registerHardware(m_swerveDrive.getModules()[2].getDriveMotor().getMotor());
+    HardwareRegistry.registerHardware(m_swerveDrive.getModules()[2].getAngleMotor().getMotor());
+    HardwareRegistry.registerHardware(m_swerveDrive.getModules()[3].getDriveMotor().getMotor());
+    HardwareRegistry.registerHardware(m_swerveDrive.getModules()[3].getAngleMotor().getMotor());
+
     // TODO: see if this helps us debug
     if (RobotBase.isSimulation()) {
-      _registerHardwardWithOldSimulation();
+      // YAGSL recommends disabling certain features during sim
+      m_swerveDrive.setHeadingCorrection(false);
+      m_swerveDrive.setCosineCompensator(false);
+
     }
 
     m_swerveDrive.setHeadingCorrection(false);
@@ -150,18 +163,6 @@ public class Drivetrain extends SubsystemBase {
       e.printStackTrace();
     }
     return AutoBuilder.buildAutoChooser();
-  }
-
-  private void _registerHardwardWithOldSimulation() {
-    SimulationRegistry.registerHardware((Pigeon2) m_swerveDrive.getGyro().getIMU());
-    SimulationRegistry.registerHardware((SparkMax) m_swerveDrive.getModules()[0].getDriveMotor().getMotor());
-    SimulationRegistry.registerHardware((SparkMax) m_swerveDrive.getModules()[0].getAngleMotor().getMotor());
-    SimulationRegistry.registerHardware((SparkMax) m_swerveDrive.getModules()[1].getDriveMotor().getMotor());
-    SimulationRegistry.registerHardware((SparkMax) m_swerveDrive.getModules()[1].getAngleMotor().getMotor());
-    SimulationRegistry.registerHardware((SparkMax) m_swerveDrive.getModules()[2].getDriveMotor().getMotor());
-    SimulationRegistry.registerHardware((SparkMax) m_swerveDrive.getModules()[2].getAngleMotor().getMotor());
-    SimulationRegistry.registerHardware((SparkMax) m_swerveDrive.getModules()[3].getDriveMotor().getMotor());
-    SimulationRegistry.registerHardware((SparkMax) m_swerveDrive.getModules()[3].getAngleMotor().getMotor());
   }
 
   @Override
