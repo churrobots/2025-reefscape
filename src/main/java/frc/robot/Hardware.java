@@ -81,7 +81,7 @@ public final class Hardware {
     public static final int operatorXboxPort = 1;
     public static final double driverXboxDeadband = 0.1;
     public static final double fastDriveScale = 1.0;
-    public static final double slowDriveScale = 0.25;
+    public static final double slowDriveScale = 0.15;
     public static final boolean useLowQualityCamera = switch (robotName) {
       case ROBOT_ALPHA -> true;
       default -> false;
