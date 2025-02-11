@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.churrolib.HardwareRegistry;
 import frc.churrolib.vendor.Elastic;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elbow;
@@ -130,6 +131,10 @@ public class RobotContainer {
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
     return autoChooser::getSelected;
+  }
+
+  void updateDiagnostics() {
+    HardwareRegistry.dumpDeviceFaultsToNetworkTables();
   }
 
 }
