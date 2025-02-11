@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Percent;
+
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.AddressableLEDBufferView;
@@ -91,8 +93,9 @@ public class UnnecessaryLEDS extends SubsystemBase {
   }
 
   private void applyPattern(LEDPattern pattern) {
-    pattern.applyTo(m_leftPixels);
-    pattern.applyTo(m_rightPixels);
+    LEDPattern dimmerPattern = pattern.atBrightness(Percent.of(25));
+    dimmerPattern.applyTo(m_leftPixels);
+    dimmerPattern.applyTo(m_rightPixels);
   }
 
   @Override
