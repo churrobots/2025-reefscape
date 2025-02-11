@@ -9,7 +9,7 @@
         "containers": [
           {
             "title": "Alliance",
-            "x": 1175.0,
+            "x": 850.0,
             "y": 125.0,
             "width": 100.0,
             "height": 100.0,
@@ -18,17 +18,17 @@
               "topic": "/FMSInfo/IsRedAlliance",
               "period": 0.06,
               "data_type": "boolean",
-              "true_color": 4294901760,
-              "false_color": 4282600941,
+              "true_color": 4288020480,
+              "false_color": 4278216630,
               "true_icon": "None",
               "false_icon": "None"
             }
           },
           {
             "title": "robotName",
-            "x": 1075.0,
+            "x": 725.0,
             "y": 125.0,
-            "width": 100.0,
+            "width": 125.0,
             "height": 100.0,
             "type": "Text Display",
             "properties": {
@@ -52,18 +52,6 @@
             }
           },
           {
-            "title": "photonvision_Port_1181_Input_MJPEG_Server",
-            "x": 725.0,
-            "y": 125.0,
-            "width": 350.0,
-            "height": 300.0,
-            "type": "Camera Stream",
-            "properties": {
-              "topic": "/CameraPublisher/photonvision_Port_1181_Input_MJPEG_Server",
-              "period": 0.06
-            }
-          },
-          {
             "title": "Operator View",
             "x": 0.0,
             "y": 0.0,
@@ -73,6 +61,227 @@
             "properties": {
               "topic": "/CameraPublisher/photonvision_Port_1183_Input_MJPEG_Server",
               "period": 0.06
+            }
+          },
+          {
+            "title": "SparkBase[1]",
+            "x": 850.0,
+            "y": 250.0,
+            "width": 125.0,
+            "height": 100.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/SmartDashboard/HardwareRegistry/Faults/SparkBase[1]",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "Checkmark",
+              "false_icon": "X"
+            }
+          },
+          {
+            "title": "SparkBase[2]",
+            "x": 1125.0,
+            "y": 250.0,
+            "width": 125.0,
+            "height": 100.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/SmartDashboard/HardwareRegistry/Faults/SparkBase[2]",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "Checkmark",
+              "false_icon": "X"
+            }
+          },
+          {
+            "title": "SparkBase[3]",
+            "x": 850.0,
+            "y": 350.0,
+            "width": 125.0,
+            "height": 100.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/SmartDashboard/HardwareRegistry/Faults/SparkBase[3]",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "Checkmark",
+              "false_icon": "X"
+            }
+          },
+          {
+            "title": "SparkBase[4]",
+            "x": 1125.0,
+            "y": 350.0,
+            "width": 125.0,
+            "height": 100.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/SmartDashboard/HardwareRegistry/Faults/SparkBase[4]",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "Checkmark",
+              "false_icon": "X"
+            }
+          },
+          {
+            "title": "SparkBase[5]",
+            "x": 725.0,
+            "y": 250.0,
+            "width": 125.0,
+            "height": 100.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/SmartDashboard/HardwareRegistry/Faults/SparkBase[5]",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "Checkmark",
+              "false_icon": "X"
+            }
+          },
+          {
+            "title": "SparkBase[6]",
+            "x": 1000.0,
+            "y": 250.0,
+            "width": 125.0,
+            "height": 100.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/SmartDashboard/HardwareRegistry/Faults/SparkBase[6]",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "Checkmark",
+              "false_icon": "X"
+            }
+          },
+          {
+            "title": "SparkBase[7]",
+            "x": 725.0,
+            "y": 350.0,
+            "width": 125.0,
+            "height": 100.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/SmartDashboard/HardwareRegistry/Faults/SparkBase[7]",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "Checkmark",
+              "false_icon": "X"
+            }
+          },
+          {
+            "title": "SparkBase[8]",
+            "x": 1000.0,
+            "y": 350.0,
+            "width": 125.0,
+            "height": 100.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/SmartDashboard/HardwareRegistry/Faults/SparkBase[8]",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "Checkmark",
+              "false_icon": "X"
+            }
+          },
+          {
+            "title": "TalonFX[14]",
+            "x": 975.0,
+            "y": 475.0,
+            "width": 125.0,
+            "height": 100.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/SmartDashboard/HardwareRegistry/Faults/TalonFX[14]",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "Checkmark",
+              "false_icon": "X"
+            }
+          },
+          {
+            "title": "TalonFX[15]",
+            "x": 725.0,
+            "y": 475.0,
+            "width": 125.0,
+            "height": 100.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/SmartDashboard/HardwareRegistry/Faults/TalonFX[15]",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "Checkmark",
+              "false_icon": "X"
+            }
+          },
+          {
+            "title": "TalonFX[16]",
+            "x": 850.0,
+            "y": 475.0,
+            "width": 125.0,
+            "height": 100.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/SmartDashboard/HardwareRegistry/Faults/TalonFX[16]",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "Checkmark",
+              "false_icon": "X"
+            }
+          },
+          {
+            "title": "SparkBase[17]",
+            "x": 1100.0,
+            "y": 475.0,
+            "width": 150.0,
+            "height": 100.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/SmartDashboard/HardwareRegistry/Faults/SparkBase[17]",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "Checkmark",
+              "false_icon": "X"
+            }
+          },
+          {
+            "title": "Pigeon2[9]",
+            "x": 1125.0,
+            "y": 150.0,
+            "width": 125.0,
+            "height": 100.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/SmartDashboard/HardwareRegistry/Faults/Pigeon2[9]",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "Checkmark",
+              "false_icon": "X"
             }
           }
         ]

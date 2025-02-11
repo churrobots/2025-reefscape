@@ -12,9 +12,9 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
+import frc.churrolib.HardwareRegistry;
 import frc.churrolib.simulation.CTREDoubleFalconElevatorSim;
 import frc.churrolib.simulation.CTRESingleFalconRollerSim;
-import frc.churrolib.simulation.SimulationRegistry;
 
 public class RobotSimulator {
 
@@ -29,13 +29,13 @@ public class RobotSimulator {
   final MechanismLigament2d m_vizWheels;
 
   public RobotSimulator() {
-    TalonFX coralMotor = SimulationRegistry.getTalonFX(Hardware.Pipeshooter.falconMotorCAN);
+    TalonFX coralMotor = HardwareRegistry.getTalonFX(Hardware.Pipeshooter.falconMotorCAN);
     m_shooterSim = new CTRESingleFalconRollerSim(
         coralMotor, Hardware.Pipeshooter.gearboxReduction, Hardware.Pipeshooter.simMomentOfInertia);
 
     m_elevatorSim = new CTREDoubleFalconElevatorSim(
-        SimulationRegistry.getTalonFX(Hardware.Elevator.leaderFalconMotorCAN),
-        SimulationRegistry.getTalonFX(Hardware.Elevator.followerFalconMotorCAN),
+        HardwareRegistry.getTalonFX(Hardware.Elevator.leaderFalconMotorCAN),
+        HardwareRegistry.getTalonFX(Hardware.Elevator.followerFalconMotorCAN),
         Hardware.Elevator.gearboxReduction,
         Hardware.Elevator.simCarriageMass,
         Hardware.Elevator.sprocketPitchDiameter * 0.5,

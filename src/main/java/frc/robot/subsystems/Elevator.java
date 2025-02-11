@@ -10,7 +10,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.churrolib.simulation.SimulationRegistry;
+import frc.churrolib.HardwareRegistry;
 import frc.robot.Hardware;
 
 public class Elevator extends SubsystemBase {
@@ -29,8 +29,8 @@ public class Elevator extends SubsystemBase {
 
   public Elevator() {
     setDefaultCommand(stop());
-    SimulationRegistry.registerHardware(m_elevatorMotorLeader);
-    SimulationRegistry.registerHardware(m_elevatorMotorFollow);
+    HardwareRegistry.registerHardware(m_elevatorMotorLeader);
+    HardwareRegistry.registerHardware(m_elevatorMotorFollow);
 
     slot0Configs.kP = Constants.kP;
     slot0Configs.kI = Constants.kI;
