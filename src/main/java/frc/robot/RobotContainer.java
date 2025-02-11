@@ -109,12 +109,16 @@ public class RobotContainer {
     Command moveElbowAndElevatorToL3Algae = elbow.moveAlgae().alongWith(elevator.move3Alpha().alongWith(leds.yellow()));
     operatorXboxController.povUp().onTrue(moveElbowAndElevatorToL3Algae);
 
+    Command shootCoral = pipeshooter.shootCoral().alongWith(leds.green());
+    operatorXboxController.rightBumper().whileTrue(shootCoral);
+
     Elastic.enableDashboardToBeDownloadedFromRobotDeployDirectory();
     SmartDashboard.putString("Robot Name", Hardware.robotName);
 
   }
 
   Supplier<Command> bindCommandsForAutonomous() {
+
     NamedCommands.registerCommand("move1Beta", elbow.move1Beta());
     NamedCommands.registerCommand("move2Sigma", elbow.move2Sigma());
     NamedCommands.registerCommand("moveAlgae", elbow.moveAlgae());
