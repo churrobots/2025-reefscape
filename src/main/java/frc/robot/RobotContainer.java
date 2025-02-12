@@ -15,9 +15,11 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.churrolib.CommandXboxControllerForSimulation;
 import frc.churrolib.HardwareRegistry;
 import frc.churrolib.vendor.Elastic;
 import frc.robot.subsystems.Drivetrain;
@@ -36,7 +38,9 @@ public class RobotContainer {
 
   void bindCommandsForTeleop() {
 
-    CommandXboxController driverXboxController = new CommandXboxController(Hardware.DriverStation.driverXboxPort);
+    CommandXboxController driverXboxController = RobotBase.isSimulation()
+        ? new CommandXboxControllerForSimulation(Hardware.DriverStation.driverSimulationXboxPort)
+        : new CommandXboxController(Hardware.DriverStation.driverXboxPort);
     CommandXboxController operatorXboxController = new CommandXboxController(Hardware.DriverStation.operatorXboxPort);
 
     Command recalibrateDriveTrain = new RunCommand(() -> drivetrain.recalibrateDrivetrain(), drivetrain);

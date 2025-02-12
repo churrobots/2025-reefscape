@@ -134,7 +134,7 @@ public class HardwareRegistry {
           isGood);
     }
     for (SparkBase device : getInstance().m_sparkBaseList) {
-      boolean isGood = !device.hasActiveFault();
+      boolean isGood = !device.hasActiveFault() && !device.hasActiveWarning();
       SmartDashboard.putBoolean("HardwareRegistry/Faults/SparkBase[" + device.getDeviceId() + "]",
           isGood);
     }
