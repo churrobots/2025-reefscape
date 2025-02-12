@@ -79,6 +79,7 @@ public final class Hardware {
   public static class DriverStation {
     public static final int driverXboxPort = 0;
     public static final int operatorXboxPort = 1;
+    public static final int driverSimulationXboxPort = 2;
     public static final double driverXboxDeadband = 0.1;
     public static final double fastDriveScale = 1.0;
     public static final double slowDriveScale = 0.25;
