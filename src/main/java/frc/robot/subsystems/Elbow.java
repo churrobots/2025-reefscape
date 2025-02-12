@@ -60,21 +60,24 @@ public class Elbow extends SubsystemBase {
   public Command move1Beta() {
     return run(() -> {
       m_elbowController.setReference(0.1, ControlType.kMAXMotionPositionControl);
-    });
+      // FIXME: we should use the target position instead of a timeout
+    }).withTimeout(2);
   }
 
   // Positon to score L2 & L3
   public Command move2Sigma() {
     return run(() -> {
       m_elbowController.setReference(0.2, ControlType.kMAXMotionPositionControl);
-    });
+      // FIXME: we should use the target position instead of a timeout
+    }).withTimeout(2);
   }
 
   // Position to remove Algae
   public Command moveAlgae() {
     return run(() -> {
       m_elbowController.setReference(0.3, ControlType.kMAXMotionPositionControl);
-    });
+      // FIXME: we should use the target position instead of a timeout
+    }).withTimeout(2);
   }
 
 }

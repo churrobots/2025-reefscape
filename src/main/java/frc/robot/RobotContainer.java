@@ -9,6 +9,7 @@ import java.util.function.Supplier;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -115,13 +116,21 @@ public class RobotContainer {
 
   }
 
+  Command showCommand(String text) {
+    return new InstantCommand(() -> {
+      SmartDashboard.putString("AutoCommand", text);
+    });
+  }
+
   Supplier<Command> bindCommandsForAutonomous() {
-    NamedCommands.registerCommand("move1Beta", elbow.move1Beta());
-    NamedCommands.registerCommand("move2Sigma", elbow.move2Sigma());
-    NamedCommands.registerCommand("moveAlgae", elbow.moveAlgae());
-    NamedCommands.registerCommand("intakePipeshooter", pipeshooter.intakeCoral());
-    NamedCommands.registerCommand("shootCoral", pipeshooter.shootCoral());
-    NamedCommands.registerCommand("waitForTeammates", new WaitCommand(9));
+    NamedCommands.registerCommand("move1Beta", elbow.move1Beta().alongWith(showCommand("Move 1 Beta")));
+    NamedCommands.registerCommand("move2Sigma", elbow.move2Sigma().alongWith(showCommand("Move 2 Sigma")));
+    NamedCommands.registerCommand("moveAlgae", elbow.moveAlgae().alongWith(showCommand("Move Algae")));
+    NamedCommands.registerCommand("intakePipeshooter",
+        pipeshooter.intakeCoral().alongWith(showCommand("intakePipeshooter")));
+    NamedCommands.registerCommand("shootCoral",
+        pipeshooter.shootCoral().alongWith(showCommand("shootCoral")).withTimeout(2));
+    NamedCommands.registerCommand("waitForTeammates", new WaitCommand(9).alongWith(showCommand("wait For Teammates")));
 
     SendableChooser<Command> autoChooser = drivetrain.createPathPlannerDropdown();
     SmartDashboard.putData("Auto Chooser", autoChooser);
