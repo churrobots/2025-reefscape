@@ -5,21 +5,60 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "sequential",
           "data": {
-            "pathName": "Cage-EF"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Cage-EF"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "moveAlgae"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "path",
+          "type": "deadline",
           "data": {
-            "pathName": "EF-Source2"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "EF-Source2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "intakePipeshooter"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "path",
+          "type": "sequential",
           "data": {
-            "pathName": "Source2-CD"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Source2-CD"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "shootCoral"
+                }
+              }
+            ]
           }
         }
       ]

@@ -5,9 +5,22 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "sequential",
           "data": {
-            "pathName": "Cage-IJ"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Cage-IJ"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "move1Beta"
+                }
+              }
+            ]
           }
         },
         {

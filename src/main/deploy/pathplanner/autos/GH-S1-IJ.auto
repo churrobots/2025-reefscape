@@ -5,15 +5,41 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "sequential",
           "data": {
-            "pathName": "Cage-GH"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Cage-GH"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "move1Beta"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "path",
+          "type": "deadline",
           "data": {
-            "pathName": "GH-Source1"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "GH-Source1"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "intakePipeshooter"
+                }
+              }
+            ]
           }
         },
         {

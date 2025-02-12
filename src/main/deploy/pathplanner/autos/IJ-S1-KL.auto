@@ -5,9 +5,22 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "sequential",
           "data": {
-            "pathName": "Cage-IJ"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Cage-IJ"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "move2Sigma"
+                }
+              }
+            ]
           }
         },
         {
@@ -17,15 +30,41 @@
           }
         },
         {
-          "type": "path",
+          "type": "deadline",
           "data": {
-            "pathName": "Wall-Source1"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Wall-Source1"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "intakePipeshooter"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "path",
+          "type": "sequential",
           "data": {
-            "pathName": "Source1-KL"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Source1-KL"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "shootCoral"
+                }
+              }
+            ]
           }
         }
       ]

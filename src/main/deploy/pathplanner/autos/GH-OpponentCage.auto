@@ -5,7 +5,7 @@
     "data": {
       "commands": [
         {
-          "type": "deadline",
+          "type": "sequential",
           "data": {
             "commands": [
               {
@@ -17,13 +17,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "waitForTeammates"
-                }
-              },
-              {
-                "type": "race",
-                "data": {
-                  "commands": []
+                  "name": "move2Sigma"
                 }
               }
             ]
