@@ -3,6 +3,8 @@ package frc.robot.subsystems;
 import frc.churrolib.HardwareRegistry;
 import frc.robot.Hardware;
 
+import java.util.function.BooleanSupplier;
+
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
@@ -20,6 +22,8 @@ public class Elbow extends SubsystemBase {
   final SparkMax m_elbowMotor = new SparkMax(Hardware.Elbow.neoMotorCAN, MotorType.kBrushless);
   final SparkClosedLoopController m_elbowController = m_elbowMotor.getClosedLoopController();
   final SparkMaxConfig config = new SparkMaxConfig();
+  final BooleanSupplier m_highEnoughToExtend;
+  final BooleanSupplier m_lowEnoughToRetract;
 
   class Constants {
     static final double kP = .0001;
@@ -27,9 +31,11 @@ public class Elbow extends SubsystemBase {
     static final double kD = 0.0;
   }
 
-  public Elbow() {
+  public Elbow(BooleanSupplier highEnoughToExtend, BooleanSupplier lowEnoughToRetract) {
     setDefaultCommand(recieve());
     HardwareRegistry.registerHardware(m_elbowMotor);
+    m_highEnoughToExtend = highEnoughToExtend;
+    m_lowEnoughToRetract = lowEnoughToRetract;
 
     // Setup motor and closedloop control configuration
     config
@@ -51,30 +57,36 @@ public class Elbow extends SubsystemBase {
   // Base state, Driection Stright down. Called recive becasue its the intake
   // positon.
   public Command recieve() {
-    return run(() -> {
-      m_elbowController.setReference(0, ControlType.kMAXMotionPositionControl);
-    });
+    return moveToPosition(0);
   }
 
   // Position to score L1-trough
   public Command move1Beta() {
-    return run(() -> {
-      m_elbowController.setReference(0.1, ControlType.kMAXMotionPositionControl);
-    });
+    return moveToPosition(0.1);
   }
 
   // Positon to score L2 & L3
   public Command move2Sigma() {
-    return run(() -> {
-      m_elbowController.setReference(0.2, ControlType.kMAXMotionPositionControl);
-    });
+    return moveToPosition(0.2);
   }
 
   // Position to remove Algae
   public Command moveAlgae() {
-    return run(() -> {
-      m_elbowController.setReference(0.3, ControlType.kMAXMotionPositionControl);
-    });
+    return moveToPosition(0.3);
   }
 
+  private Command moveToPosition(double targetPosition) {
+    boolean isExtending = targetPosition > 0.1;
+    boolean isRetracting = targetPosition < 0.2;
+    return run(() -> {
+      boolean isSafe = isExtending && m_highEnoughToExtend.getAsBoolean()
+          || isRetracting && m_lowEnoughToRetract.getAsBoolean();
+      if (isSafe) {
+        m_elbowController.setReference(targetPosition, ControlType.kMAXMotionPositionControl);
+      }
+    }).until(() -> {
+      double distanceFromTarget = Math.abs(m_elbowMotor.getAbsoluteEncoder().getPosition() - targetPosition);
+      return distanceFromTarget < 0.02;
+    }).withTimeout(3);
+  }
 }
