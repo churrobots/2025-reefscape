@@ -30,19 +30,13 @@
           }
         },
         {
-          "type": "deadline",
+          "type": "sequential",
           "data": {
             "commands": [
               {
                 "type": "path",
                 "data": {
                   "pathName": "Wall-Source1"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "intakePipeshooter"
                 }
               }
             ]
@@ -52,6 +46,12 @@
           "type": "sequential",
           "data": {
             "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "intakePipeshooter"
+                }
+              },
               {
                 "type": "path",
                 "data": {
