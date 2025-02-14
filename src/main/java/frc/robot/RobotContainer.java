@@ -9,6 +9,7 @@ import java.util.function.Supplier;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -33,7 +34,7 @@ public class RobotContainer {
   Pipeshooter pipeshooter = new Pipeshooter();
   Elevator elevator = new Elevator();
   Elbow elbow = new Elbow();
-  Drivetrain drivetrain = new Drivetrain();
+  Drivetrain drivetrain = Hardware.Drivetrain.disableDrivetrainDueToSilentBootFailure ? null : new Drivetrain();
   UnnecessaryLEDS leds = new UnnecessaryLEDS();
 
   void bindCommandsForTeleop() {
@@ -45,8 +46,6 @@ public class RobotContainer {
 
     CommandXboxController operatorXboxController = new CommandXboxController(Hardware.DriverStation.operatorXboxPort);
 
-    Command recalibrateDriveTrain = new RunCommand(() -> drivetrain.recalibrateDrivetrain(), drivetrain);
-
     DoubleSupplier allianceRelativeFactor = () -> {
       boolean isBlueAlliance = DriverStation.getAlliance().orElseGet(() -> Alliance.Blue) == Alliance.Blue;
       if (isBlueAlliance) {
@@ -57,43 +56,50 @@ public class RobotContainer {
     };
     double xboxDeadband = Hardware.DriverStation.driverXboxDeadband;
 
-    Command fastFieldRelativeDriverXboxControl = drivetrain.createFieldRelativeDriveCommand(
-        () -> -1 * allianceRelativeFactor.getAsDouble()
-            * MathUtil.applyDeadband(driverXboxController.getLeftY(), xboxDeadband)
-            * Hardware.DriverStation.fastDriveScale,
-        () -> -1 * allianceRelativeFactor.getAsDouble()
-            * MathUtil.applyDeadband(driverXboxController.getLeftX(), xboxDeadband)
-            * Hardware.DriverStation.fastDriveScale,
-        () -> -1 * MathUtil.applyDeadband(driverXboxController.getRightX(), xboxDeadband)
-            * Hardware.DriverStation.fastDriveScale);
+    // TODO: don't make drivetrain conditional, this is something wrong with a
+    // silent exception, maybe when sparkmaxes are not connected?
+    // TODO: also if it IS the sparkmaxes being disconnected, that's bad, because
+    // the robot shouldn't crash entirely if we lose one motor
+    if (drivetrain != null) {
+      Command recalibrateDriveTrain = new RunCommand(() -> drivetrain.recalibrateDrivetrain(), drivetrain);
+      Command fastFieldRelativeDriverXboxControl = drivetrain.createFieldRelativeDriveCommand(
+          () -> -1 * allianceRelativeFactor.getAsDouble()
+              * MathUtil.applyDeadband(driverXboxController.getLeftY(), xboxDeadband)
+              * Hardware.DriverStation.fastDriveScale,
+          () -> -1 * allianceRelativeFactor.getAsDouble()
+              * MathUtil.applyDeadband(driverXboxController.getLeftX(), xboxDeadband)
+              * Hardware.DriverStation.fastDriveScale,
+          () -> -1 * MathUtil.applyDeadband(driverXboxController.getRightX(), xboxDeadband)
+              * Hardware.DriverStation.fastDriveScale);
 
-    Command slowFieldRelativeDriverXboxControl = drivetrain.createFieldRelativeDriveCommand(
-        () -> -1 * allianceRelativeFactor.getAsDouble()
-            * MathUtil.applyDeadband(driverXboxController.getLeftY(), xboxDeadband)
-            * Hardware.DriverStation.slowDriveScale,
-        () -> -1 * allianceRelativeFactor.getAsDouble()
-            * MathUtil.applyDeadband(driverXboxController.getLeftX(), xboxDeadband)
-            * Hardware.DriverStation.slowDriveScale,
-        () -> -1 * MathUtil.applyDeadband(driverXboxController.getRightX(), xboxDeadband)
-            * Hardware.DriverStation.slowDriveScale);
+      Command slowFieldRelativeDriverXboxControl = drivetrain.createFieldRelativeDriveCommand(
+          () -> -1 * allianceRelativeFactor.getAsDouble()
+              * MathUtil.applyDeadband(driverXboxController.getLeftY(), xboxDeadband)
+              * Hardware.DriverStation.slowDriveScale,
+          () -> -1 * allianceRelativeFactor.getAsDouble()
+              * MathUtil.applyDeadband(driverXboxController.getLeftX(), xboxDeadband)
+              * Hardware.DriverStation.slowDriveScale,
+          () -> -1 * MathUtil.applyDeadband(driverXboxController.getRightX(), xboxDeadband)
+              * Hardware.DriverStation.slowDriveScale);
 
-    Command slowRobotRelativeOperatorXboxControl = drivetrain.createRobotRelativeDriveCommand(
-        () -> -1 * allianceRelativeFactor.getAsDouble()
-            * MathUtil.applyDeadband(operatorXboxController.getLeftY(), xboxDeadband)
-            * Hardware.DriverStation.slowDriveScale,
-        () -> -1 * allianceRelativeFactor.getAsDouble()
-            * MathUtil.applyDeadband(operatorXboxController.getLeftX(), xboxDeadband)
-            * Hardware.DriverStation.slowDriveScale,
-        () -> -1 * MathUtil.applyDeadband(operatorXboxController.getRightX(), xboxDeadband)
-            * Hardware.DriverStation.slowDriveScale);
+      Command slowRobotRelativeOperatorXboxControl = drivetrain.createRobotRelativeDriveCommand(
+          () -> -1 * allianceRelativeFactor.getAsDouble()
+              * MathUtil.applyDeadband(operatorXboxController.getLeftY(), xboxDeadband)
+              * Hardware.DriverStation.slowDriveScale,
+          () -> -1 * allianceRelativeFactor.getAsDouble()
+              * MathUtil.applyDeadband(operatorXboxController.getLeftX(), xboxDeadband)
+              * Hardware.DriverStation.slowDriveScale,
+          () -> -1 * MathUtil.applyDeadband(operatorXboxController.getRightX(), xboxDeadband)
+              * Hardware.DriverStation.slowDriveScale);
 
-    Command slowRobotRelativeOperatorXboxControlWithLEDs = slowRobotRelativeOperatorXboxControl.alongWith(
-        leds.yuvrajalliseeisredwhenigoupsettyspaghetti());
+      Command slowRobotRelativeOperatorXboxControlWithLEDs = slowRobotRelativeOperatorXboxControl.alongWith(
+          leds.yuvrajalliseeisredwhenigoupsettyspaghetti());
 
-    drivetrain.setDefaultCommand(fastFieldRelativeDriverXboxControl);
-    driverXboxController.leftBumper().whileTrue(slowFieldRelativeDriverXboxControl);
-    driverXboxController.back().whileTrue(recalibrateDriveTrain);
-    operatorXboxController.leftBumper().whileTrue(slowRobotRelativeOperatorXboxControlWithLEDs);
+      drivetrain.setDefaultCommand(fastFieldRelativeDriverXboxControl);
+      driverXboxController.leftBumper().whileTrue(slowFieldRelativeDriverXboxControl);
+      driverXboxController.back().whileTrue(recalibrateDriveTrain);
+      operatorXboxController.leftBumper().whileTrue(slowRobotRelativeOperatorXboxControlWithLEDs);
+    }
 
     if (Hardware.DriverStation.mechanismsAreInTestMode) {
       // This is for safely testing the beta bot in the meantime
@@ -166,10 +172,15 @@ public class RobotContainer {
         pipeshooter.shootCoral().alongWith(showCommand("shootCoral")).withTimeout(2));
     NamedCommands.registerCommand("waitForTeammates", new WaitCommand(9).alongWith(showCommand("wait For Teammates")));
 
-    SendableChooser<Command> autoChooser = drivetrain.createPathPlannerDropdown();
-    SmartDashboard.putData("Auto Chooser", autoChooser);
-
-    return autoChooser::getSelected;
+    // TODO: we shouldn't have the drivetrain null but we need to since there is a
+    // silent crasher on beta bot
+    if (drivetrain != null) {
+      SendableChooser<Command> autoChooser = drivetrain.createPathPlannerDropdown();
+      SmartDashboard.putData("Auto Chooser", autoChooser);
+      return autoChooser::getSelected;
+    } else {
+      return () -> Commands.none();
+    }
   }
 
   void updateDiagnostics() {
