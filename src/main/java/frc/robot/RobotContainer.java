@@ -39,8 +39,10 @@ public class RobotContainer {
   void bindCommandsForTeleop() {
 
     CommandXboxController driverXboxController = RobotBase.isSimulation()
-        ? new CommandXboxControllerForSimulation(Hardware.DriverStation.driverSimulationXboxPort)
-        : new CommandXboxController(Hardware.DriverStation.driverXboxPort);
+        && DriverStation.isJoystickConnected(Hardware.DriverStation.driverSimulationXboxPort)
+            ? new CommandXboxControllerForSimulation(Hardware.DriverStation.driverSimulationXboxPort)
+            : new CommandXboxController(Hardware.DriverStation.driverXboxPort);
+
     CommandXboxController operatorXboxController = new CommandXboxController(Hardware.DriverStation.operatorXboxPort);
 
     Command recalibrateDriveTrain = new RunCommand(() -> drivetrain.recalibrateDrivetrain(), drivetrain);
