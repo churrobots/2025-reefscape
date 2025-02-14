@@ -10,6 +10,7 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.churrolib.HardwareRegistry;
@@ -26,19 +27,19 @@ public class Elevator extends SubsystemBase {
   class Constants {
     // PID numbers from:
     // https://v6.docs.ctr-electronics.com/en/2024/docs/api-reference/device-specific/talonfx/basic-pid-control.html
-    static final double kS = 0.0; // static friction feed-forward component.
-    static final double kV = 0.12; // motor-specific, represents the motor's velocity per volt. The reciprocal is
+    static final double kS = 0.50; // static friction feed-forward component.
+    static final double kV = 2.80; // motor-specific, represents the motor's velocity per volt. The reciprocal is
                                    // used as the feed-forward parameter in velocity-based control loops.
     static final double kA = 0.0; //
-    static final double kP = 0.0; // proportional
+    static final double kP = 2; // proportional
     static final double kI = 0.0; // integral
     static final double kD = 0.0; // derivative
 
     // Maximum velocity in rotations per second of the post-gearbox sprocket (NOT of
     // the motor).
-    static final double kMaxVelocity = 0.5 * Hardware.Elevator.gearboxReduction;
-    static final double kMaxAcceleration = 1 * Hardware.Elevator.gearboxReduction;
-    static final double kMaxJerk = 10 * Hardware.Elevator.gearboxReduction;
+    static final double kMaxVelocity = 10 * Hardware.Elevator.gearboxReduction;
+    static final double kMaxAcceleration = 5 * Hardware.Elevator.gearboxReduction;
+    static final double kMaxJerk = 30 * Hardware.Elevator.gearboxReduction;
 
     // Desired Vertical Travel in meters for each position. Heights are specified
     // relative to the base position. Total elevator travel ranges from 0 to ~35cm.
@@ -93,40 +94,31 @@ public class Elevator extends SubsystemBase {
 
   // Move Elevator to Receiving position (this is the default position).
   public Command moveToReceive() {
-    return run(() -> {
-      double desiredOutputInRotations = Constants.kBaseHeight / Hardware.Elevator.sprocketPitchDiameter;
-      double requiredInputRotations = Hardware.Elevator.gearboxReduction * desiredOutputInRotations;
-
-      m_elevatorMotorLeader.setControl(m_request.withPosition(requiredInputRotations));
-    });
+    return moveToHeight(Constants.kBaseHeight);
   }
 
   // Move Elevator to L1 (trough).
   public Command move1Beta() {
-    return run(() -> {
-      double desiredOutputInRotations = Constants.kL1Height / Hardware.Elevator.sprocketPitchDiameter;
-      double requiredInputRotations = Hardware.Elevator.gearboxReduction * desiredOutputInRotations;
-
-      m_elevatorMotorLeader.setControl(m_request.withPosition(requiredInputRotations));
-    });
+    return moveToHeight(Constants.kL1Height);
   }
 
   // Move Elevator to L2.
   public Command move2Sigma() {
-    return run(() -> {
-      double desiredOutputInRotations = Constants.kL2Height / Hardware.Elevator.sprocketPitchDiameter;
-      double requiredInputRotations = Hardware.Elevator.gearboxReduction * desiredOutputInRotations;
-
-      m_elevatorMotorLeader.setControl(m_request.withPosition(requiredInputRotations));
-    });
+    return moveToHeight(Constants.kL2Height);
   }
 
   // Move Elevator to L3.
   public Command move3Alpha() {
-    return run(() -> {
-      double desiredOutputInRotations = Constants.kL3Height / Hardware.Elevator.sprocketPitchDiameter;
-      double requiredInputRotations = Hardware.Elevator.gearboxReduction * desiredOutputInRotations;
+    return moveToHeight(Constants.kL3Height);
+  }
 
+  private Command moveToHeight(double height) {
+    return run(() -> {
+      // Safety check -- ensure we don't command the elevator to go to a height that
+      // is beyond its range of travel.
+      double safeHeight = MathUtil.clamp(height, 0.0, 0.33);
+      double desiredOutputInRotations = safeHeight / (Hardware.Elevator.sprocketPitchDiameter * Math.PI);
+      double requiredInputRotations = Hardware.Elevator.gearboxReduction * desiredOutputInRotations;
       m_elevatorMotorLeader.setControl(m_request.withPosition(requiredInputRotations));
     });
   }
