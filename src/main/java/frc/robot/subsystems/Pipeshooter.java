@@ -10,18 +10,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.churrolib.HardwareRegistry;
 import frc.robot.Hardware;
 
-// TODO(Controls): (1) Clarify the below understanding of the general robot design. Understand what sensors will be part of each subsystem.
-// Elevator: motor(s) with gearbox to drive elevator up and down
-// Arm: motor with gearbox to pivot arm
-// Pipeshooter: motor(s), potentially with gearbox, to drive intake and outtake (aka shooting)
-//
-// (2) given the design, skeleton the required files for the subsystems.
-// -- for example, may need an PivotArm.java and Elevator.java, can probably delete Intake.java.
-//
-// (3) Create specific commands for the subsystems, e.g. Elevator needs to be able to go to various positions
-//
-// (4) Create button mappings for the commands from (3).
-
 public class Pipeshooter extends SubsystemBase {
 
   final TalonFX m_pipeShooterMotor = new TalonFX(Hardware.Pipeshooter.falconMotorCAN);
@@ -29,7 +17,6 @@ public class Pipeshooter extends SubsystemBase {
   public Pipeshooter() {
     setDefaultCommand(stop());
     HardwareRegistry.registerHardware(m_pipeShooterMotor);
-    // TODO: add PID configuration
   }
 
   public Command stop() {
@@ -47,7 +34,7 @@ public class Pipeshooter extends SubsystemBase {
   public Command shootCoral() {
     return run(() -> {
       m_pipeShooterMotor.set(-1);
-    });
+    }).withTimeout(1);
   }
 
 }

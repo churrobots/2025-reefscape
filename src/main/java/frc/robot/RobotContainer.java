@@ -127,11 +127,29 @@ public class RobotContainer {
   }
 
   Supplier<Command> bindCommandsForAutonomous() {
-    NamedCommands.registerCommand("move1Beta", elbow.move1Beta().alongWith(showCommand("Move 1 Beta")));
-    NamedCommands.registerCommand("move2Sigma", elbow.move2Sigma().alongWith(showCommand("Move 2 Sigma")));
+    NamedCommands.registerCommand("Intake Coral", pipeshooter.intakeCoral());
+
+    NamedCommands.registerCommand(
+        "shootL1",
+        elbow.move1Beta()
+            .alongWith(elevator.move1Beta())
+            .andThen(pipeshooter.shootCoral())
+            .andThen(elbow.recieve().alongWith(elevator.moveToRecieve()))
+            .alongWith(showCommand("Shoot L1"))
+            .alongWith(leds.green()));
+
+    NamedCommands.registerCommand(
+        "shootL2",
+        elbow.move1Beta()
+            .alongWith(elevator.move2Sigma())
+            .andThen(pipeshooter.shootCoral())
+            .andThen(elbow.recieve().alongWith(elevator.moveToRecieve()))
+            .alongWith(showCommand("Shoot L2"))
+            .alongWith(leds.green()));
+
     NamedCommands.registerCommand("moveAlgae", elbow.moveAlgae().alongWith(showCommand("Move Algae")));
     NamedCommands.registerCommand("intakePipeshooter",
-        pipeshooter.intakeCoral().alongWith(showCommand("intakePipeshooter")));
+        pipeshooter.intakeCoral().withTimeout(2).alongWith(showCommand("intakePipeshooter")));
     NamedCommands.registerCommand("shootCoral",
         pipeshooter.shootCoral().alongWith(showCommand("shootCoral")).withTimeout(2));
     NamedCommands.registerCommand("waitForTeammates", new WaitCommand(9).alongWith(showCommand("wait For Teammates")));
