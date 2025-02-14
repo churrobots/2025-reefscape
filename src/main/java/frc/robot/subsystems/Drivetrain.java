@@ -12,12 +12,10 @@ import static edu.wpi.first.units.Units.Meter;
 
 import edu.wpi.first.wpilibj2.command.Command;
 
-import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -76,7 +74,7 @@ public class Drivetrain extends SubsystemBase {
     if (Hardware.Drivetrain.debugTelemetry == true) {
       SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
     } else {
-      SwerveDriveTelemetry.verbosity = TelemetryVerbosity.LOW;
+      SwerveDriveTelemetry.verbosity = TelemetryVerbosity.POSE;
     }
 
     m_swerveJsonDirectory = new File(Filesystem.getDeployDirectory(),
