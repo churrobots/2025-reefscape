@@ -100,6 +100,7 @@ public final class Hardware {
       case ROBOT_ALPHA -> true;
       default -> false;
     };
+    public static final boolean mechanismsAreInTestMode = true;
   }
 
 }

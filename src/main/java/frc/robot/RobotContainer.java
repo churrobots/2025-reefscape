@@ -91,32 +91,39 @@ public class RobotContainer {
     drivetrain.setDefaultCommand(fastFieldRelativeDriverXboxControl);
     driverXboxController.leftBumper().whileTrue(slowFieldRelativeDriverXboxControl);
     driverXboxController.back().whileTrue(recalibrateDriveTrain);
-
     operatorXboxController.leftBumper().whileTrue(slowRobotRelativeOperatorXboxControlWithLEDs);
-    operatorXboxController.rightBumper().whileTrue(pipeshooter.shootCoral());
 
-    // commands for the elbow positioning
-    Command moveElbowAndElevatorToRecieve = elbow.recieve().alongWith(elevator.moveToReceive())
-        .alongWith(pipeshooter.intakeCoral()).alongWith(leds.jjisbeingasussybakaimpostoramongussus());
-    operatorXboxController.a().whileTrue(moveElbowAndElevatorToRecieve);
+    if (Hardware.DriverStation.mechanismsAreInTestMode) {
+      // This is for safely testing the beta bot in the meantime
+      operatorXboxController.x().whileTrue(elevator.move1Beta());
+      operatorXboxController.y().whileTrue(elevator.move2Sigma());
+      operatorXboxController.b().whileTrue(elevator.move3Alpha());
 
-    Command moveElbowAndElevatorTo1 = elbow.move1Beta().alongWith(elevator.move1Beta());
-    operatorXboxController.x().onTrue(moveElbowAndElevatorTo1);
+    } else {
+      Command moveElbowAndElevatorToRecieve = elbow.recieve().alongWith(elevator.moveToReceive())
+          .alongWith(pipeshooter.intakeCoral()).alongWith(leds.jjisbeingasussybakaimpostoramongussus());
+      operatorXboxController.a().whileTrue(moveElbowAndElevatorToRecieve);
 
-    Command moveElbowAndElevatorTo2 = elbow.move2Sigma().alongWith(elevator.move2Sigma().alongWith(leds.rainbow()));
-    operatorXboxController.y().onTrue(moveElbowAndElevatorTo2);
+      Command moveElbowAndElevatorTo1 = elbow.move1Beta().alongWith(elevator.move1Beta());
+      operatorXboxController.x().onTrue(moveElbowAndElevatorTo1);
 
-    Command moveElbowAndElevatorTo3 = elbow.move2Sigma().alongWith(elevator.move3Alpha().alongWith(leds.blue()));
-    operatorXboxController.b().onTrue(moveElbowAndElevatorTo3);
+      Command moveElbowAndElevatorTo2 = elbow.move2Sigma().alongWith(elevator.move2Sigma().alongWith(leds.rainbow()));
+      operatorXboxController.y().onTrue(moveElbowAndElevatorTo2);
 
-    Command moveElbowAndElevatorToL2Algae = elbow.moveAlgae().alongWith(elevator.move2Sigma().alongWith(leds.purple()));
-    operatorXboxController.povDown().onTrue(moveElbowAndElevatorToL2Algae);
+      Command moveElbowAndElevatorTo3 = elbow.move2Sigma().alongWith(elevator.move3Alpha().alongWith(leds.blue()));
+      operatorXboxController.b().onTrue(moveElbowAndElevatorTo3);
 
-    Command moveElbowAndElevatorToL3Algae = elbow.moveAlgae().alongWith(elevator.move3Alpha().alongWith(leds.yellow()));
-    operatorXboxController.povUp().onTrue(moveElbowAndElevatorToL3Algae);
+      Command moveElbowAndElevatorToL2Algae = elbow.moveAlgae()
+          .alongWith(elevator.move2Sigma().alongWith(leds.purple()));
+      operatorXboxController.povDown().onTrue(moveElbowAndElevatorToL2Algae);
 
-    Command shootCoral = pipeshooter.shootCoral().alongWith(leds.green());
-    operatorXboxController.rightBumper().whileTrue(shootCoral);
+      Command moveElbowAndElevatorToL3Algae = elbow.moveAlgae()
+          .alongWith(elevator.move3Alpha().alongWith(leds.yellow()));
+      operatorXboxController.povUp().onTrue(moveElbowAndElevatorToL3Algae);
+
+      Command shootCoral = pipeshooter.shootCoral().alongWith(leds.green());
+      operatorXboxController.rightBumper().whileTrue(shootCoral);
+    }
 
     Elastic.enableDashboardToBeDownloadedFromRobotDeployDirectory();
     SmartDashboard.putString("Robot Name", Hardware.robotName);
