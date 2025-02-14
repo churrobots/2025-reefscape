@@ -100,7 +100,10 @@ public final class Hardware {
       case ROBOT_ALPHA -> true;
       default -> false;
     };
-    public static final boolean mechanismsAreInTestMode = true;
+    public static final boolean mechanismsAreInTestMode = switch (robotName) {
+      case ROBOT_BETA -> true;
+      default -> false;
+    };
   }
 
 }
