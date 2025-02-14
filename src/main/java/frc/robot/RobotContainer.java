@@ -137,7 +137,7 @@ public class RobotContainer {
         elbow.move1Beta()
             .alongWith(elevator.move1Beta())
             .andThen(pipeshooter.shootCoral())
-            .andThen(elbow.recieve().alongWith(elevator.moveToRecieve()))
+            .andThen(elbow.recieve().alongWith(elevator.moveToReceive()))
             .alongWith(showCommand("Shoot L1"))
             .alongWith(leds.green()));
 
@@ -146,7 +146,7 @@ public class RobotContainer {
         elbow.move1Beta()
             .alongWith(elevator.move2Sigma())
             .andThen(pipeshooter.shootCoral())
-            .andThen(elbow.recieve().alongWith(elevator.moveToRecieve()))
+            .andThen(elbow.recieve().alongWith(elevator.moveToReceive()))
             .alongWith(showCommand("Shoot L2"))
             .alongWith(leds.green()));
 

@@ -22,8 +22,10 @@ public class Elbow extends SubsystemBase {
   final SparkMax m_elbowMotor = new SparkMax(Hardware.Elbow.neoMotorCAN, MotorType.kBrushless);
   final SparkClosedLoopController m_elbowController = m_elbowMotor.getClosedLoopController();
   final SparkMaxConfig config = new SparkMaxConfig();
-  final BooleanSupplier m_highEnoughToExtend;
-  final BooleanSupplier m_lowEnoughToRetract;
+
+  // TODO: implement safety, this is just for testing
+  final BooleanSupplier m_highEnoughToExtend = () -> true;
+  final BooleanSupplier m_lowEnoughToRetract = () -> true;
 
   class Constants {
     static final double kP = .0001;
@@ -31,11 +33,9 @@ public class Elbow extends SubsystemBase {
     static final double kD = 0.0;
   }
 
-  public Elbow(BooleanSupplier highEnoughToExtend, BooleanSupplier lowEnoughToRetract) {
+  public Elbow() {
     setDefaultCommand(recieve());
     HardwareRegistry.registerHardware(m_elbowMotor);
-    m_highEnoughToExtend = highEnoughToExtend;
-    m_lowEnoughToRetract = lowEnoughToRetract;
 
     // Setup motor and closedloop control configuration
     config
