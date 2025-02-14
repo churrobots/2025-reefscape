@@ -45,7 +45,7 @@
     "rotation": -179.52786399333158
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Cage",
   "idealStartingState": {
     "velocity": 0,
     "rotation": -179.73687542263022

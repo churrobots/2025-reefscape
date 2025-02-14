@@ -14,8 +14,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.commands.PathPlannerAuto;
-import com.pathplanner.lib.commands.PathfindingCommand;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
@@ -34,6 +32,7 @@ import edu.wpi.first.units.measure.Force;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.churrolib.UniversalRobotProperties;
 import frc.churrolib.HardwareRegistry;
 import frc.robot.Hardware;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -66,12 +65,10 @@ public class Drivetrain extends SubsystemBase {
       .getStructTopic("YagslPose", Pose2d.struct).publish();
   final Field2d m_fieldViz = new Field2d();
 
-  // Slew rate filter variables for controlling lateral acceleration
-  // and preventing excessive swerve wheel wear.
-
   // YAGSL Swerve
   private final SwerveDrive m_swerveDrive;
-  // private Vision m_vision;
+  private final File m_swerveJsonDirectory;
+  private Vision m_vision;
 
   public Drivetrain() {
     setDefaultCommand(new RunCommand(this::stop, this));
@@ -82,7 +79,7 @@ public class Drivetrain extends SubsystemBase {
       SwerveDriveTelemetry.verbosity = TelemetryVerbosity.LOW;
     }
 
-    File m_swerveJsonDirectory = new File(Filesystem.getDeployDirectory(),
+    m_swerveJsonDirectory = new File(Filesystem.getDeployDirectory(),
         Hardware.Drivetrain.swerveConfigDeployPath);
     try {
       m_swerveDrive = new SwerveParser(
@@ -112,6 +109,7 @@ public class Drivetrain extends SubsystemBase {
       m_swerveDrive.setCosineCompensator(false);
 
     }
+
     m_swerveDrive.setHeadingCorrection(false);
     m_swerveDrive.setCosineCompensator(false);
     // Correct for skew that gets worse as angular velocity increases. Start with a
@@ -125,14 +123,18 @@ public class Drivetrain extends SubsystemBase {
         1);
 
     // Setup vision
-    // m_vision = new Vision(m_swerveDrive::getPose, m_swerveDrive.field);
+    if (Hardware.Vision.isEnabled) {
+      m_vision = new Vision(m_swerveDrive::getPose, m_swerveDrive.field);
+    }
   }
 
   public SendableChooser<Command> createPathPlannerDropdown() {
     // TODO: store this in the RobotConfig class
     RobotConfig config;
     try {
-      config = RobotConfig.fromGUISettings();
+      UniversalRobotProperties robotProperties = new UniversalRobotProperties(m_swerveJsonDirectory,
+          Hardware.Drivetrain.maxSpeedMetersPerSecond, Hardware.Drivetrain.robotMOI);
+      config = robotProperties.getAsPathPlannerConfig();
 
       AutoBuilder.configure(
           this::getPose, // Robot pose supplier
@@ -143,16 +145,10 @@ public class Drivetrain extends SubsystemBase {
                 this.getKinematics().toSwerveModuleStates(speeds),
                 feedforwards.linearForces());
           },
-          // (speeds, feedforwards) -> this.setRobotRelativeSpeeds(speeds), // Method that
-          // will drive the
-          // robot given
-          // // ROBOT RELATIVE ChassisSpeeds. Also
-          // // optionally outputs individual module
-          // // feedforwards
           new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for
                                           // holonomic drive trains
-              new PIDConstants(0.1, 0.0, 0.0), // Translation PID constants
-              new PIDConstants(0.01, 0.0, 0.0) // Rotation PID constants
+              new PIDConstants(5, 0.0, 0.0), // Translation PID constants
+              new PIDConstants(5, 0.0, 0.0) // Rotation PID constants
           ),
           config, // The robot configuration
           () -> {
@@ -175,8 +171,10 @@ public class Drivetrain extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // m_vision.updatePoseEstimation(m_swerveDrive);
-    // m_swerveDrive.updateOdometry();
+    if (Hardware.Vision.isEnabled) {
+      m_vision.updatePoseEstimation(m_swerveDrive);
+      m_swerveDrive.updateOdometry();
+    }
     m_posePublisher.set(getPose());
     m_actualSwerveStatePublisher.set(getModuleStates());
   }
@@ -337,34 +335,6 @@ public class Drivetrain extends SubsystemBase {
   }
 
   /**
-   * Sets the wheels into an X formation to prevent movement.
-   */
-  // public void setXFormation() {
-  // m_frontLeft.setDesiredState(new SwerveModuleState(0,
-  // Rotation2d.fromDegrees(45)));
-  // m_frontRight.setDesiredState(new SwerveModuleState(0,
-  // Rotation2d.fromDegrees(-45)));
-  // m_rearLeft.setDesiredState(new SwerveModuleState(0,
-  // Rotation2d.fromDegrees(-45)));
-  // m_rearRight.setDesiredState(new SwerveModuleState(0,
-  // Rotation2d.fromDegrees(45)));
-  // }
-
-  // /**
-  // * Sets the swerve ModuleStates.
-  // *
-  // * @param desiredStates The desired SwerveModule states.
-  // */
-  // void setModuleStates(SwerveModuleState[] desiredStates) {
-  // SwerveDriveKinematics.desaturateWheelSpeeds(
-  // desiredStates, Constants.kMaxSpeedMetersPerSecond);
-  // m_frontLeft.setDesiredState(desiredStates[0]);
-  // m_frontRight.setDesiredState(desiredStates[1]);
-  // m_rearLeft.setDesiredState(desiredStates[2]);
-  // m_rearRight.setDesiredState(desiredStates[3]);
-  // }
-
-  /**
    * Gets the current pose (position and rotation) of the robot, as reported by
    * odometry.
    *
@@ -384,9 +354,5 @@ public class Drivetrain extends SubsystemBase {
    */
   public Rotation2d getHeading() {
     return getPose().getRotation();
-  }
-
-  public Command getAutonomousCommand(String pathName) {
-    return new PathPlannerAuto(pathName);
   }
 }

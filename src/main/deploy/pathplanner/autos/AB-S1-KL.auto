@@ -5,21 +5,60 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "sequential",
           "data": {
-            "pathName": "Cage-AB"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Cage-AB"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "move1Beta"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "path",
+          "type": "sequential",
           "data": {
-            "pathName": "AB-Source1"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "AB-Source1"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "intakePipeshooter"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "path",
+          "type": "sequential",
           "data": {
-            "pathName": "Source1-KL"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Source1-KL"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "shootCoral"
+                }
+              }
+            ]
           }
         }
       ]
