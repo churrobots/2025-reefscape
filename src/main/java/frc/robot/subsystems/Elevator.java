@@ -4,7 +4,12 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix6.configs.ClosedLoopGeneralConfigs;
+import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.VoltageConfigs;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
@@ -18,6 +23,7 @@ public class Elevator extends SubsystemBase {
   final TalonFX m_elevatorMotorLeader = new TalonFX(Hardware.Elevator.leaderFalconMotorCAN);
   final TalonFX m_elevatorMotorFollow = new TalonFX(Hardware.Elevator.followerFalconMotorCAN);
   final Slot0Configs slot0Configs = new Slot0Configs();
+  final ClosedLoopRampsConfigs rampConfigs = new ClosedLoopRampsConfigs();
 
   class Constants {
     // PID numbers from:
@@ -36,8 +42,17 @@ public class Elevator extends SubsystemBase {
     slot0Configs.kI = Constants.kI;
     slot0Configs.kD = Constants.kD;
 
+    // Limit the voltage ramp of the closed loop control, effectively slowing the
+    // elevator down.
+    rampConfigs.withVoltageClosedLoopRampPeriod(0.4);
+
     m_elevatorMotorLeader.getConfigurator().apply(slot0Configs);
+    m_elevatorMotorLeader.getConfigurator().apply(rampConfigs);
+
     m_elevatorMotorLeader.setPosition(0); // Initializing the encoder position to 0
+
+    m_elevatorMotorFollow.setControl(new Follower(m_elevatorMotorLeader.getDeviceID(), false));
+
   }
 
   public Command stop() {
