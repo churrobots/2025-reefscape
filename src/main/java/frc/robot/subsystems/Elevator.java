@@ -4,14 +4,11 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix6.configs.ClosedLoopGeneralConfigs;
-import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
-import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.configs.VoltageConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -22,13 +19,14 @@ public class Elevator extends SubsystemBase {
 
   final TalonFX m_elevatorMotorLeader = new TalonFX(Hardware.Elevator.leaderFalconMotorCAN);
   final TalonFX m_elevatorMotorFollow = new TalonFX(Hardware.Elevator.followerFalconMotorCAN);
-  final Slot0Configs slot0Configs = new Slot0Configs();
-  final ClosedLoopRampsConfigs rampConfigs = new ClosedLoopRampsConfigs();
+  final TalonFXConfiguration talonFXConfigs = new TalonFXConfiguration();
+  final MotionMagicVoltage m_request = new MotionMagicVoltage(0); // each move command will update the position of this
+                                                                  // request and send it to the motor.
 
   class Constants {
     // PID numbers from:
     // https://v6.docs.ctr-electronics.com/en/2024/docs/api-reference/device-specific/talonfx/basic-pid-control.html
-    static final double kP = 2.4; // An error of 1 rotation results in 2.4 V output
+    static final double kP = 0.8; // An error of 1 rotation results in 2.4 V output
     static final double kI = 0.0; // no output for integrated error
     static final double kD = 0.0; // A velocity of 1 rps results in 0.1 V output
   }
@@ -38,18 +36,25 @@ public class Elevator extends SubsystemBase {
     HardwareRegistry.registerHardware(m_elevatorMotorLeader);
     HardwareRegistry.registerHardware(m_elevatorMotorFollow);
 
-    slot0Configs.kP = Constants.kP;
-    slot0Configs.kI = Constants.kI;
-    slot0Configs.kD = Constants.kD;
+    talonFXConfigs.Slot0.kP = Constants.kP;
+    talonFXConfigs.Slot0.kI = Constants.kI;
+    talonFXConfigs.Slot0.kD = Constants.kD;
 
-    // Limit the voltage ramp of the closed loop control, effectively slowing the
-    // elevator down.
-    rampConfigs.withVoltageClosedLoopRampPeriod(0.4);
+    // https://v6.docs.ctr-electronics.com/en/2024/docs/api-reference/device-specific/talonfx/motion-magic.html
+    // NOTE: these rps (rotations per second) values are on the motor side, before
+    // the gearbox reduction. So the rotations of the sprocket will be fewer.
+    talonFXConfigs.MotionMagic.MotionMagicCruiseVelocity = 1; // Target cruise velocity of 1 rps
+    talonFXConfigs.MotionMagic.MotionMagicAcceleration = 2; // Target acceleration of 2 rps/s (0.5 seconds to reach max
+                                                            // target velocity of 1rps)
+    talonFXConfigs.MotionMagic.MotionMagicJerk = 20; // Target jerk of 20 rps/s/s (0.1 seconds)
 
-    m_elevatorMotorLeader.getConfigurator().apply(slot0Configs);
-    m_elevatorMotorLeader.getConfigurator().apply(rampConfigs);
+    // Brake when motor is not driven.
+    talonFXConfigs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
-    m_elevatorMotorLeader.setPosition(0); // Initializing the encoder position to 0
+    m_elevatorMotorLeader.getConfigurator().apply(talonFXConfigs);
+
+    // Initialize encoder position to zero.
+    m_elevatorMotorLeader.setPosition(0);
 
     m_elevatorMotorFollow.setControl(new Follower(m_elevatorMotorLeader.getDeviceID(), false));
 
@@ -68,23 +73,19 @@ public class Elevator extends SubsystemBase {
       double desiredVerticalTravelInMeters = 0;
       double desiredOutputInRotations = desiredVerticalTravelInMeters / Hardware.Elevator.sprocketPitchDiameter;
       double requiredInputRotations = Hardware.Elevator.gearboxReduction * desiredOutputInRotations;
-      // create a position closed-loop request, voltage output, slot 0 configs
-      final PositionVoltage m_request = new PositionVoltage(requiredInputRotations).withSlot(0);
 
-      m_elevatorMotorLeader.setControl(m_request);
+      m_elevatorMotorLeader.setControl(m_request.withPosition(requiredInputRotations));
     });
   }
 
   // Move Elevator to L1 (trough).
   public Command move1Beta() {
     return run(() -> {
-      double desiredVerticalTravelInMeters = 0.115;
+      double desiredVerticalTravelInMeters = 0.11;
       double desiredOutputInRotations = desiredVerticalTravelInMeters / Hardware.Elevator.sprocketPitchDiameter;
       double requiredInputRotations = Hardware.Elevator.gearboxReduction * desiredOutputInRotations;
-      // create a position closed-loop request, voltage output, slot 0 configs
-      final PositionVoltage m_request = new PositionVoltage(requiredInputRotations).withSlot(0);
 
-      m_elevatorMotorLeader.setControl(m_request);
+      m_elevatorMotorLeader.setControl(m_request.withPosition(requiredInputRotations));
     });
   }
 
@@ -94,10 +95,8 @@ public class Elevator extends SubsystemBase {
       double desiredVerticalTravelInMeters = 0.22;
       double desiredOutputInRotations = desiredVerticalTravelInMeters / Hardware.Elevator.sprocketPitchDiameter;
       double requiredInputRotations = Hardware.Elevator.gearboxReduction * desiredOutputInRotations;
-      // create a position closed-loop request, voltage output, slot 0 configs
-      final PositionVoltage m_request = new PositionVoltage(requiredInputRotations).withSlot(0);
 
-      m_elevatorMotorLeader.setControl(m_request);
+      m_elevatorMotorLeader.setControl(m_request.withPosition(requiredInputRotations));
     });
   }
 
@@ -107,10 +106,8 @@ public class Elevator extends SubsystemBase {
       double desiredVerticalTravelInMeters = 0.33;
       double desiredOutputInRotations = desiredVerticalTravelInMeters / Hardware.Elevator.sprocketPitchDiameter;
       double requiredInputRotations = Hardware.Elevator.gearboxReduction * desiredOutputInRotations;
-      // create a position closed-loop request, voltage output, slot 0 configs
-      final PositionVoltage m_request = new PositionVoltage(requiredInputRotations).withSlot(0);
 
-      m_elevatorMotorLeader.setControl(m_request);
+      m_elevatorMotorLeader.setControl(m_request.withPosition(requiredInputRotations));
     });
   }
 
