@@ -34,6 +34,7 @@ public class Elevator extends SubsystemBase {
     static final double kP = 2; // proportional
     static final double kI = 0.0; // integral
     static final double kD = 0.0; // derivative
+    static final double kG = 0.0; // gravity
 
     // Maximum velocity in rotations per second of the post-gearbox sprocket (NOT of
     // the motor).
@@ -60,6 +61,7 @@ public class Elevator extends SubsystemBase {
     talonFXConfigs.Slot0.kP = Constants.kP;
     talonFXConfigs.Slot0.kI = Constants.kI;
     talonFXConfigs.Slot0.kD = Constants.kD;
+    talonFXConfigs.Slot0.kG = Constants.kG;
 
     // https://v6.docs.ctr-electronics.com/en/2024/docs/api-reference/device-specific/talonfx/motion-magic.html
     // Motion Magic Voltage Control (Position):
@@ -73,11 +75,16 @@ public class Elevator extends SubsystemBase {
     // Brake when motor is not driven.
     talonFXConfigs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
+    talonFXConfigs.CurrentLimits.StatorCurrentLimit = 80;
+    talonFXConfigs.CurrentLimits.SupplyCurrentLimit = 80;
+
     // Apply all above configs to the Leader.
     m_elevatorMotorLeader.getConfigurator().apply(talonFXConfigs);
+    m_elevatorMotorFollow.getConfigurator().apply(talonFXConfigs);
 
     // Initialize encoder position to zero.
     m_elevatorMotorLeader.setPosition(0);
+    m_elevatorMotorFollow.setPosition(0);
 
     // Set the follower to follow the leader. The follower is not inverted due to
     // the geometry of the gearbox.
@@ -120,6 +127,7 @@ public class Elevator extends SubsystemBase {
       double desiredOutputInRotations = safeHeight / (Hardware.Elevator.sprocketPitchDiameter * Math.PI);
       double requiredInputRotations = Hardware.Elevator.gearboxReduction * desiredOutputInRotations;
       m_elevatorMotorLeader.setControl(m_request.withPosition(requiredInputRotations));
+      m_elevatorMotorFollow.setControl(m_request.withPosition(requiredInputRotations));
     });
   }
 
