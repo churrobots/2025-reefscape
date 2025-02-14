@@ -33,11 +33,12 @@ public final class Hardware {
   public final class Elevator {
     public static final int leaderFalconMotorCAN = 15;
     public static final int followerFalconMotorCAN = 16;
-    public static final double gearboxReduction = 5.0;
+    public static final double gearboxReduction = 4.67; // CIM PLE Gearbox
+                                                        // https://www.andymark.com/products/cimple-box-single-stage-gearbox
     public static final double simCarriageMass = 0.01;
-    public static final double sprocketPitchDiameter = Units.inchesToMeters(1.273); // 16T #25
+    public static final double sprocketPitchDiameter = Units.inchesToMeters(1.75); // 22T #25
     public static final double minHeightInMeters = 0.0;
-    public static final double maxHeightInMeters = 0.5;
+    public static final double maxHeightInMeters = 0.35;
   }
 
   public final class Elbow {

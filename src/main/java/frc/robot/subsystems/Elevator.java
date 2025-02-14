@@ -37,6 +37,7 @@ public class Elevator extends SubsystemBase {
     slot0Configs.kD = Constants.kD;
 
     m_elevatorMotorLeader.getConfigurator().apply(slot0Configs);
+    m_elevatorMotorLeader.setPosition(0); // Initializing the encoder position to 0
   }
 
   public Command stop() {
@@ -47,9 +48,10 @@ public class Elevator extends SubsystemBase {
   }
 
   // Move Elevator to Receiving position (this is the default position).
-  public Command moveToRecieve() {
+  public Command moveToReceive() {
     return run(() -> {
-      double desiredOutputInRotations = 4;
+      double desiredVerticalTravelInMeters = 0;
+      double desiredOutputInRotations = desiredVerticalTravelInMeters / Hardware.Elevator.sprocketPitchDiameter;
       double requiredInputRotations = Hardware.Elevator.gearboxReduction * desiredOutputInRotations;
       // create a position closed-loop request, voltage output, slot 0 configs
       final PositionVoltage m_request = new PositionVoltage(requiredInputRotations).withSlot(0);
@@ -61,7 +63,8 @@ public class Elevator extends SubsystemBase {
   // Move Elevator to L1 (trough).
   public Command move1Beta() {
     return run(() -> {
-      double desiredOutputInRotations = 8;
+      double desiredVerticalTravelInMeters = 0.115;
+      double desiredOutputInRotations = desiredVerticalTravelInMeters / Hardware.Elevator.sprocketPitchDiameter;
       double requiredInputRotations = Hardware.Elevator.gearboxReduction * desiredOutputInRotations;
       // create a position closed-loop request, voltage output, slot 0 configs
       final PositionVoltage m_request = new PositionVoltage(requiredInputRotations).withSlot(0);
@@ -73,7 +76,8 @@ public class Elevator extends SubsystemBase {
   // Move Elevator to L2.
   public Command move2Sigma() {
     return run(() -> {
-      double desiredOutputInRotations = 16;
+      double desiredVerticalTravelInMeters = 0.22;
+      double desiredOutputInRotations = desiredVerticalTravelInMeters / Hardware.Elevator.sprocketPitchDiameter;
       double requiredInputRotations = Hardware.Elevator.gearboxReduction * desiredOutputInRotations;
       // create a position closed-loop request, voltage output, slot 0 configs
       final PositionVoltage m_request = new PositionVoltage(requiredInputRotations).withSlot(0);
@@ -85,7 +89,8 @@ public class Elevator extends SubsystemBase {
   // Move Elevator to L3.
   public Command move3Alpha() {
     return run(() -> {
-      double desiredOutputInRotations = 24;
+      double desiredVerticalTravelInMeters = 0.33;
+      double desiredOutputInRotations = desiredVerticalTravelInMeters / Hardware.Elevator.sprocketPitchDiameter;
       double requiredInputRotations = Hardware.Elevator.gearboxReduction * desiredOutputInRotations;
       // create a position closed-loop request, voltage output, slot 0 configs
       final PositionVoltage m_request = new PositionVoltage(requiredInputRotations).withSlot(0);

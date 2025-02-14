@@ -95,7 +95,7 @@ public class RobotContainer {
     operatorXboxController.rightBumper().whileTrue(pipeshooter.shootCoral());
 
     // commands for the elbow positioning
-    Command moveElbowAndElevatorToRecieve = elbow.recieve().alongWith(elevator.moveToRecieve())
+    Command moveElbowAndElevatorToRecieve = elbow.recieve().alongWith(elevator.moveToReceive())
         .alongWith(pipeshooter.intakeCoral()).alongWith(leds.jjisbeingasussybakaimpostoramongussus());
     operatorXboxController.a().whileTrue(moveElbowAndElevatorToRecieve);
 
