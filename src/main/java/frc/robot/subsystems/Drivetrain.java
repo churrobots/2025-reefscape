@@ -100,14 +100,6 @@ public class Drivetrain extends SubsystemBase {
     HardwareRegistry.registerHardware(m_swerveDrive.getModules()[3].getDriveMotor().getMotor());
     HardwareRegistry.registerHardware(m_swerveDrive.getModules()[3].getAngleMotor().getMotor());
 
-    // TODO: see if this helps us debug
-    if (RobotBase.isSimulation()) {
-      // YAGSL recommends disabling certain features during sim
-      m_swerveDrive.setHeadingCorrection(false);
-      m_swerveDrive.setCosineCompensator(false);
-
-    }
-
     m_swerveDrive.setHeadingCorrection(false);
     m_swerveDrive.setCosineCompensator(false);
     // Correct for skew that gets worse as angular velocity increases. Start with a
@@ -127,7 +119,6 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public SendableChooser<Command> createPathPlannerDropdown() {
-    // TODO: store this in the RobotConfig class
     RobotConfig config;
     try {
       UniversalRobotProperties robotProperties = new UniversalRobotProperties(m_swerveJsonDirectory,
