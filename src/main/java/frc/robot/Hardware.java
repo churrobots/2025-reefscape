@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -84,7 +87,22 @@ public final class Hardware {
   }
 
   public final class Vision {
-    public static final boolean isEnabled = false;
+    public static final boolean isEnabled = switch (robotName) {
+      case ROBOT_CANELO -> false;
+      case ROBOT_ALPHA -> false;
+      case ROBOT_BETA -> false;
+      case ROBOT_SIMULATION -> true;
+      default -> false;
+    };
+
+    // TODO: Update the Transform3d to match the camera position on the bot
+    // Currently it is set to a camera mounted facing forward, 0.5 meters forwards
+    // of center, 0.0 meters right of center, 0.5 meters up from center
+    public static final Transform3d robotToCam1 = switch (robotName) {
+      case ROBOT_ALPHA -> new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0));
+      case ROBOT_BETA -> new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0));
+      default -> new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0));
+    };
   }
 
   public final class LEDLights {

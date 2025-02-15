@@ -11,24 +11,18 @@ import org.photonvision.simulation.VisionSystemSim;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import frc.robot.Hardware;
 import frc.robot.Robot;
 import swervelib.SwerveDrive;
 import swervelib.telemetry.SwerveDriveTelemetry;
 
 public class Vision {
-  // TODO: Update the Transform3d to match the camera position on the bot
-  // Currently it is set to a camera mounted facing forward, 0.5 meters forwards
-  // of center, 0.0 meters right of center, 0.5 meters up from center
-  Transform3d m_robotToCam1 = new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0));
   PhotonPoseEstimator m_photonPoseEstimator = new PhotonPoseEstimator(m_aprilTagFieldLayout,
-      PoseStrategy.CLOSEST_TO_REFERENCE_POSE, m_robotToCam1);
-  Camera[] m_cameras = { new Camera("camera 1", m_robotToCam1) };
+      PoseStrategy.CLOSEST_TO_REFERENCE_POSE, Hardware.Vision.robotToCam1);
+  Camera[] m_cameras = { new Camera("camera 1", Hardware.Vision.robotToCam1) };
 
   static AprilTagFieldLayout m_aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
   Supplier<Pose2d> m_currentPose;
