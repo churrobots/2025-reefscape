@@ -27,7 +27,7 @@ public class UnnecessaryLEDS extends SubsystemBase {
       .createView(Hardware.LEDLights.leftLEDCount, Hardware.LEDLights.rightLEDCount - 1)
       .reversed();
 
-  final LEDPattern m_offPattern = LEDPattern.kOff;
+  final LEDPattern m_offPattern = LEDPattern.solid(Color.kForestGreen);
   final LEDPattern m_disabledPattern = LEDPattern.solid(Color.kOrange);
   final LEDPattern m_blue = LEDPattern.solid(Color.kBlue);
   final LEDPattern m_green = LEDPattern.solid(Color.kGreen);

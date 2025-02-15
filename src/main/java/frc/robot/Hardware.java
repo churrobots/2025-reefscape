@@ -42,7 +42,8 @@ public final class Hardware {
   }
 
   public final class Elbow {
-    public static final int neoMotorCAN = 17;
+    public static final int neoMotorCAN = 31;
+    public static final double gearboxReuction = 75; // check this
   }
 
   public final class Drivetrain {
@@ -63,7 +64,7 @@ public final class Hardware {
       case ROBOT_CANELO -> "yagsl-configs/canelo";
       case ROBOT_ALPHA -> "yagsl-configs/alpha";
       case ROBOT_BETA -> "yagsl-configs/beta";
-      case ROBOT_SIMULATION -> "yagsl-configs/alpha";
+      case ROBOT_SIMULATION -> "yagsl-configs/beta";
       default -> "yagsl-configs/beta";
     };
     public static final boolean debugTelemetry = switch (robotName) {

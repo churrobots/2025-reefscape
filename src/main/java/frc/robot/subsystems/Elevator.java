@@ -8,9 +8,13 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.churrolib.HardwareRegistry;
@@ -55,13 +59,16 @@ public class Elevator extends SubsystemBase {
     HardwareRegistry.registerHardware(m_elevatorMotorLeader);
     HardwareRegistry.registerHardware(m_elevatorMotorFollow);
 
-    talonFXConfigs.Slot0.kD = Constants.kS;
-    talonFXConfigs.Slot0.kD = Constants.kV;
-    talonFXConfigs.Slot0.kD = Constants.kA;
+    // talonFXConfigs.Slot0.kS = Constants.kS; //Only used when using velocity
+    // control (Ignored right now)
+    // talonFXConfigs.Slot0.kV = Constants.kV; //Only used when using velocity
+    // control (Ignored right now)
+    // talonFXConfigs.Slot0.kA = Constants.kA; //Only used when using velocity
+    // control (Ignored right now)
     talonFXConfigs.Slot0.kP = Constants.kP;
     talonFXConfigs.Slot0.kI = Constants.kI;
     talonFXConfigs.Slot0.kD = Constants.kD;
-    talonFXConfigs.Slot0.kG = Constants.kG;
+    talonFXConfigs.Slot0.withGravityType(GravityTypeValue.Elevator_Static).kG = Constants.kG;
 
     // https://v6.docs.ctr-electronics.com/en/2024/docs/api-reference/device-specific/talonfx/motion-magic.html
     // Motion Magic Voltage Control (Position):
