@@ -1,16 +1,24 @@
 package frc.robot.subsystems;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
+import org.photonvision.PhotonUtils;
 import org.photonvision.simulation.VisionSystemSim;
+import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -22,7 +30,8 @@ import swervelib.telemetry.SwerveDriveTelemetry;
 public class Vision {
   PhotonPoseEstimator m_photonPoseEstimator = new PhotonPoseEstimator(m_aprilTagFieldLayout,
       PoseStrategy.CLOSEST_TO_REFERENCE_POSE, Hardware.Vision.robotToCam1);
-  Camera[] m_cameras = { new Camera("camera 1", Hardware.Vision.robotToCam1) };
+  Camera[] m_cameras = {
+      new Camera("camera 1", Hardware.Vision.robotToCam1, VecBuilder.fill(4, 4, 8), VecBuilder.fill(0.5, 0.5, 1)) };
 
   static AprilTagFieldLayout m_aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
   Supplier<Pose2d> m_currentPose;
@@ -108,7 +117,7 @@ public class Vision {
    *         targets used to create the estimate
    */
   public Optional<EstimatedRobotPose> getEstimatedGlobalPose(Camera camera) {
-    Optional<EstimatedRobotPose> poseEst = camera.getEstimatedGlobalPose(m_currentPose.get());
+    Optional<EstimatedRobotPose> poseEst = camera.getEstimatedGlobalPose();
     if (Robot.isSimulation()) {
       Field2d debugField = m_visionSim.getDebugField();
       // Uncomment to enable outputting of vision targets in sim.
@@ -132,17 +141,30 @@ public class Vision {
    *                    itself correctly.
    * @return The target pose of the AprilTag.
    */
-  // public static Pose2d getAprilTagPose(int aprilTag, Transform2d robotOffset) {
-  // }
+  public static Pose2d getAprilTagPose(int aprilTag, Transform2d robotOffset) {
+    Optional<Pose3d> aprilTagPose3d = m_aprilTagFieldLayout.getTagPose(aprilTag);
+    if (aprilTagPose3d.isPresent()) {
+      return aprilTagPose3d.get().toPose2d().transformBy(robotOffset);
+    } else {
+      throw new RuntimeException("Cannot get AprilTag " + aprilTag + " from field " + m_aprilTagFieldLayout.toString());
+    }
+
+  }
 
   /**
    * Get distance of the robot from the AprilTag pose.
    *
    * @param id AprilTag ID
-   * @return Distance
+   * @return Distance, or -1 if distance could not be determined.
    */
-  // public double getDistanceFromAprilTag(int id) {
-  // }
+  public double getDistanceFromAprilTag(int id) {
+    Optional<Pose3d> tag = m_aprilTagFieldLayout.getTagPose(id);
+    if (tag.isPresent()) {
+      double distance = PhotonUtils.getDistanceToPose(m_currentPose.get(), tag.get().toPose2d());
+      return distance;
+    }
+    return -1;
+  }
 
   /**
    * Get tracked target from a camera of AprilTagID
@@ -151,12 +173,42 @@ public class Vision {
    * @param camera Camera to check.
    * @return Tracked target.
    */
-  // public PhotonTrackedTarget getTargetFromId(int id, Cameras camera) {
-  // }
+  public PhotonTrackedTarget getTargetFromId(int id, Camera camera) {
+    PhotonTrackedTarget target = null;
+    for (PhotonPipelineResult result : camera.resultsList) {
+      if (result.hasTargets()) {
+        for (PhotonTrackedTarget i : result.getTargets()) {
+          if (i.getFiducialId() == id) {
+            return i;
+          }
+        }
+      }
+    }
+    return target;
+  }
 
   /**
    * Update the {@link Field2d} to include tracked targets/
    */
-  // public void updateVisionField() {
-  // }
+  public void updateVisionField() {
+    List<PhotonTrackedTarget> targets = new ArrayList<PhotonTrackedTarget>();
+    for (Camera c : m_cameras) {
+      if (!c.resultsList.isEmpty()) {
+        PhotonPipelineResult latest = c.resultsList.get(0);
+        if (latest.hasTargets()) {
+          targets.addAll(latest.targets);
+        }
+      }
+    }
+
+    List<Pose2d> poses = new ArrayList<>();
+    for (PhotonTrackedTarget target : targets) {
+      if (m_aprilTagFieldLayout.getTagPose(target.getFiducialId()).isPresent()) {
+        Pose2d targetPose = m_aprilTagFieldLayout.getTagPose(target.getFiducialId()).get().toPose2d();
+        poses.add(targetPose);
+      }
+    }
+
+    m_field.getObject("tracked targets").setPoses(poses);
+  }
 }
