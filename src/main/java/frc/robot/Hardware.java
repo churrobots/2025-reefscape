@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.util.Map;
+
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -103,6 +105,23 @@ public final class Hardware {
       case ROBOT_BETA -> new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0));
       default -> new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0));
     };
+
+    public static final Map<Integer, Number> blueReefTargets = Map.of(
+        // 17:
+        17, 60,
+        // 18:
+        18, 0,
+        // 19:
+        19, -60,
+        // 20:
+        20, 240,
+        // 21:
+        21, 180,
+        // 22:
+        22, 120);
+
+    // TODO: Update this.
+    public static final Map<Integer, Number> redReefTargets = Map.of();
   }
 
   public final class LEDLights {

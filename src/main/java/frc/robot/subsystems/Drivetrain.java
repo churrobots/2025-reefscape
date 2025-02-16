@@ -67,6 +67,7 @@ public class Drivetrain extends SubsystemBase {
   private final SwerveDrive m_swerveDrive;
   private final File m_swerveJsonDirectory;
   private Vision m_vision;
+  private DriveToAprilTag m_driveToAprilTag;
 
   public Drivetrain() {
     setDefaultCommand(new RunCommand(this::stop, this));
@@ -115,6 +116,7 @@ public class Drivetrain extends SubsystemBase {
     // Setup vision
     if (Hardware.Vision.isEnabled) {
       m_vision = new Vision(m_swerveDrive::getPose, m_swerveDrive.field);
+      m_driveToAprilTag = new DriveToAprilTag(this, m_vision);
     }
   }
 
@@ -221,6 +223,15 @@ public class Drivetrain extends SubsystemBase {
     m_swerveDrive.drive(robotRelativeVelocity, states, feedforwardForces);
   }
 
+  public void driveRobotRelative(Double translationX, Double translationY,
+      Double angularRotationX) {
+    m_swerveDrive.drive(new Translation2d(translationX * m_swerveDrive.getMaximumChassisVelocity(),
+        translationY * m_swerveDrive.getMaximumChassisVelocity()),
+        angularRotationX * m_swerveDrive.getMaximumChassisAngularVelocity(),
+        false,
+        false);
+  };
+
   /**
    * Get the swerve drive kinematics object.
    *
@@ -305,6 +316,10 @@ public class Drivetrain extends SubsystemBase {
           false,
           false);
     });
+  }
+
+  public Command driveToAprilTag() {
+    return m_driveToAprilTag;
   }
 
   public void resetPose(Pose2d newPose) {

@@ -95,6 +95,10 @@ public class RobotContainer {
       Command slowRobotRelativeOperatorXboxControlWithLEDs = slowRobotRelativeOperatorXboxControl.alongWith(
           leds.yuvrajalliseeisredwhenigoupsettyspaghetti());
 
+      Command driveToAprilTag = drivetrain.driveToAprilTag();
+      // TODO: bind this to a button?
+      // operatorXboxController.someButton().whileTrue(driveToAprilTag);
+
       drivetrain.setDefaultCommand(fastFieldRelativeDriverXboxControl);
       driverXboxController.leftBumper().whileTrue(slowFieldRelativeDriverXboxControl);
       driverXboxController.back().whileTrue(recalibrateDriveTrain);

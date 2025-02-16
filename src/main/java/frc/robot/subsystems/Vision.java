@@ -18,6 +18,7 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
@@ -164,6 +165,31 @@ public class Vision {
       return distance;
     }
     return -1;
+  }
+
+  /**
+   * Get distance of the robot from the AprilTag pose.
+   *
+   * @param id AprilTag ID
+   * @return Rotation2d (angle of 0 if rotation could not be determined)
+   */
+  public Rotation2d getYawFromAprilTag(int id) {
+    Optional<Pose3d> tag = m_aprilTagFieldLayout.getTagPose(id);
+    if (tag.isPresent()) {
+      Rotation2d rotation = PhotonUtils.getYawToPose(m_currentPose.get(), tag.get().toPose2d());
+      return rotation;
+    }
+    return new Rotation2d();
+  }
+
+  public boolean canSeeTarget(int id) {
+    for (Camera camera : m_cameras) {
+      PhotonTrackedTarget target = getTargetFromId(id, camera);
+      if (target != null) {
+        return true;
+      }
+    }
+    return false;
   }
 
   /**
