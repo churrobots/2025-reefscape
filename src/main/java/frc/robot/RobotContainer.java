@@ -92,13 +92,10 @@ public class RobotContainer {
           () -> -1 * MathUtil.applyDeadband(operatorXboxController.getRightX(), xboxDeadband)
               * Hardware.DriverStation.slowDriveScale);
 
-      Command slowRobotRelativeOperatorXboxControlWithLEDs = slowRobotRelativeOperatorXboxControl.alongWith(
-          leds.yuvrajalliseeisredwhenigoupsettyspaghetti());
-
       drivetrain.setDefaultCommand(fastFieldRelativeDriverXboxControl);
-      driverXboxController.leftBumper().whileTrue(slowFieldRelativeDriverXboxControl);
+      driverXboxController.rightBumper().whileTrue(slowFieldRelativeDriverXboxControl);
       driverXboxController.back().whileTrue(recalibrateDriveTrain);
-      operatorXboxController.leftBumper().whileTrue(slowRobotRelativeOperatorXboxControlWithLEDs);
+      operatorXboxController.leftBumper().whileTrue(slowRobotRelativeOperatorXboxControl.alongWith(leds.red()));
     }
 
     if (Hardware.DriverStation.mechanismsAreInTestMode) {
