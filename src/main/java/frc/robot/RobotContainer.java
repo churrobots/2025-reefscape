@@ -185,7 +185,9 @@ public class RobotContainer {
   void updateDiagnostics() {
     HardwareRegistry.dumpDeviceFaultsToNetworkTables();
     if (Hardware.Diagnostics.debugMemoryLeaks) {
-      SmartDashboard.putNumber("freeMemory", Runtime.getRuntime().freeMemory());
+      long allocatedMemoryInBytes = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory());
+      long presumableFreeMemoryInBytes = Runtime.getRuntime().maxMemory() - allocatedMemoryInBytes;
+      SmartDashboard.putNumber("freeMemory", presumableFreeMemoryInBytes);
     }
   }
 
