@@ -7,6 +7,7 @@ import java.util.function.BooleanSupplier;
 
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
@@ -15,6 +16,10 @@ import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkBase.PersistMode;
 
+import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.networktables.BooleanPublisher;
+import edu.wpi.first.networktables.DoublePublisher;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -22,25 +27,58 @@ public class Elbow extends SubsystemBase {
   final SparkMax m_elbowMotor = new SparkMax(Hardware.Elbow.neoMotorCAN, MotorType.kBrushless);
   final SparkClosedLoopController m_elbowController = m_elbowMotor.getClosedLoopController();
   final SparkMaxConfig config = new SparkMaxConfig();
+  final SlewRateLimiter rateLimiter = new SlewRateLimiter(2);
+  final SparkAbsoluteEncoder m_absoluteEncoder;
+
+  final DoublePublisher m_currentPositionPublisher = NetworkTableInstance.getDefault()
+      .getDoubleTopic("ElbowCurrentPosition")
+      .publish();
+  double m_currentPosition;
+  final DoublePublisher m_targetPositionPublisher = NetworkTableInstance.getDefault()
+      .getDoubleTopic("ElbowTargetPosition")
+      .publish();
+  final DoublePublisher m_distanceFromTargetPositionPublisher = NetworkTableInstance.getDefault()
+      .getDoubleTopic("ElbowDistanceFromTargetPosition")
+      .publish();
+  final BooleanPublisher m_isSafePosition = NetworkTableInstance.getDefault()
+      .getBooleanTopic("ElbowPositionIsSafe").publish();
+  final DoublePublisher m_appliedOutput = NetworkTableInstance.getDefault()
+      .getDoubleTopic("ElbowAppliedOutput")
+      .publish();
 
   // TODO: implement safety, this is just for testing
-  final BooleanSupplier m_highEnoughToExtend = () -> true;
-  final BooleanSupplier m_lowEnoughToRetract = () -> true;
+  final BooleanSupplier m_lowEnoughToExtend = () -> {
+    if (m_currentPosition > 0.2) {
+      return false;
+    } else {
+      return true;
+    }
+  };
+  final BooleanSupplier m_highEnoughToRetract = () -> {
+    if (m_currentPosition < 0) {
+      return false;
+    } else {
+      return true;
+    }
+  };
 
   class Constants {
-    static final double kP = .0001;
+    static final double kP = 0.1;
     static final double kI = 0.0;
-    static final double kD = 0.0;
+    static final double kD = 0;
   }
 
   public Elbow() {
-    setDefaultCommand(recieve());
+    setDefaultCommand(receive());
     HardwareRegistry.registerHardware(m_elbowMotor);
+    m_absoluteEncoder = m_elbowMotor.getAbsoluteEncoder();
+    m_currentPosition = m_elbowMotor.getAbsoluteEncoder().getPosition();
 
     // Setup motor and closedloop control configuration
     config
         .inverted(false)
-        .idleMode(IdleMode.kBrake);
+        .idleMode(IdleMode.kBrake)
+        .smartCurrentLimit(30);
 
     // config.encoder
     // .positionConversionFactor(1000)
@@ -56,11 +94,12 @@ public class Elbow extends SubsystemBase {
 
   // Base state, Driection Stright down. Called recive becasue its the intake
   // positon.
-  public Command recieve() {
+  public Command receive() {
     return moveToPosition(0);
   }
 
-  // Position to score L1-trough
+  // Position to score L1-trough which is the only one with a unique angle, all
+  // the other level ones are the same
   public Command move1Beta() {
     return moveToPosition(0.1);
   }
@@ -76,16 +115,25 @@ public class Elbow extends SubsystemBase {
   }
 
   private Command moveToPosition(double targetPosition) {
-    boolean isExtending = targetPosition > 0.1;
-    boolean isRetracting = targetPosition < 0.2;
+    boolean isExtending = targetPosition >= 0.1;
+    boolean isRetracting = targetPosition < 0.1;
     return run(() -> {
-      boolean isSafe = isExtending && m_highEnoughToExtend.getAsBoolean()
-          || isRetracting && m_lowEnoughToRetract.getAsBoolean();
+      double currentPosition = m_elbowMotor.getAbsoluteEncoder().getPosition();
+      this.m_currentPosition = currentPosition;
+      m_currentPositionPublisher.set(currentPosition);
+      m_targetPositionPublisher.set(targetPosition);
+      boolean isSafe = isExtending && m_lowEnoughToExtend.getAsBoolean()
+          || isRetracting && m_highEnoughToRetract.getAsBoolean();
       if (isSafe) {
-        m_elbowController.setReference(targetPosition, ControlType.kMAXMotionPositionControl);
+        m_isSafePosition.set(true);
+        m_elbowController.setReference(targetPosition, ControlType.kPosition);
+      } else {
+        m_isSafePosition.set(false);
       }
+      m_appliedOutput.set(m_elbowMotor.getAppliedOutput());
     }).until(() -> {
       double distanceFromTarget = Math.abs(m_elbowMotor.getAbsoluteEncoder().getPosition() - targetPosition);
+      m_distanceFromTargetPositionPublisher.set(distanceFromTarget);
       return distanceFromTarget < 0.02;
     }).withTimeout(3);
   }

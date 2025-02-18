@@ -92,13 +92,10 @@ public class RobotContainer {
           () -> -1 * MathUtil.applyDeadband(operatorXboxController.getRightX(), xboxDeadband)
               * Hardware.DriverStation.slowDriveScale);
 
-      Command slowRobotRelativeOperatorXboxControlWithLEDs = slowRobotRelativeOperatorXboxControl.alongWith(
-          leds.yuvrajalliseeisredwhenigoupsettyspaghetti());
-
       drivetrain.setDefaultCommand(fastFieldRelativeDriverXboxControl);
-      driverXboxController.leftBumper().whileTrue(slowFieldRelativeDriverXboxControl);
+      driverXboxController.rightBumper().whileTrue(slowFieldRelativeDriverXboxControl);
       driverXboxController.back().whileTrue(recalibrateDriveTrain);
-      operatorXboxController.leftBumper().whileTrue(slowRobotRelativeOperatorXboxControlWithLEDs);
+      operatorXboxController.leftBumper().whileTrue(slowRobotRelativeOperatorXboxControl.alongWith(leds.red()));
     }
 
     if (Hardware.DriverStation.mechanismsAreInTestMode) {
@@ -110,17 +107,17 @@ public class RobotContainer {
       operatorXboxController.rightBumper().whileTrue(pipeshooter.shootCoral());
 
     } else {
-      Command moveElbowAndElevatorToRecieve = elbow.recieve().alongWith(elevator.moveToReceive())
+      Command moveElbowAndElevatorToRecieve = elevator.moveToReceive().alongWith(elbow.receive())
           .alongWith(pipeshooter.intakeCoral()).alongWith(leds.jjisbeingasussybakaimpostoramongussus());
       operatorXboxController.a().whileTrue(moveElbowAndElevatorToRecieve);
 
-      Command moveElbowAndElevatorTo1 = elbow.move1Beta().alongWith(elevator.move1Beta());
+      Command moveElbowAndElevatorTo1 = elevator.move1Beta().alongWith(elbow.move1Beta());
       operatorXboxController.x().onTrue(moveElbowAndElevatorTo1);
 
-      Command moveElbowAndElevatorTo2 = elbow.move2Sigma().alongWith(elevator.move2Sigma().alongWith(leds.rainbow()));
+      Command moveElbowAndElevatorTo2 = elevator.move2Sigma().alongWith(elbow.move2Sigma().alongWith(leds.rainbow()));
       operatorXboxController.y().onTrue(moveElbowAndElevatorTo2);
 
-      Command moveElbowAndElevatorTo3 = elbow.move2Sigma().alongWith(elevator.move3Alpha().alongWith(leds.blue()));
+      Command moveElbowAndElevatorTo3 = elbow.move2Sigma().alongWith(leds.blue());
       operatorXboxController.b().onTrue(moveElbowAndElevatorTo3);
 
       Command moveElbowAndElevatorToL2Algae = elbow.moveAlgae()
@@ -154,7 +151,7 @@ public class RobotContainer {
         elbow.move1Beta()
             .alongWith(elevator.move1Beta())
             .andThen(pipeshooter.shootCoral())
-            .andThen(elbow.recieve().alongWith(elevator.moveToReceive()))
+            .andThen(elbow.receive().alongWith(elevator.moveToReceive()))
             .alongWith(showCommand("Shoot L1"))
             .alongWith(leds.green()));
 
@@ -163,7 +160,7 @@ public class RobotContainer {
         elbow.move1Beta()
             .alongWith(elevator.move2Sigma())
             .andThen(pipeshooter.shootCoral())
-            .andThen(elbow.recieve().alongWith(elevator.moveToReceive()))
+            .andThen(elbow.receive().alongWith(elevator.moveToReceive()))
             .alongWith(showCommand("Shoot L2"))
             .alongWith(leds.green()));
 
@@ -187,6 +184,11 @@ public class RobotContainer {
 
   void updateDiagnostics() {
     HardwareRegistry.dumpDeviceFaultsToNetworkTables();
+    if (Hardware.Diagnostics.debugMemoryLeaks) {
+      long allocatedMemoryInBytes = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory());
+      long presumableFreeMemoryInBytes = Runtime.getRuntime().maxMemory() - allocatedMemoryInBytes;
+      SmartDashboard.putNumber("freeMemory", presumableFreeMemoryInBytes);
+    }
   }
 
 }

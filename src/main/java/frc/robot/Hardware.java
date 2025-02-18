@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -42,7 +45,10 @@ public final class Hardware {
   }
 
   public final class Elbow {
-    public static final int neoMotorCAN = 17;
+    // FIXME: we should make this a lower number to make CAN more efficient? (i
+    // think there was some notes on chief delphi about this?)
+    public static final int neoMotorCAN = 31;
+    public static final double gearboxReuction = 75; // check this
   }
 
   public final class Drivetrain {
@@ -63,13 +69,8 @@ public final class Hardware {
       case ROBOT_CANELO -> "yagsl-configs/canelo";
       case ROBOT_ALPHA -> "yagsl-configs/alpha";
       case ROBOT_BETA -> "yagsl-configs/beta";
-      case ROBOT_SIMULATION -> "yagsl-configs/alpha";
+      case ROBOT_SIMULATION -> "yagsl-configs/beta";
       default -> "yagsl-configs/beta";
-    };
-    public static final boolean debugTelemetry = switch (robotName) {
-      case ROBOT_BETA -> false;
-      case ROBOT_ALPHA -> false;
-      default -> true;
     };
     // PathPlanner config values
     // double wheelRadius = 0;
@@ -84,7 +85,22 @@ public final class Hardware {
   }
 
   public final class Vision {
-    public static final boolean isEnabled = false;
+    public static final boolean isEnabled = switch (robotName) {
+      case ROBOT_CANELO -> false;
+      case ROBOT_ALPHA -> false;
+      case ROBOT_BETA -> false;
+      case ROBOT_SIMULATION -> true;
+      default -> false;
+    };
+
+    // TODO: Update the Transform3d to match the camera position on the bot
+    // Currently it is set to a camera mounted facing forward, 0.5 meters forwards
+    // of center, 0.0 meters right of center, 0.5 meters up from center
+    public static final Transform3d robotToCam1 = switch (robotName) {
+      case ROBOT_ALPHA -> new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0));
+      case ROBOT_BETA -> new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0));
+      default -> new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0));
+    };
   }
 
   public final class LEDLights {
@@ -100,13 +116,21 @@ public final class Hardware {
     public static final double driverXboxDeadband = 0.1;
     public static final double fastDriveScale = 1.0;
     public static final double slowDriveScale = 0.15;
-    public static final boolean useLowQualityCamera = switch (robotName) {
-      case ROBOT_ALPHA -> true;
-      default -> false;
-    };
     public static final boolean mechanismsAreInTestMode = switch (robotName) {
       case ROBOT_BETA -> true;
       default -> false;
+    };
+  }
+
+  public static class Diagnostics {
+    public static final boolean debugMemoryLeaks = switch (robotName) {
+      case ROBOT_ALPHA -> true;
+      default -> false;
+    };
+    public static final boolean debugTelemetry = switch (robotName) {
+      case ROBOT_BETA -> false;
+      case ROBOT_ALPHA -> false;
+      default -> true;
     };
   }
 

@@ -38,7 +38,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.RobotBase;
 import swervelib.parser.SwerveParser;
 import swervelib.SwerveDrive;
 import swervelib.math.SwerveMath;
@@ -71,7 +70,7 @@ public class Drivetrain extends SubsystemBase {
   public Drivetrain() {
     setDefaultCommand(new RunCommand(this::stop, this));
     SmartDashboard.putData("Field", m_fieldViz);
-    if (Hardware.Drivetrain.debugTelemetry == true) {
+    if (Hardware.Diagnostics.debugTelemetry == true) {
       SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
     } else {
       SwerveDriveTelemetry.verbosity = TelemetryVerbosity.POSE;
@@ -100,14 +99,6 @@ public class Drivetrain extends SubsystemBase {
     HardwareRegistry.registerHardware(m_swerveDrive.getModules()[3].getDriveMotor().getMotor());
     HardwareRegistry.registerHardware(m_swerveDrive.getModules()[3].getAngleMotor().getMotor());
 
-    // TODO: see if this helps us debug
-    if (RobotBase.isSimulation()) {
-      // YAGSL recommends disabling certain features during sim
-      m_swerveDrive.setHeadingCorrection(false);
-      m_swerveDrive.setCosineCompensator(false);
-
-    }
-
     m_swerveDrive.setHeadingCorrection(false);
     m_swerveDrive.setCosineCompensator(false);
     // Correct for skew that gets worse as angular velocity increases. Start with a
@@ -127,7 +118,6 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public SendableChooser<Command> createPathPlannerDropdown() {
-    // TODO: store this in the RobotConfig class
     RobotConfig config;
     try {
       UniversalRobotProperties robotProperties = new UniversalRobotProperties(m_swerveJsonDirectory,
