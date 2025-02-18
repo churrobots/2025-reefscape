@@ -38,7 +38,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.RobotBase;
 import swervelib.parser.SwerveParser;
 import swervelib.SwerveDrive;
 import swervelib.math.SwerveMath;

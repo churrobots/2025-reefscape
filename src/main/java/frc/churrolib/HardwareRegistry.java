@@ -8,11 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
-import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.spark.SparkBase;
-import com.revrobotics.spark.SparkBase.Faults;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
