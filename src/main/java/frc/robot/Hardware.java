@@ -72,11 +72,6 @@ public final class Hardware {
       case ROBOT_SIMULATION -> "yagsl-configs/beta";
       default -> "yagsl-configs/beta";
     };
-    public static final boolean debugTelemetry = switch (robotName) {
-      case ROBOT_BETA -> false;
-      case ROBOT_ALPHA -> false;
-      default -> true;
-    };
     // PathPlanner config values
     // double wheelRadius = 0;
     // double maxDriveVelocity = 0;
@@ -121,13 +116,21 @@ public final class Hardware {
     public static final double driverXboxDeadband = 0.1;
     public static final double fastDriveScale = 1.0;
     public static final double slowDriveScale = 0.15;
-    public static final boolean useLowQualityCamera = switch (robotName) {
-      case ROBOT_ALPHA -> true;
-      default -> false;
-    };
     public static final boolean mechanismsAreInTestMode = switch (robotName) {
       case ROBOT_BETA -> true;
       default -> false;
+    };
+  }
+
+  public static class Diagnostics {
+    public static final boolean debugMemoryLeaks = switch (robotName) {
+      case ROBOT_ALPHA -> true;
+      default -> false;
+    };
+    public static final boolean debugTelemetry = switch (robotName) {
+      case ROBOT_BETA -> false;
+      case ROBOT_ALPHA -> false;
+      default -> true;
     };
   }
 

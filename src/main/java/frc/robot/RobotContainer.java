@@ -184,6 +184,9 @@ public class RobotContainer {
 
   void updateDiagnostics() {
     HardwareRegistry.dumpDeviceFaultsToNetworkTables();
+    if (Hardware.Diagnostics.debugMemoryLeaks) {
+      SmartDashboard.putNumber("freeMemory", Runtime.getRuntime().freeMemory());
+    }
   }
 
 }

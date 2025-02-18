@@ -70,7 +70,7 @@ public class Drivetrain extends SubsystemBase {
   public Drivetrain() {
     setDefaultCommand(new RunCommand(this::stop, this));
     SmartDashboard.putData("Field", m_fieldViz);
-    if (Hardware.Drivetrain.debugTelemetry == true) {
+    if (Hardware.Diagnostics.debugTelemetry == true) {
       SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
     } else {
       SwerveDriveTelemetry.verbosity = TelemetryVerbosity.POSE;
