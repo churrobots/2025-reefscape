@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.742319849917762,
-        "y": 1.5354199861225333
+        "x": 7.771758309057203,
+        "y": 1.8634939420021193
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.498807887027138,
-        "y": 1.619459614000823
+        "x": 7.528246346166579,
+        "y": 1.947533569880409
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "cage 5"
     },
     {
       "anchor": {
@@ -20,8 +20,8 @@
         "y": 2.6334976999383217
       },
       "prevControl": {
-        "x": 5.939038407175164,
-        "y": 2.3303386487458884
+        "x": 6.053727489406779,
+        "y": 2.368310133077331
       },
       "nextControl": null,
       "isLocked": false,
@@ -48,7 +48,7 @@
   "folder": "Cage",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 178.38094940825948
+    "rotation": 179.70997518439148
   },
   "useDefaultConstraints": true
 }

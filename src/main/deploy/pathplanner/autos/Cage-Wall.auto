@@ -16,6 +16,12 @@
               }
             ]
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Wall-Cage (demo)"
+          }
         }
       ]
     }
