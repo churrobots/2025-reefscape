@@ -133,6 +133,8 @@ public class HardwareRegistry {
     }
     for (SparkBase device : getInstance().m_sparkBaseList) {
       boolean isGood = !device.hasActiveFault() && !device.hasActiveWarning();
+      // TODO: check for supply voltage dropping out? how would we detect the white
+      // wires being disconnected?
       SmartDashboard.putBoolean("HardwareRegistry/Faults/SparkBase[" + device.getDeviceId() + "]",
           isGood);
     }
