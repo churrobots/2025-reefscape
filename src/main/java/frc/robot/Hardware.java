@@ -45,6 +45,8 @@ public final class Hardware {
   }
 
   public final class Elbow {
+    // FIXME: we should make this a lower number to make CAN more efficient? (i
+    // think there was some notes on chief delphi about this?)
     public static final int neoMotorCAN = 31;
     public static final double gearboxReuction = 75; // check this
   }
