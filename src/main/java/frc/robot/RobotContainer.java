@@ -130,33 +130,6 @@ public class RobotContainer {
 
       Command shootCoral = pipeshooter.shootCoral().alongWith(leds.green());
       operatorXboxController.rightBumper().whileTrue(shootCoral);
-      // Command moveElbowAndElevatorToRecieve =
-      // elbow.receive().alongWith(elevator.moveToReceive())
-      // .alongWith(pipeshooter.intakeCoral()).alongWith(leds.jjisbeingasussybakaimpostoramongussus());
-      // operatorXboxController.a().whileTrue(moveElbowAndElevatorToRecieve);
-
-      // Command moveElbowAndElevatorTo1 =
-      // elbow.move1Beta().alongWith(elevator.move1Beta());
-      // operatorXboxController.x().onTrue(moveElbowAndElevatorTo1);
-
-      // Command moveElbowAndElevatorTo2 =
-      // elbow.move2Sigma().alongWith(elevator.move2Sigma().alongWith(leds.rainbow()));
-      // operatorXboxController.y().onTrue(moveElbowAndElevatorTo2);
-
-      // Command moveElbowAndElevatorTo3 =
-      // elbow.move2Sigma().alongWith(elevator.move3Alpha().alongWith(leds.blue()));
-      // operatorXboxController.b().onTrue(moveElbowAndElevatorTo3);
-
-      // Command moveElbowAndElevatorToL2Algae = elbow.moveAlgae()
-      // .alongWith(elevator.move2Sigma().alongWith(leds.purple()));
-      // operatorXboxController.povDown().onTrue(moveElbowAndElevatorToL2Algae);
-
-      // Command moveElbowAndElevatorToL3Algae = elbow.moveAlgae()
-      // .alongWith(elevator.move3Alpha().alongWith(leds.yellow()));
-      // operatorXboxController.povUp().onTrue(moveElbowAndElevatorToL3Algae);
-
-      // Command shootCoral = pipeshooter.shootCoral().alongWith(leds.green());
-      // operatorXboxController.rightBumper().whileTrue(shootCoral);
     }
 
     Elastic.enableDashboardToBeDownloadedFromRobotDeployDirectory();
