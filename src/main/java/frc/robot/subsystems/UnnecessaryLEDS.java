@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.AddressableLEDBufferView;
 import edu.wpi.first.wpilibj.LEDPattern;
+import edu.wpi.first.wpilibj.LEDPattern.GradientType;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -21,20 +22,23 @@ public class UnnecessaryLEDS extends SubsystemBase {
 
   final AddressableLEDBuffer m_pixels = new AddressableLEDBuffer(
       Hardware.LEDLights.leftLEDCount + Hardware.LEDLights.rightLEDCount);
+
   final AddressableLEDBufferView m_leftPixels = m_pixels
       .createView(0, Hardware.LEDLights.leftLEDCount - 1);
+
   final AddressableLEDBufferView m_rightPixels = m_pixels
-      .createView(Hardware.LEDLights.leftLEDCount, Hardware.LEDLights.rightLEDCount - 1)
+      .createView(Hardware.LEDLights.leftLEDCount,
+          Hardware.LEDLights.leftLEDCount + Hardware.LEDLights.rightLEDCount - 1)
       .reversed();
 
-  final LEDPattern m_offPattern = LEDPattern.solid(Color.kForestGreen);
-  final LEDPattern m_disabledPattern = LEDPattern.solid(Color.kOrange);
+  final LEDPattern m_offPattern = LEDPattern.kOff;
+  final LEDPattern m_disabledPattern = LEDPattern.gradient(GradientType.kDiscontinuous, Color.kRed, Color.kPurple);
   final LEDPattern m_blue = LEDPattern.solid(Color.kBlue);
   final LEDPattern m_red = LEDPattern.solid(Color.kRed);
   final LEDPattern m_green = LEDPattern.solid(Color.kGreen);
   final LEDPattern m_purple = LEDPattern.solid(Color.kPurple);
   final LEDPattern m_yellow = LEDPattern.solid(Color.kYellow);
-  final LEDPattern m_rainbow = LEDPattern.rainbow(255, 288);
+  final LEDPattern m_rainbow = LEDPattern.rainbow(255, 255);
   final LEDPattern m_operatorControlPattern = LEDPattern.solid(Color.kRed);
   final LEDPattern m_driverControlPattern = LEDPattern.solid(Color.kWhiteSmoke);
 
@@ -47,7 +51,7 @@ public class UnnecessaryLEDS extends SubsystemBase {
 
   public Command disable() {
     return run(() -> {
-      applyPattern(m_offPattern);
+      applyPattern(m_disabledPattern);
     });
   }
 
@@ -100,7 +104,7 @@ public class UnnecessaryLEDS extends SubsystemBase {
   }
 
   private void applyPattern(LEDPattern pattern) {
-    LEDPattern dimmerPattern = pattern.atBrightness(Percent.of(25));
+    LEDPattern dimmerPattern = pattern.atBrightness(Percent.of(15));
     dimmerPattern.applyTo(m_leftPixels);
     dimmerPattern.applyTo(m_rightPixels);
   }
