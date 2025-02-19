@@ -52,10 +52,6 @@ public final class Hardware {
   }
 
   public final class Drivetrain {
-    public static final boolean disableDrivetrainDueToSilentBootFailure = switch (robotName) {
-      case ROBOT_BETA -> true;
-      default -> false;
-    };
     public static final double maxSpeedMetersPerSecond = 6.04;
     // TODO: Update the MOIs to match the robots.
     public static final double robotMOI = switch (robotName) {

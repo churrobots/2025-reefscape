@@ -34,7 +34,7 @@ public class RobotContainer {
   Pipeshooter pipeshooter = new Pipeshooter();
   Elevator elevator = new Elevator();
   Elbow elbow = new Elbow();
-  Drivetrain drivetrain = Hardware.Drivetrain.disableDrivetrainDueToSilentBootFailure ? null : new Drivetrain();
+  Drivetrain drivetrain = new Drivetrain();
   UnnecessaryLEDS leds = new UnnecessaryLEDS();
 
   void bindCommandsForTeleop() {
