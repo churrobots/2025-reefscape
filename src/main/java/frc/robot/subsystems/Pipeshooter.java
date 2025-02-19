@@ -27,13 +27,13 @@ public class Pipeshooter extends SubsystemBase {
 
   public Command intakeCoral() {
     return run(() -> {
-      m_pipeShooterMotor.set(1);
+      m_pipeShooterMotor.set(-0.15);
     });
   }
 
   public Command shootCoral() {
     return run(() -> {
-      m_pipeShooterMotor.set(-1);
+      m_pipeShooterMotor.set(0.15);
     }).withTimeout(1);
   }
 

@@ -104,7 +104,9 @@ public class RobotContainer {
       operatorXboxController.y().whileTrue(elevator.move2Sigma());
       operatorXboxController.b().whileTrue(elevator.move3Alpha());
       operatorXboxController.a().whileTrue(pipeshooter.intakeCoral());
-      operatorXboxController.rightBumper().whileTrue(pipeshooter.shootCoral());
+      // operatorXboxController.rightBumper().whileTrue(pipeshooter.shootCoral());
+      operatorXboxController.rightBumper().whileTrue(elbow.moveAlgae());
+      operatorXboxController.leftBumper().whileTrue(elbow.receive());
 
     } else {
       Command moveElbowAndElevatorToRecieve = elevator.moveToReceive().alongWith(elbow.receive())

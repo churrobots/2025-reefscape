@@ -20,6 +20,7 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -29,6 +30,7 @@ public class Elbow extends SubsystemBase {
   final SparkMaxConfig config = new SparkMaxConfig();
   final SlewRateLimiter rateLimiter = new SlewRateLimiter(2);
   final SparkAbsoluteEncoder m_absoluteEncoder;
+  double m_targetPosition = 0;
 
   final DoublePublisher m_currentPositionPublisher = NetworkTableInstance.getDefault()
       .getDoubleTopic("ElbowCurrentPosition")
@@ -63,22 +65,23 @@ public class Elbow extends SubsystemBase {
   };
 
   class Constants {
-    static final double kP = 0.1;
+    static final double kP = 0.3;
     static final double kI = 0.0;
     static final double kD = 0;
   }
 
   public Elbow() {
-    setDefaultCommand(receive());
+    setDefaultCommand(stop());
     HardwareRegistry.registerHardware(m_elbowMotor);
     m_absoluteEncoder = m_elbowMotor.getAbsoluteEncoder();
     m_currentPosition = m_elbowMotor.getAbsoluteEncoder().getPosition();
 
     // Setup motor and closedloop control configuration
     config
-        .inverted(false)
+        .inverted(true)
         .idleMode(IdleMode.kBrake)
         .smartCurrentLimit(30);
+    config.absoluteEncoder.inverted(true);
 
     // config.encoder
     // .positionConversionFactor(1000)
@@ -87,9 +90,23 @@ public class Elbow extends SubsystemBase {
     // TODO: if needed, add config.closedLoop.maxOutput and .minOutput
     config.closedLoop
         .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
+        .velocityFF(.9)
+        // .maxOutput(0.3)
         .pid(Constants.kP, Constants.kI, Constants.kD);
 
     m_elbowMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+  }
+
+  @Override
+  public void periodic() {
+    SmartDashboard.putNumber("Elbow/Position", m_elbowMotor.getAbsoluteEncoder().getPosition());
+    SmartDashboard.putNumber("Elbow/TargetPosition", m_targetPosition);
+  }
+
+  public Command stop() {
+    return run(() -> {
+      m_elbowMotor.stopMotor();
+    });
   }
 
   // Base state, Driection Stright down. Called recive becasue its the intake
@@ -122,10 +139,12 @@ public class Elbow extends SubsystemBase {
       this.m_currentPosition = currentPosition;
       m_currentPositionPublisher.set(currentPosition);
       m_targetPositionPublisher.set(targetPosition);
+      boolean isValidEncoderReading = currentPosition < 0.7;
       boolean isSafe = isExtending && m_lowEnoughToExtend.getAsBoolean()
           || isRetracting && m_highEnoughToRetract.getAsBoolean();
-      if (isSafe) {
+      if (isSafe || true) {
         m_isSafePosition.set(true);
+        m_targetPosition = targetPosition;
         m_elbowController.setReference(targetPosition, ControlType.kPosition);
       } else {
         m_isSafePosition.set(false);
@@ -135,6 +154,6 @@ public class Elbow extends SubsystemBase {
       double distanceFromTarget = Math.abs(m_elbowMotor.getAbsoluteEncoder().getPosition() - targetPosition);
       m_distanceFromTargetPositionPublisher.set(distanceFromTarget);
       return distanceFromTarget < 0.02;
-    }).withTimeout(3);
+    }).withTimeout(15);
   }
 }
