@@ -38,6 +38,7 @@ public class UnnecessaryLEDS extends SubsystemBase {
   final LEDPattern m_green = LEDPattern.solid(Color.kGreen);
   final LEDPattern m_purple = LEDPattern.solid(Color.kPurple);
   final LEDPattern m_yellow = LEDPattern.solid(Color.kYellow);
+  final LEDPattern m_deepPink = LEDPattern.solid(Color.kDeepPink);
   final LEDPattern m_rainbow = LEDPattern.rainbow(255, 255);
   final LEDPattern m_operatorControlPattern = LEDPattern.solid(Color.kRed);
   final LEDPattern m_driverControlPattern = LEDPattern.solid(Color.kWhiteSmoke);
@@ -64,6 +65,11 @@ public class UnnecessaryLEDS extends SubsystemBase {
   public Command red() {
     return run(() -> {
       applyPattern(m_red);
+    });
+  }
+  public Command deepPink() {
+    return run(() -> {
+      applyPattern(m_deepPink);
     });
   }
 
