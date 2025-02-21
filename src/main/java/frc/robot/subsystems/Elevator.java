@@ -60,7 +60,7 @@ public class Elevator extends SubsystemBase {
 
   // Move Elevator to Receiving position (this is the default position).
   public Command moveToReceive() {
-    return moveToHeight(Hardware.Elevator.kBaseHeight);
+    return moveToHeight(Hardware.Elevator.kReceiveHeight);
   }
 
   // Move Elevator to L1 (trough).
@@ -78,16 +78,22 @@ public class Elevator extends SubsystemBase {
     return moveToHeight(Hardware.Elevator.kL3Height);
   }
 
-  private Command moveToHeight(double height) {
+  private Command moveToHeight(double targetHeight) {
     return run(() -> {
       double safeHeight = MathUtil.clamp(
-          height,
+          targetHeight,
           Hardware.Elevator.minHeightInMeters,
           Hardware.Elevator.maxHeightInMeters);
       double desiredOutputInRotations = safeHeight / (Hardware.Elevator.sprocketPitchDiameter * Math.PI);
       double requiredInputRotations = Hardware.Elevator.gearboxReduction * desiredOutputInRotations;
-      m_elevatorMotorLeader.setControl(m_positionRequest.withPosition(requiredInputRotations));
-      m_elevatorMotorFollow.setControl(m_positionRequest.withPosition(requiredInputRotations));
+      boolean shouldRestTheElevator = targetHeight < 0.02 && getHeight() < 0.01;
+      if (shouldRestTheElevator) {
+        m_elevatorMotorLeader.stopMotor();
+        m_elevatorMotorFollow.stopMotor();
+      } else {
+        m_elevatorMotorLeader.setControl(m_positionRequest.withPosition(requiredInputRotations));
+        m_elevatorMotorFollow.setControl(m_positionRequest.withPosition(requiredInputRotations));
+      }
     });
   }
 

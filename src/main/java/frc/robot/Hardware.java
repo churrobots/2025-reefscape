@@ -55,15 +55,15 @@ public final class Hardware {
 
     // Maximum velocity in rotations per second of the post-gearbox sprocket (NOT of
     // the motor).
-    public static final double kMaxVelocity = 100 * gearboxReduction;
-    public static final double kMaxAcceleration = 50 * gearboxReduction;
-    public static final double kMaxJerk = 300 * gearboxReduction;
+    public static final double kMaxVelocity = 70 * gearboxReduction;
+    public static final double kMaxAcceleration = 30 * gearboxReduction;
+    public static final double kMaxJerk = 100 * gearboxReduction;
 
     // Desired Vertical Travel in meters for each position. Heights are specified
     // relative to the base position. Total elevator travel ranges from 0 to ~35cm.
     public static final double minHeightInMeters = 0.0;
     public static final double maxHeightInMeters = 0.33;
-    public static final double kBaseHeight = 0.0; // initial height, also the height where we receive coral.
+    public static final double kReceiveHeight = 0.0; // initial height, also the height where we receive coral.
     public static final double kL1Height = 0.11; // height to score in L1 trough
     public static final double kL2Height = 0.22; // height to score in L2
     public static final double kL3Height = 0.33; // height to score in L3
