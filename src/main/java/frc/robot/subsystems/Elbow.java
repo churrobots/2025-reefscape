@@ -69,15 +69,15 @@ public class Elbow extends SubsystemBase {
   }
 
   public Command receive() {
-    return moveToPosition(0.05);
+    return moveToPosition(Hardware.Elbow.receivingRotations);
   }
 
   public Command aimAtReef() {
-    return moveToPosition(0.5);
+    return moveToPosition(Hardware.Elbow.aimAtReefRotations);
   }
 
   public Command aimAtAlgae() {
-    return moveToPosition(0.3);
+    return moveToPosition(Hardware.Elbow.aimAtAlgaeRotations);
   }
 
   public boolean isAtTarget() {
@@ -89,12 +89,12 @@ public class Elbow extends SubsystemBase {
     return run(() -> {
       double currentElevatorHeight = m_elevatorHeight.getAsDouble();
       double safeTargetPosition = targetPosition;
-      if (currentElevatorHeight < 0.07) {
-        // safeTargetPosition = MathUtil.clamp(targetPosition,
-        // Hardware.Elbow.minRotations, 0.02);
-        safeTargetPosition = MathUtil.clamp(targetPosition, Hardware.Elbow.minRotations, 0.7);
+      if (currentElevatorHeight < Hardware.Elbow.maxHeightToKeepTucked) {
+        safeTargetPosition = MathUtil.clamp(targetPosition,
+            Hardware.Elbow.minRotations, Hardware.Elbow.maxTuckedRotations);
       } else {
-        safeTargetPosition = MathUtil.clamp(targetPosition, 0.03, 0.45);
+        safeTargetPosition = MathUtil.clamp(targetPosition, Hardware.Elbow.minExtendedRotations,
+            Hardware.Elbow.maxRotations);
       }
       m_targetPosition = safeTargetPosition;
       m_elbowPIDController.setReference(m_targetPosition, ControlType.kPosition);
@@ -115,5 +115,6 @@ public class Elbow extends SubsystemBase {
     SmartDashboard.putNumber("Elbow/TargetPosition", m_targetPosition);
     SmartDashboard.putNumber("Elbow/CurrentPosition", getCurrentElbowPosition());
     SmartDashboard.putNumber("Elbow/AppliedOutput", m_elbowMotor.getAppliedOutput());
+    SmartDashboard.putNumber("Elbow/SeenHeightOfElevator", m_elevatorHeight.getAsDouble());
   }
 }

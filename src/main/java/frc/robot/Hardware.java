@@ -83,9 +83,20 @@ public final class Hardware {
     public static final double kI = 0;
     public static final double kD = 0;
     public static final double minRotations = 0;
-    public static final double maxRotations = 0.7;
+    public static final double maxRotations = 0.6;
     public static final double targetToleranceInRotations = 0.02;
     public static final double speedForResettingPosition = 0.05;
+
+    // These are the angles appropriate for different positions.
+    public static final double receivingRotations = 0.05;
+    public static final double aimAtReefRotations = 0.50;
+    public static final double aimAtAlgaeRotations = 0.30;
+
+    // These govern the ranges of motion for being tucked and extended, to prevent
+    // crashing with reef and crossbar.
+    public static final double maxHeightToKeepTucked = 0.08;
+    public static final double maxTuckedRotations = 0.11;
+    public static final double minExtendedRotations = 0.15;
   }
 
   public final class Drivetrain {
