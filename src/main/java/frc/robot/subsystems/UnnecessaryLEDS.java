@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.LEDPattern.GradientType;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import frc.robot.Hardware;
 
 public class UnnecessaryLEDS extends SubsystemBase {
@@ -51,62 +52,49 @@ public class UnnecessaryLEDS extends SubsystemBase {
   }
 
   public Command disable() {
-    return run(() -> {
-      applyPattern(m_disabledPattern);
-    });
+    return runPattern(m_disabledPattern);
   }
 
   public Command blue() {
-    return run(() -> {
-      applyPattern(m_blue);
-    });
+    return runPattern(m_blue);
   }
 
   public Command red() {
-    return run(() -> {
-      applyPattern(m_red);
-    });
+    return runPattern(m_red);
   }
+
   public Command deepPink() {
-    return run(() -> {
-      applyPattern(m_deepPink);
-    });
+    return runPattern(m_deepPink);
   }
 
   public Command green() {
-    return run(() -> {
-      applyPattern(m_green);
-    });
+    return runPattern(m_green);
   }
 
   public Command rainbow() {
-    return run(() -> {
-      applyPattern(m_rainbow);
-    });
+    return runPattern(m_rainbow);
   }
 
   public Command purple() {
-    return run(() -> {
-      applyPattern(m_rainbow);
-    });
+    return runPattern(m_rainbow);
   }
 
   public Command yellow() {
-    return run(() -> {
-      applyPattern(m_rainbow);
-    });
+    return runPattern(m_rainbow);
   }
 
   public Command yuvrajalliseeisredwhenigoupsettyspaghetti() {
-    return run(() -> {
-      applyPattern(m_operatorControlPattern);
-    });
+    return runPattern(m_operatorControlPattern);
   }
 
   public Command jjisbeingasussybakaimpostoramongussus() {
+    return runPattern(m_operatorControlPattern);
+  }
+
+  private Command runPattern(LEDPattern pattern) {
     return run(() -> {
-      applyPattern(m_operatorControlPattern);
-    });
+      applyPattern(pattern);
+    }).withInterruptBehavior(InterruptionBehavior.kCancelSelf);
   }
 
   private void applyPattern(LEDPattern pattern) {
