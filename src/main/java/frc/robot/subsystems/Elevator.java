@@ -5,7 +5,6 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
@@ -112,6 +111,16 @@ public class Elevator extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Elevator/Height", getHeight());
+    SmartDashboard.putNumber("Elevator/OutputLeader", m_elevatorMotorLeader.getClosedLoopOutput().getValueAsDouble());
+    SmartDashboard.putNumber("Elevator/OutputFollower", m_elevatorMotorFollow.getClosedLoopOutput().getValueAsDouble());
+    SmartDashboard.putNumber("Elevator/StatorCurrentLeader",
+        m_elevatorMotorLeader.getStatorCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("Elevator/StatorCurrentFollower",
+        m_elevatorMotorFollow.getStatorCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("Elevator/SupplyCurrentLeader",
+        m_elevatorMotorLeader.getSupplyCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("Elevator/SupplyCurrentFollower",
+        m_elevatorMotorFollow.getSupplyCurrent().getValueAsDouble());
   }
 
 }

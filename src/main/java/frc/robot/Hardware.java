@@ -44,20 +44,20 @@ public final class Hardware {
 
     // PID numbers from:
     // https://v6.docs.ctr-electronics.com/en/2024/docs/api-reference/device-specific/talonfx/basic-pid-control.html
-    public static final double kS = 0.50; // static friction feed-forward component.
-    public static final double kV = 2.80; // motor-specific, represents the motor's velocity per volt. The reciprocal is
+    public static final double kS = 0.0; // static friction feed-forward component.
+    public static final double kV = 2.83; // motor-specific, represents the motor's velocity per volt. The reciprocal is
     // used as the feed-forward parameter in velocity-based control loops.
-    public static final double kA = 0.0; //
+    public static final double kA = 0.03; //
     public static final double kP = 2; // proportional
     public static final double kI = 0.0; // integral
     public static final double kD = 0.0; // derivative
-    public static final double kG = 0.0; // gravity
+    public static final double kG = 0.31; // gravity
 
     // Maximum velocity in rotations per second of the post-gearbox sprocket (NOT of
     // the motor).
-    public static final double kMaxVelocity = 10 * gearboxReduction;
-    public static final double kMaxAcceleration = 5 * gearboxReduction;
-    public static final double kMaxJerk = 30 * gearboxReduction;
+    public static final double kMaxVelocity = 100 * gearboxReduction;
+    public static final double kMaxAcceleration = 50 * gearboxReduction;
+    public static final double kMaxJerk = 300 * gearboxReduction;
 
     // Desired Vertical Travel in meters for each position. Heights are specified
     // relative to the base position. Total elevator travel ranges from 0 to ~35cm.
