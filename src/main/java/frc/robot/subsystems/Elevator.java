@@ -24,7 +24,7 @@ public class Elevator extends SubsystemBase {
   final MotionMagicVoltage m_positionRequest = new MotionMagicVoltage(0);
 
   public Elevator() {
-    setDefaultCommand(stop());
+    setDefaultCommand(moveToReceive());
     HardwareRegistry.registerHardware(m_elevatorMotorLeader);
     HardwareRegistry.registerHardware(m_elevatorMotorFollow);
 
@@ -56,13 +56,6 @@ public class Elevator extends SubsystemBase {
     m_elevatorMotorFollow.getConfigurator().apply(elevatorConfig);
 
     setCurrentPositionAsZero();
-  }
-
-  public Command stop() {
-    return run(() -> {
-      m_elevatorMotorLeader.stopMotor();
-      m_elevatorMotorFollow.stopMotor();
-    });
   }
 
   // Move Elevator to Receiving position (this is the default position).

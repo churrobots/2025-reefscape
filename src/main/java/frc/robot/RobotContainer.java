@@ -100,7 +100,7 @@ public class RobotContainer {
 
     if (Hardware.DriverStation.mechanismsAreInTestMode) {
       // This is for safely testing the beta bot in the meantime
-      operatorXboxController.x().whileTrue(elevator.move1Beta());
+      // operatorXboxController.x().whileTrue(elevator.move1Beta());
       operatorXboxController.y().whileTrue(elevator.move2Sigma());
       operatorXboxController.b().whileTrue(elevator.move3Alpha());
       operatorXboxController.rightBumper().whileTrue(pipeshooter.shootCoral());
@@ -108,6 +108,9 @@ public class RobotContainer {
 
       operatorXboxController.a().whileTrue(elbow.receive());
       operatorXboxController.leftBumper().whileTrue(elbow.aimAtReef());
+
+      operatorXboxController.x().whileTrue(
+          elevator.move3Alpha().alongWith(elbow.aimAtReef()));
       // operatorXboxController.rightBumper().whileTrue(elbow.aimAtAlgae());
 
     } else {

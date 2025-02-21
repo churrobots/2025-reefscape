@@ -31,7 +31,7 @@ public class Elbow extends SubsystemBase {
   double m_targetPosition = 0.0;
 
   public Elbow(DoubleSupplier elevatorHeight) {
-    setDefaultCommand(stop());
+    setDefaultCommand(receive());
     HardwareRegistry.registerHardware(m_elbowMotor);
 
     m_elevatorHeight = elevatorHeight;
@@ -60,12 +60,6 @@ public class Elbow extends SubsystemBase {
     // .allowedClosedLoopError(1);
 
     m_elbowMotor.configure(elbowConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-  }
-
-  public Command stop() {
-    return run(() -> {
-      m_elbowMotor.stopMotor();
-    });
   }
 
   public Command receive() {
