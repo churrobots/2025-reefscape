@@ -46,15 +46,14 @@ public class Elbow extends SubsystemBase {
         .idleMode(IdleMode.kBrake)
         .smartCurrentLimit(Hardware.Elbow.currentLimitInAmps);
     elbowConfig.closedLoop
-        .positionWrappingEnabled(true)
-        .positionWrappingInputRange(0, 7)
+        .positionWrappingEnabled(false) // we don't want it to try to wrap around and break, always go up
         .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
-        .p(20)
-        .i(0)
-        .d(0)
-        .velocityFF(0)
-        .outputRange(-1, 1);
+        .p(Hardware.Elbow.kP)
+        .i(Hardware.Elbow.kI)
+        .d(Hardware.Elbow.kD)
+        .outputRange(Hardware.Elbow.minOutput, Hardware.Elbow.maxOutput);
 
+    // TODO: try maxmotion again once we reduce the gearbox
     // elbowConfig.closedLoop.maxMotion
     // .maxVelocity(1000)
     // .maxAcceleration(1000)
@@ -91,16 +90,17 @@ public class Elbow extends SubsystemBase {
       double currentElevatorHeight = m_elevatorHeight.getAsDouble();
       double safeTargetPosition = targetPosition;
       if (currentElevatorHeight < 0.07) {
-        // safeTargetPosition = MathUtil.clamp(targetPosition, 0, 0.02);
-        safeTargetPosition = MathUtil.clamp(targetPosition, 0, 0.7);
+        // safeTargetPosition = MathUtil.clamp(targetPosition,
+        // Hardware.Elbow.minRotations, 0.02);
+        safeTargetPosition = MathUtil.clamp(targetPosition, Hardware.Elbow.minRotations, 0.7);
       } else {
         safeTargetPosition = MathUtil.clamp(targetPosition, 0.03, 0.45);
       }
       m_targetPosition = safeTargetPosition;
       m_elbowPIDController.setReference(m_targetPosition, ControlType.kPosition);
-      boolean needsWraparoundSafetyFix = getCurrentElbowPosition() > 0.8;
+      boolean needsWraparoundSafetyFix = getCurrentElbowPosition() > Hardware.Elbow.maxRotations * 1.08;
       if (needsWraparoundSafetyFix) {
-        m_elbowMotor.set(0.05);
+        m_elbowMotor.set(Hardware.Elbow.speedForResettingPosition);
       }
     });
 
@@ -114,6 +114,6 @@ public class Elbow extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putNumber("Elbow/TargetPosition", m_targetPosition);
     SmartDashboard.putNumber("Elbow/CurrentPosition", getCurrentElbowPosition());
-
+    SmartDashboard.putNumber("Elbow/AppliedOutput", m_elbowMotor.getAppliedOutput());
   }
 }

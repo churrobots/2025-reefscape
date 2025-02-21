@@ -70,23 +70,22 @@ public final class Hardware {
   }
 
   public final class Elbow {
-    // FIXME: we should make this a lower number to make CAN more efficient? (i
+    // TODO: we should make this a lower number to make CAN more efficient? (i
     // think there was some notes on chief delphi about this?)
     public static final int neoMotorCAN = 31;
-    public static final double gearboxReduction = 75; // check this
+    public static final double gearboxReduction = 75;
     public static final boolean encoderIsInverted = true;
     public static final boolean motorIsInverted = true;
+    public static final double minOutput = -1.0;
     public static final double maxOutput = 1.0;
     public static final int currentLimitInAmps = 30;
-    public static final double kFF = 20;
-    public static final double kP = 0.4;
-    public static final double kI = 0.0;
+    public static final double kP = 20;
+    public static final double kI = 0;
     public static final double kD = 0;
-    public static final double minRotations = 0.02;
-    public static final double maxRotations = 0.8;
+    public static final double minRotations = 0;
+    public static final double maxRotations = 0.7;
     public static final double targetToleranceInRotations = 0.02;
-    public static final double speedForResettingPosition = 0.10;
-    public static final double timeoutToReachTargetInSeconds = 3.5;
+    public static final double speedForResettingPosition = 0.05;
   }
 
   public final class Drivetrain {
