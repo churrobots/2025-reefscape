@@ -33,7 +33,7 @@ public class RobotContainer {
 
   Pipeshooter pipeshooter = new Pipeshooter();
   Elevator elevator = new Elevator();
-  Elbow elbow = new Elbow();
+  Elbow elbow = new Elbow(elevator::getHeight);
   Drivetrain drivetrain = new Drivetrain();
   UnnecessaryLEDS leds = new UnnecessaryLEDS();
 
@@ -103,30 +103,30 @@ public class RobotContainer {
       operatorXboxController.x().whileTrue(elevator.move1Beta());
       operatorXboxController.y().whileTrue(elevator.move2Sigma());
       operatorXboxController.b().whileTrue(elevator.move3Alpha());
-      operatorXboxController.a().whileTrue(pipeshooter.intakeCoral());
-      // operatorXboxController.rightBumper().whileTrue(pipeshooter.shootCoral());
-      operatorXboxController.rightBumper().whileTrue(elbow.moveAlgae());
-      operatorXboxController.leftBumper().whileTrue(elbow.receive());
+
+      operatorXboxController.a().whileTrue(elbow.receive());
+      operatorXboxController.leftBumper().whileTrue(elbow.aimAtReef());
+      operatorXboxController.rightBumper().whileTrue(elbow.aimAtAlgae());
 
     } else {
       Command moveElbowAndElevatorToRecieve = elevator.moveToReceive().alongWith(elbow.receive())
           .alongWith(pipeshooter.intakeCoral()).alongWith(leds.jjisbeingasussybakaimpostoramongussus());
       operatorXboxController.a().whileTrue(moveElbowAndElevatorToRecieve);
 
-      Command moveElbowAndElevatorTo1 = elevator.move1Beta().alongWith(elbow.move1Beta());
+      Command moveElbowAndElevatorTo1 = elevator.move1Beta().alongWith(elbow.aimAtReef());
       operatorXboxController.x().onTrue(moveElbowAndElevatorTo1);
 
-      Command moveElbowAndElevatorTo2 = elevator.move2Sigma().alongWith(elbow.move2Sigma().alongWith(leds.rainbow()));
+      Command moveElbowAndElevatorTo2 = elevator.move2Sigma().alongWith(elbow.aimAtReef().alongWith(leds.rainbow()));
       operatorXboxController.y().onTrue(moveElbowAndElevatorTo2);
 
-      Command moveElbowAndElevatorTo3 = elbow.move2Sigma().alongWith(leds.blue());
+      Command moveElbowAndElevatorTo3 = elbow.aimAtReef().alongWith(leds.blue());
       operatorXboxController.b().onTrue(moveElbowAndElevatorTo3);
 
-      Command moveElbowAndElevatorToL2Algae = elbow.moveAlgae()
+      Command moveElbowAndElevatorToL2Algae = elbow.aimAtAlgae()
           .alongWith(elevator.move2Sigma().alongWith(leds.purple()));
       operatorXboxController.povDown().onTrue(moveElbowAndElevatorToL2Algae);
 
-      Command moveElbowAndElevatorToL3Algae = elbow.moveAlgae()
+      Command moveElbowAndElevatorToL3Algae = elbow.aimAtAlgae()
           .alongWith(elevator.move3Alpha().alongWith(leds.yellow()));
       operatorXboxController.povUp().onTrue(moveElbowAndElevatorToL3Algae);
 
@@ -150,7 +150,7 @@ public class RobotContainer {
 
     NamedCommands.registerCommand(
         "shootL1",
-        elbow.move1Beta()
+        elbow.aimAtReef()
             .alongWith(elevator.move1Beta())
             .andThen(pipeshooter.shootCoral())
             .andThen(elbow.receive().alongWith(elevator.moveToReceive()))
@@ -159,14 +159,14 @@ public class RobotContainer {
 
     NamedCommands.registerCommand(
         "shootL2",
-        elbow.move1Beta()
+        elbow.aimAtReef()
             .alongWith(elevator.move2Sigma())
             .andThen(pipeshooter.shootCoral())
             .andThen(elbow.receive().alongWith(elevator.moveToReceive()))
             .alongWith(showCommand("Shoot L2"))
             .alongWith(leds.green()));
 
-    NamedCommands.registerCommand("moveAlgae", elbow.moveAlgae().alongWith(showCommand("Move Algae")));
+    NamedCommands.registerCommand("moveAlgae", elbow.aimAtAlgae().alongWith(showCommand("Move Algae")));
     NamedCommands.registerCommand("intakePipeshooter",
         pipeshooter.intakeCoral().withTimeout(2).alongWith(showCommand("intakePipeshooter")));
     NamedCommands.registerCommand("shootCoral",

@@ -3,7 +3,7 @@ package frc.robot.subsystems;
 import frc.churrolib.HardwareRegistry;
 import frc.robot.Hardware;
 
-import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
 
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
@@ -16,91 +16,51 @@ import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkBase.PersistMode;
 
-import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.networktables.BooleanPublisher;
-import edu.wpi.first.networktables.DoublePublisher;
-import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Elbow extends SubsystemBase {
+
   final SparkMax m_elbowMotor = new SparkMax(Hardware.Elbow.neoMotorCAN, MotorType.kBrushless);
-  final SparkClosedLoopController m_elbowController = m_elbowMotor.getClosedLoopController();
-  final SparkMaxConfig config = new SparkMaxConfig();
-  final SlewRateLimiter rateLimiter = new SlewRateLimiter(2);
-  final SparkAbsoluteEncoder m_absoluteEncoder;
-  double m_targetPosition = 0;
+  final SparkClosedLoopController m_elbowPIDController = m_elbowMotor.getClosedLoopController();
+  final SparkAbsoluteEncoder m_absoluteEncoder = m_elbowMotor.getAbsoluteEncoder();
+  final DoubleSupplier m_elevatorHeight;
 
-  final DoublePublisher m_currentPositionPublisher = NetworkTableInstance.getDefault()
-      .getDoubleTopic("ElbowCurrentPosition")
-      .publish();
-  double m_currentPosition;
-  final DoublePublisher m_targetPositionPublisher = NetworkTableInstance.getDefault()
-      .getDoubleTopic("ElbowTargetPosition")
-      .publish();
-  final DoublePublisher m_distanceFromTargetPositionPublisher = NetworkTableInstance.getDefault()
-      .getDoubleTopic("ElbowDistanceFromTargetPosition")
-      .publish();
-  final BooleanPublisher m_isSafePosition = NetworkTableInstance.getDefault()
-      .getBooleanTopic("ElbowPositionIsSafe").publish();
-  final DoublePublisher m_appliedOutput = NetworkTableInstance.getDefault()
-      .getDoubleTopic("ElbowAppliedOutput")
-      .publish();
+  double m_targetPosition = 0.0;
 
-  // TODO: implement safety, this is just for testing
-  final BooleanSupplier m_lowEnoughToExtend = () -> {
-    if (m_currentPosition > 0.2) {
-      return false;
-    } else {
-      return true;
-    }
-  };
-  final BooleanSupplier m_highEnoughToRetract = () -> {
-    if (m_currentPosition < 0) {
-      return false;
-    } else {
-      return true;
-    }
-  };
-
-  class Constants {
-    static final double kP = 0.3;
-    static final double kI = 0.0;
-    static final double kD = 0;
-  }
-
-  public Elbow() {
+  public Elbow(DoubleSupplier elevatorHeight) {
     setDefaultCommand(stop());
     HardwareRegistry.registerHardware(m_elbowMotor);
-    m_absoluteEncoder = m_elbowMotor.getAbsoluteEncoder();
-    m_currentPosition = m_elbowMotor.getAbsoluteEncoder().getPosition();
 
-    // Setup motor and closedloop control configuration
-    config
-        .inverted(true)
+    m_elevatorHeight = elevatorHeight;
+
+    final SparkMaxConfig elbowConfig = new SparkMaxConfig();
+    elbowConfig.absoluteEncoder
+        .inverted(Hardware.Elbow.encoderIsInverted)
+        .positionConversionFactor(1)
+        .velocityConversionFactor(1 / 60.0);
+    elbowConfig
+        .inverted(Hardware.Elbow.motorIsInverted)
         .idleMode(IdleMode.kBrake)
-        .smartCurrentLimit(30);
-    config.absoluteEncoder.inverted(true);
-
-    // config.encoder
-    // .positionConversionFactor(1000)
-    // .velocityConversionFactor(1000);
-
-    // TODO: if needed, add config.closedLoop.maxOutput and .minOutput
-    config.closedLoop
+        .smartCurrentLimit(Hardware.Elbow.currentLimitInAmps);
+    elbowConfig.closedLoop
+        .positionWrappingEnabled(true)
+        .positionWrappingInputRange(0, 7)
         .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
-        .velocityFF(.9)
-        // .maxOutput(0.3)
-        .pid(Constants.kP, Constants.kI, Constants.kD);
+        .p(20)
+        .i(0)
+        .d(0)
+        .velocityFF(0)
+        .outputRange(-1, 1);
 
-    m_elbowMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-  }
+    // elbowConfig.closedLoop.maxMotion
+    // .maxVelocity(1000)
+    // .maxAcceleration(1000)
+    // .allowedClosedLoopError(1);
 
-  @Override
-  public void periodic() {
-    SmartDashboard.putNumber("Elbow/Position", m_elbowMotor.getAbsoluteEncoder().getPosition());
-    SmartDashboard.putNumber("Elbow/TargetPosition", m_targetPosition);
+    m_elbowMotor.configure(elbowConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
   public Command stop() {
@@ -109,51 +69,51 @@ public class Elbow extends SubsystemBase {
     });
   }
 
-  // Base state, Driection Stright down. Called recive becasue its the intake
-  // positon.
   public Command receive() {
-    return moveToPosition(0);
+    return moveToPosition(0.05);
   }
 
-  // Position to score L1-trough which is the only one with a unique angle, all
-  // the other level ones are the same
-  public Command move1Beta() {
-    return moveToPosition(0.1);
+  public Command aimAtReef() {
+    return moveToPosition(0.5);
   }
 
-  // Positon to score L2 & L3
-  public Command move2Sigma() {
-    return moveToPosition(0.2);
-  }
-
-  // Position to remove Algae
-  public Command moveAlgae() {
+  public Command aimAtAlgae() {
     return moveToPosition(0.3);
   }
 
+  public boolean isAtTarget() {
+    double distanceFromTarget = Math.abs(m_elbowMotor.getAbsoluteEncoder().getPosition() - m_targetPosition);
+    return distanceFromTarget < Hardware.Elbow.targetToleranceInRotations;
+  }
+
   private Command moveToPosition(double targetPosition) {
-    boolean isExtending = targetPosition >= 0.1;
-    boolean isRetracting = targetPosition < 0.1;
     return run(() -> {
-      double currentPosition = m_elbowMotor.getAbsoluteEncoder().getPosition();
-      this.m_currentPosition = currentPosition;
-      m_currentPositionPublisher.set(currentPosition);
-      m_targetPositionPublisher.set(targetPosition);
-      boolean isValidEncoderReading = currentPosition < 0.7;
-      boolean isSafe = isExtending && m_lowEnoughToExtend.getAsBoolean()
-          || isRetracting && m_highEnoughToRetract.getAsBoolean();
-      if (isSafe || true) {
-        m_isSafePosition.set(true);
-        m_targetPosition = targetPosition;
-        m_elbowController.setReference(targetPosition, ControlType.kPosition);
+      double currentElevatorHeight = m_elevatorHeight.getAsDouble();
+      double safeTargetPosition = targetPosition;
+      if (currentElevatorHeight < 0.07) {
+        // safeTargetPosition = MathUtil.clamp(targetPosition, 0, 0.02);
+        safeTargetPosition = MathUtil.clamp(targetPosition, 0, 0.7);
       } else {
-        m_isSafePosition.set(false);
+        safeTargetPosition = MathUtil.clamp(targetPosition, 0.03, 0.45);
       }
-      m_appliedOutput.set(m_elbowMotor.getAppliedOutput());
-    }).until(() -> {
-      double distanceFromTarget = Math.abs(m_elbowMotor.getAbsoluteEncoder().getPosition() - targetPosition);
-      m_distanceFromTargetPositionPublisher.set(distanceFromTarget);
-      return distanceFromTarget < 0.02;
-    }).withTimeout(15);
+      m_targetPosition = safeTargetPosition;
+      m_elbowPIDController.setReference(m_targetPosition, ControlType.kPosition);
+      boolean needsWraparoundSafetyFix = getCurrentElbowPosition() > 0.8;
+      if (needsWraparoundSafetyFix) {
+        m_elbowMotor.set(0.05);
+      }
+    });
+
+  }
+
+  private double getCurrentElbowPosition() {
+    return m_elbowMotor.getAbsoluteEncoder().getPosition();
+  }
+
+  @Override
+  public void periodic() {
+    SmartDashboard.putNumber("Elbow/TargetPosition", m_targetPosition);
+    SmartDashboard.putNumber("Elbow/CurrentPosition", getCurrentElbowPosition());
+
   }
 }

@@ -38,17 +38,55 @@ public final class Hardware {
     public static final int followerFalconMotorCAN = 16;
     public static final double gearboxReduction = 4.67; // CIM PLE Gearbox
                                                         // https://www.andymark.com/products/cimple-box-single-stage-gearbox
+    public static final double kCurrentLimit = 80;
     public static final double simCarriageMass = 0.01;
     public static final double sprocketPitchDiameter = Units.inchesToMeters(1.75); // 22T #25
+
+    // PID numbers from:
+    // https://v6.docs.ctr-electronics.com/en/2024/docs/api-reference/device-specific/talonfx/basic-pid-control.html
+    public static final double kS = 0.50; // static friction feed-forward component.
+    public static final double kV = 2.80; // motor-specific, represents the motor's velocity per volt. The reciprocal is
+    // used as the feed-forward parameter in velocity-based control loops.
+    public static final double kA = 0.0; //
+    public static final double kP = 2; // proportional
+    public static final double kI = 0.0; // integral
+    public static final double kD = 0.0; // derivative
+    public static final double kG = 0.0; // gravity
+
+    // Maximum velocity in rotations per second of the post-gearbox sprocket (NOT of
+    // the motor).
+    public static final double kMaxVelocity = 10 * gearboxReduction;
+    public static final double kMaxAcceleration = 5 * gearboxReduction;
+    public static final double kMaxJerk = 30 * gearboxReduction;
+
+    // Desired Vertical Travel in meters for each position. Heights are specified
+    // relative to the base position. Total elevator travel ranges from 0 to ~35cm.
     public static final double minHeightInMeters = 0.0;
-    public static final double maxHeightInMeters = 0.35;
+    public static final double maxHeightInMeters = 0.33;
+    public static final double kBaseHeight = 0.0; // initial height, also the height where we receive coral.
+    public static final double kL1Height = 0.11; // height to score in L1 trough
+    public static final double kL2Height = 0.22; // height to score in L2
+    public static final double kL3Height = 0.33; // height to score in L3
   }
 
   public final class Elbow {
     // FIXME: we should make this a lower number to make CAN more efficient? (i
     // think there was some notes on chief delphi about this?)
     public static final int neoMotorCAN = 31;
-    public static final double gearboxReuction = 75; // check this
+    public static final double gearboxReduction = 75; // check this
+    public static final boolean encoderIsInverted = true;
+    public static final boolean motorIsInverted = true;
+    public static final double maxOutput = 1.0;
+    public static final int currentLimitInAmps = 30;
+    public static final double kFF = 20;
+    public static final double kP = 0.4;
+    public static final double kI = 0.0;
+    public static final double kD = 0;
+    public static final double minRotations = 0.02;
+    public static final double maxRotations = 0.8;
+    public static final double targetToleranceInRotations = 0.02;
+    public static final double speedForResettingPosition = 0.10;
+    public static final double timeoutToReachTargetInSeconds = 3.5;
   }
 
   public final class Drivetrain {
