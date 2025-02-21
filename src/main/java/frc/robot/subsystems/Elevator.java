@@ -105,16 +105,13 @@ public class Elevator extends SubsystemBase {
   }
 
   public double getHeight() {
-    return 0.0;
-    // return m_elevatorMotorLeader.getPosition() *
-    // Hardware.Elevator.sprocketPitchDiameter * Math.PI;
+    return m_elevatorMotorLeader.getPosition().getValueAsDouble() * Hardware.Elevator.sprocketPitchDiameter
+        * Math.PI / Hardware.Elevator.gearboxReduction;
   }
 
   @Override
   public void periodic() {
-    double value = m_elevatorMotorLeader.getPosition().getValueAsDouble() * Hardware.Elevator.sprocketPitchDiameter
-        * Math.PI;
-    SmartDashboard.putNumber("Elevator/Height", value);
+    SmartDashboard.putNumber("Elevator/Height", getHeight());
   }
 
 }
