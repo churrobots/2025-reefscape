@@ -78,6 +78,14 @@ public class Elevator extends SubsystemBase {
     return moveToHeight(Hardware.Elevator.kL3Height);
   }
 
+  public Command recalibrateElevator() {
+    return run(() -> {
+      setCurrentPositionAsZero();
+      m_elevatorMotorLeader.set(Hardware.Elevator.recalibrationSpeedPercentage);
+      m_elevatorMotorFollow.set(Hardware.Elevator.recalibrationSpeedPercentage);
+    });
+  }
+
   private Command moveToHeight(double targetHeight) {
     return run(() -> {
       double safeHeight = MathUtil.clamp(

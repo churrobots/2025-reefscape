@@ -53,6 +53,9 @@ public final class Hardware {
     public static final double kD = 0.0; // derivative
     public static final double kG = 0.31; // gravity
 
+    // Slow speed for recalibrating the elevator downward.
+    public static final double recalibrationSpeedPercentage = -0.03;
+
     // Maximum velocity in rotations per second of the post-gearbox sprocket (NOT of
     // the motor).
     public static final double kMaxVelocity = 40 * gearboxReduction; // TODO: when we fix arm, make this 70
