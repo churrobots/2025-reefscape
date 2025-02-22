@@ -115,6 +115,7 @@ public class Drivetrain extends SubsystemBase {
     if (Hardware.Vision.isEnabled) {
       m_vision = new Vision(m_swerveDrive::getPose, m_swerveDrive.field);
     }
+
   }
 
   public SendableChooser<Command> createPathPlannerDropdown() {
@@ -176,9 +177,28 @@ public class Drivetrain extends SubsystemBase {
    *
    * @return a Command that centers the modules of the SwerveDrive subsystem
    */
-  public Command recalibrateDrivetrain() {
+  public Command recalibrateSwerveModules() {
     return run(() -> Arrays.asList(m_swerveDrive.getModules())
         .forEach(it -> it.setAngle(0.0)));
+  }
+
+  public Command recalibrateDrivetrain() {
+    return run(() -> {
+      boolean isBlueAlliance = DriverStation.getAlliance().orElseGet(() -> Alliance.Blue) == Alliance.Blue;
+      Pose2d currentPose = m_swerveDrive.getPose();
+      if (isBlueAlliance) {
+        m_swerveDrive.resetOdometry(new Pose2d(
+            currentPose.getX(),
+            currentPose.getY(),
+            new Rotation2d(0)));
+      } else {
+        m_swerveDrive.resetOdometry(new Pose2d(
+            currentPose.getX(),
+            currentPose.getY(),
+            new Rotation2d(180)));
+
+      }
+    });
   }
 
   void driveRobotRelative(ChassisSpeeds speeds) {
@@ -343,4 +363,5 @@ public class Drivetrain extends SubsystemBase {
   public Rotation2d getHeading() {
     return getPose().getRotation();
   }
+
 }
