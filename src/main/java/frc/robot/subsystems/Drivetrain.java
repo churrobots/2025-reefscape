@@ -70,9 +70,9 @@ public class Drivetrain extends SubsystemBase {
   private Vision m_vision;
 
   public Drivetrain() {
-    // Record logging
-    DataLogManager.start();
-    DriverStation.startDataLog(DataLogManager.getLog());
+    // TODO: Record logging
+    // DataLogManager.start();
+    // DriverStation.startDataLog(DataLogManager.getLog());
 
     setDefaultCommand(new RunCommand(this::stop, this));
     SmartDashboard.putData("Field", m_fieldViz);
