@@ -61,7 +61,7 @@ public class RobotContainer {
     // TODO: also if it IS the sparkmaxes being disconnected, that's bad, because
     // the robot shouldn't crash entirely if we lose one motor
     if (drivetrain != null) {
-      Command recalibrateDriveTrain = new RunCommand(() -> drivetrain.recalibrateDrivetrain(), drivetrain);
+      Command recalibrateDriveTrain = drivetrain.recalibrateDrivetrain();
       Command fastFieldRelativeDriverXboxControl = drivetrain.createFieldRelativeDriveCommand(
           () -> -1 * allianceRelativeFactor.getAsDouble()
               * MathUtil.applyDeadband(driverXboxController.getLeftY(), xboxDeadband)
