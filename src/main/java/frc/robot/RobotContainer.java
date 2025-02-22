@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -30,9 +31,8 @@ import frc.robot.subsystems.Pipeshooter;
 import frc.robot.subsystems.UnnecessaryLEDS;
 
 public class RobotContainer {
-
-  Pipeshooter pipeshooter = new Pipeshooter();
   Elevator elevator = new Elevator();
+  Pipeshooter pipeshooter = new Pipeshooter(elevator);
   Elbow elbow = new Elbow(elevator::getHeight);
   Drivetrain drivetrain = new Drivetrain();
   UnnecessaryLEDS leds = new UnnecessaryLEDS();
@@ -95,7 +95,8 @@ public class RobotContainer {
       drivetrain.setDefaultCommand(fastFieldRelativeDriverXboxControl);
       driverXboxController.rightBumper().whileTrue(slowFieldRelativeDriverXboxControl);
       driverXboxController.back().whileTrue(recalibrateDriveTrain);
-      operatorXboxController.leftBumper().whileTrue(slowRobotRelativeOperatorXboxControl.alongWith(leds.red()));
+      operatorXboxController.leftBumper()
+          .whileTrue(slowRobotRelativeOperatorXboxControl.withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
     }
 
     if (Hardware.DriverStation.mechanismsAreInTestMode) {
@@ -115,27 +116,29 @@ public class RobotContainer {
 
     } else {
       Command moveElbowAndElevatorToRecieve = elevator.moveToReceive().alongWith(elbow.receive())
-          .alongWith(pipeshooter.intakeCoral()).alongWith(leds.jjisbeingasussybakaimpostoramongussus());
+          .alongWith(pipeshooter.intakeCoral());
       operatorXboxController.a().whileTrue(moveElbowAndElevatorToRecieve);
 
       Command moveElbowAndElevatorTo1 = elevator.move1Beta().alongWith(elbow.aimAtReef());
       operatorXboxController.x().onTrue(moveElbowAndElevatorTo1);
 
-      Command moveElbowAndElevatorTo2 = elevator.move2Sigma().alongWith(elbow.aimAtReef().alongWith(leds.rainbow()));
+      Command moveElbowAndElevatorTo2 = elevator.move2Sigma().alongWith(elbow.aimAtReef());
       operatorXboxController.y().onTrue(moveElbowAndElevatorTo2);
 
-      Command moveElbowAndElevatorTo3 = elbow.aimAtReef().alongWith(leds.blue());
+      Command moveElbowAndElevatorTo3 = elevator.move3Alpha().alongWith(elbow.aimAtReef());
       operatorXboxController.b().onTrue(moveElbowAndElevatorTo3);
 
-      Command moveElbowAndElevatorToL2Algae = elbow.aimAtAlgae()
-          .alongWith(elevator.move2Sigma().alongWith(leds.purple()));
-      operatorXboxController.povDown().onTrue(moveElbowAndElevatorToL2Algae);
+      operatorXboxController.back().whileTrue(elevator.recalibrateElevator());
 
-      Command moveElbowAndElevatorToL3Algae = elbow.aimAtAlgae()
-          .alongWith(elevator.move3Alpha().alongWith(leds.yellow()));
-      operatorXboxController.povUp().onTrue(moveElbowAndElevatorToL3Algae);
+      // Command moveElbowAndElevatorToL2Algae = elbow.aimAtAlgae()
+      // .alongWith(elevator.move2Sigma().alongWith(leds.purple()));
+      // operatorXboxController.povDown().onTrue(moveElbowAndElevatorToL2Algae);
 
-      Command shootCoral = pipeshooter.shootCoral().alongWith(leds.green());
+      // Command moveElbowAndElevatorToL3Algae = elbow.aimAtAlgae()
+      // .alongWith(elevator.move3Alpha().alongWith(leds.yellow()));
+      // operatorXboxController.povUp().onTrue(moveElbowAndElevatorToL3Algae);
+
+      Command shootCoral = pipeshooter.shootCoral();
       operatorXboxController.rightBumper().whileTrue(shootCoral);
     }
 
