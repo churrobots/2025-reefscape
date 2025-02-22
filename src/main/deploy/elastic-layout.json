@@ -239,14 +239,14 @@
             }
           },
           {
-            "title": "SparkBase[17]",
+            "title": "SparkBase[31]",
             "x": 1100.0,
             "y": 475.0,
             "width": 150.0,
             "height": 100.0,
             "type": "Boolean Box",
             "properties": {
-              "topic": "/SmartDashboard/HardwareRegistry/Faults/SparkBase[17]",
+              "topic": "/SmartDashboard/HardwareRegistry/Faults/SparkBase[31]",
               "period": 0.06,
               "data_type": "boolean",
               "true_color": 4283215696,
@@ -275,9 +275,9 @@
           {
             "title": "Operator Camera",
             "x": 0.0,
-            "y": 0.0,
+            "y": 125.0,
             "width": 725.0,
-            "height": 600.0,
+            "height": 475.0,
             "type": "Camera Stream",
             "properties": {
               "topic": "/CameraPublisher/photonvision_Port_1188_Output_MJPEG_Server",
