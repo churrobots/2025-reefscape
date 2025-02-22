@@ -55,8 +55,8 @@ public final class Hardware {
 
     // Maximum velocity in rotations per second of the post-gearbox sprocket (NOT of
     // the motor).
-    public static final double kMaxVelocity = 70 * gearboxReduction;
-    public static final double kMaxAcceleration = 30 * gearboxReduction;
+    public static final double kMaxVelocity = 40 * gearboxReduction; // TODO: when we fix arm, make this 70
+    public static final double kMaxAcceleration = 10 * gearboxReduction; // TODO: when we fix arm, make this 30
     public static final double kMaxJerk = 100 * gearboxReduction;
 
     // Desired Vertical Travel in meters for each position. Heights are specified
@@ -65,7 +65,7 @@ public final class Hardware {
     public static final double maxHeightInMeters = 0.33;
     public static final double kReceiveHeight = 0.0; // initial height, also the height where we receive coral.
     public static final double kL1Height = 0.11; // height to score in L1 trough
-    public static final double kL2Height = 0.22; // height to score in L2
+    public static final double kL2Height = 0.12; // height to score in L2
     public static final double kL3Height = 0.33; // height to score in L3
   }
 
@@ -88,14 +88,14 @@ public final class Hardware {
     public static final double speedForResettingPosition = 0.05;
 
     // These are the angles appropriate for different positions.
-    public static final double receivingRotations = 0.05;
+    public static final double receivingRotations = 0.04;
     public static final double aimAtReefRotations = 0.50;
     public static final double aimAtAlgaeRotations = 0.30;
 
     // These govern the ranges of motion for being tucked and extended, to prevent
     // crashing with reef and crossbar.
     public static final double maxHeightToKeepTucked = 0.08;
-    public static final double maxTuckedRotations = 0.11;
+    public static final double maxTuckedRotations = 0.10;
     public static final double minExtendedRotations = 0.15;
   }
 
@@ -161,7 +161,7 @@ public final class Hardware {
     public static final double fastDriveScale = 1.0;
     public static final double slowDriveScale = 0.15;
     public static final boolean mechanismsAreInTestMode = switch (robotName) {
-      case ROBOT_BETA -> true;
+      case ROBOT_BETA -> false;
       default -> false;
     };
   }
