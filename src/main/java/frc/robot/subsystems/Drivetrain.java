@@ -43,6 +43,8 @@ import swervelib.SwerveDrive;
 import swervelib.math.SwerveMath;
 import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
+import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
 
 // TODO(Controls): Support robot-relative driving so the Operator can use the live camera feed to position the robot for placing coral on the reef.
 // Note: there is a robot-relative boolean on one of the drive APIs that can be used for this purpose.
@@ -68,6 +70,10 @@ public class Drivetrain extends SubsystemBase {
   private Vision m_vision;
 
   public Drivetrain() {
+    // Record logging
+    DataLogManager.start();
+    DriverStation.startDataLog(DataLogManager.getLog());
+
     setDefaultCommand(new RunCommand(this::stop, this));
     SmartDashboard.putData("Field", m_fieldViz);
     if (Hardware.Diagnostics.debugTelemetry == true) {
