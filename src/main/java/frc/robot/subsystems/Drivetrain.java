@@ -43,6 +43,8 @@ import swervelib.SwerveDrive;
 import swervelib.math.SwerveMath;
 import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
+import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
 
 // TODO(Controls): Support robot-relative driving so the Operator can use the live camera feed to position the robot for placing coral on the reef.
 // Note: there is a robot-relative boolean on one of the drive APIs that can be used for this purpose.
@@ -68,6 +70,10 @@ public class Drivetrain extends SubsystemBase {
   private Vision m_vision;
 
   public Drivetrain() {
+    // TODO: Record logging
+    // DataLogManager.start();
+    // DriverStation.startDataLog(DataLogManager.getLog());
+
     setDefaultCommand(new RunCommand(this::stop, this));
     SmartDashboard.putData("Field", m_fieldViz);
     if (Hardware.Diagnostics.debugTelemetry == true) {
@@ -110,11 +116,13 @@ public class Drivetrain extends SubsystemBase {
     // periodically when they are not moving.
     m_swerveDrive.setModuleEncoderAutoSynchronize(false,
         1);
+    m_swerveDrive.setChassisDiscretization(true, 0.02);
 
     // Setup vision
     if (Hardware.Vision.isEnabled) {
       m_vision = new Vision(m_swerveDrive::getPose, m_swerveDrive.field);
     }
+
   }
 
   public SendableChooser<Command> createPathPlannerDropdown() {
@@ -135,8 +143,8 @@ public class Drivetrain extends SubsystemBase {
           },
           new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for
                                           // holonomic drive trains
-              new PIDConstants(5, 0.0, 0.0), // Translation PID constants
-              new PIDConstants(5, 0.0, 0.0) // Rotation PID constants
+              new PIDConstants(1.5, 0.0, 0.0), // Translation PID constants (used to be 5.0)
+              new PIDConstants(0.01, 0.0, 0.0) // Rotation PID constants (used to be 5.0)
           ),
           config, // The robot configuration
           () -> {
@@ -176,9 +184,28 @@ public class Drivetrain extends SubsystemBase {
    *
    * @return a Command that centers the modules of the SwerveDrive subsystem
    */
-  public Command recalibrateDrivetrain() {
+  public Command recalibrateSwerveModules() {
     return run(() -> Arrays.asList(m_swerveDrive.getModules())
         .forEach(it -> it.setAngle(0.0)));
+  }
+
+  public Command recalibrateDrivetrain() {
+    return run(() -> {
+      boolean isBlueAlliance = DriverStation.getAlliance().orElseGet(() -> Alliance.Blue) == Alliance.Blue;
+      Pose2d currentPose = m_swerveDrive.getPose();
+      if (isBlueAlliance) {
+        m_swerveDrive.resetOdometry(new Pose2d(
+            currentPose.getX(),
+            currentPose.getY(),
+            new Rotation2d(0)));
+      } else {
+        m_swerveDrive.resetOdometry(new Pose2d(
+            currentPose.getX(),
+            currentPose.getY(),
+            new Rotation2d(180)));
+
+      }
+    });
   }
 
   void driveRobotRelative(ChassisSpeeds speeds) {
@@ -343,4 +370,5 @@ public class Drivetrain extends SubsystemBase {
   public Rotation2d getHeading() {
     return getPose().getRotation();
   }
+
 }
