@@ -61,7 +61,6 @@ public class RobotContainer {
     // TODO: also if it IS the sparkmaxes being disconnected, that's bad, because
     // the robot shouldn't crash entirely if we lose one motor
     if (drivetrain != null) {
-      Command recalibrateDriveTrain = drivetrain.recalibrateDrivetrain();
       Command fastFieldRelativeDriverXboxControl = drivetrain.createFieldRelativeDriveCommand(
           () -> -1 * allianceRelativeFactor.getAsDouble()
               * MathUtil.applyDeadband(driverXboxController.getLeftY(), xboxDeadband)
@@ -94,7 +93,7 @@ public class RobotContainer {
 
       drivetrain.setDefaultCommand(fastFieldRelativeDriverXboxControl);
       driverXboxController.rightBumper().whileTrue(slowFieldRelativeDriverXboxControl);
-      driverXboxController.back().whileTrue(recalibrateDriveTrain);
+      driverXboxController.back().whileTrue(drivetrain.recalibrateDrivetrain());
       operatorXboxController.leftBumper()
           .whileTrue(slowRobotRelativeOperatorXboxControl.withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
     }
@@ -138,8 +137,9 @@ public class RobotContainer {
       // .alongWith(elevator.move3Alpha().alongWith(leds.yellow()));
       // operatorXboxController.povUp().onTrue(moveElbowAndElevatorToL3Algae);
 
-      Command shootCoral = pipeshooter.shootCoral();
-      operatorXboxController.rightBumper().whileTrue(shootCoral);
+      operatorXboxController.rightBumper()
+          .whileTrue(pipeshooter.shootCoral().withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
+      operatorXboxController.rightStick().whileTrue(pipeshooter.intakeCoral());
     }
 
     Elastic.enableDashboardToBeDownloadedFromRobotDeployDirectory();
