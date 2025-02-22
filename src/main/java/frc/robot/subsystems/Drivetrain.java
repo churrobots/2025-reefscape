@@ -110,6 +110,7 @@ public class Drivetrain extends SubsystemBase {
     // periodically when they are not moving.
     m_swerveDrive.setModuleEncoderAutoSynchronize(false,
         1);
+    m_swerveDrive.setChassisDiscretization(true, 0.02);
 
     // Setup vision
     if (Hardware.Vision.isEnabled) {
