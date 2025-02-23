@@ -188,7 +188,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("moveAlgae", elbow.aimAtAlgae());
     NamedCommands.registerCommand("intakePipeshooter",
         pipeshooter.intakeCoral().withTimeout(2));
-    NamedCommands.registerCommand("waitForTeammates", new WaitCommand(9);
+    NamedCommands.registerCommand("waitForTeammates", new WaitCommand(9));
 
     SendableChooser<Command> autoChooser = drivetrain.createPathPlannerDropdown();
     SmartDashboard.putData("Auto Chooser", autoChooser);
