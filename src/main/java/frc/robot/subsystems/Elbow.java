@@ -63,15 +63,35 @@ public class Elbow extends SubsystemBase {
   }
 
   public Command receive() {
-    return moveToPosition(Hardware.Elbow.receivingRotations);
+    return moveToPositionMaybeWithSafety(Hardware.Elbow.receivingRotations, true);
   }
 
   public Command aimAtReef() {
-    return moveToPosition(Hardware.Elbow.aimAtReefRotations);
+    return moveToPositionMaybeWithSafety(Hardware.Elbow.aimAtReefRotations, true);
+  }
+
+  public Command aimAtTrough() {
+    return moveToPositionMaybeWithSafety(Hardware.Elbow.aimAtTroughRotations, false);
   }
 
   public Command aimAtAlgae() {
-    return moveToPosition(Hardware.Elbow.aimAtAlgaeRotations);
+    return moveToPositionMaybeWithSafety(Hardware.Elbow.aimAtAlgaeRotations, true);
+  }
+
+  public Command receiveWithoutSafety() {
+    return moveToPositionMaybeWithSafety(Hardware.Elbow.receivingRotations, false);
+  }
+
+  public Command aimAtReefWithoutSafety() {
+    return moveToPositionMaybeWithSafety(Hardware.Elbow.aimAtReefRotations, false);
+  }
+
+  public Command aimAtTroughWithoutSafety() {
+    return moveToPositionMaybeWithSafety(Hardware.Elbow.aimAtTroughRotations, false);
+  }
+
+  public Command aimAtAlgaeWithoutSafety() {
+    return moveToPositionMaybeWithSafety(Hardware.Elbow.aimAtAlgaeRotations, false);
   }
 
   public boolean isAtTarget() {
@@ -79,16 +99,19 @@ public class Elbow extends SubsystemBase {
     return distanceFromTarget < Hardware.Elbow.targetToleranceInRotations;
   }
 
-  private Command moveToPosition(double targetPosition) {
+  private Command moveToPositionMaybeWithSafety(double targetPosition, boolean withSafety) {
     return run(() -> {
       double currentElevatorHeight = m_elevatorHeight.getAsDouble();
-      double safeTargetPosition = targetPosition;
-      if (currentElevatorHeight < Hardware.Elbow.maxHeightToKeepTucked) {
-        safeTargetPosition = MathUtil.clamp(targetPosition,
-            Hardware.Elbow.minRotations, Hardware.Elbow.maxTuckedRotations);
-      } else {
-        safeTargetPosition = MathUtil.clamp(targetPosition, Hardware.Elbow.minExtendedRotations,
-            Hardware.Elbow.maxRotations);
+      double safeTargetPosition = MathUtil.clamp(targetPosition, Hardware.Elbow.minRotations,
+          Hardware.Elbow.maxRotations);
+      if (withSafety) {
+        if (currentElevatorHeight < Hardware.Elbow.maxHeightToKeepTucked) {
+          safeTargetPosition = MathUtil.clamp(targetPosition,
+              Hardware.Elbow.minRotations, Hardware.Elbow.maxTuckedRotations);
+        } else {
+          safeTargetPosition = MathUtil.clamp(targetPosition, Hardware.Elbow.minExtendedRotations,
+              Hardware.Elbow.maxRotations);
+        }
       }
       m_targetPosition = safeTargetPosition;
       m_elbowPIDController.setReference(m_targetPosition, ControlType.kPosition);

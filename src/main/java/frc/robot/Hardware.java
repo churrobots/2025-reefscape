@@ -67,7 +67,7 @@ public final class Hardware {
     public static final double minHeightInMeters = 0.0;
     public static final double maxHeightInMeters = 0.33;
     public static final double kReceiveHeight = 0.0; // initial height, also the height where we receive coral.
-    public static final double kL1Height = 0.11; // height to score in L1 trough
+    public static final double kL1Height = 0.03; // height to score in L1 trough
     public static final double kL2Height = 0.12; // height to score in L2
     public static final double kL3Height = 0.33; // height to score in L3
   }
@@ -93,6 +93,7 @@ public final class Hardware {
     // These are the angles appropriate for different positions.
     public static final double receivingRotations = 0.04;
     public static final double aimAtReefRotations = 0.50;
+    public static final double aimAtTroughRotations = 0.53;
     public static final double aimAtAlgaeRotations = 0.30;
 
     // These govern the ranges of motion for being tucked and extended, to prevent
@@ -100,6 +101,7 @@ public final class Hardware {
     public static final double maxHeightToKeepTucked = 0.08;
     public static final double maxTuckedRotations = 0.10;
     public static final double minExtendedRotations = 0.15;
+    public static final double maxL1Rotations = 0.53;
   }
 
   public final class Drivetrain {
@@ -136,7 +138,7 @@ public final class Hardware {
     public static final boolean isEnabled = switch (robotName) {
       case ROBOT_CANELO -> false;
       case ROBOT_ALPHA -> false;
-      case ROBOT_BETA -> false;
+      case ROBOT_BETA -> true;
       case ROBOT_SIMULATION -> true;
       default -> false;
     };
@@ -146,7 +148,7 @@ public final class Hardware {
     // of center, 0.0 meters right of center, 0.5 meters up from center
     public static final Transform3d robotToCam1 = switch (robotName) {
       case ROBOT_ALPHA -> new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0));
-      case ROBOT_BETA -> new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0));
+      case ROBOT_BETA -> new Transform3d(new Translation3d(0.17, -0.32, 0.62), new Rotation3d(0, 0, 0));
       default -> new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0));
     };
   }

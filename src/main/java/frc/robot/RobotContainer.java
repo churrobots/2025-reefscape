@@ -118,7 +118,7 @@ public class RobotContainer {
           .alongWith(pipeshooter.intakeCoral());
       operatorXboxController.a().whileTrue(moveElbowAndElevatorToRecieve);
 
-      Command moveElbowAndElevatorTo1 = elevator.move1Beta().alongWith(elbow.aimAtReef());
+      Command moveElbowAndElevatorTo1 = elevator.move1Beta().alongWith(elbow.aimAtTrough());
       operatorXboxController.x().onTrue(moveElbowAndElevatorTo1);
 
       Command moveElbowAndElevatorTo2 = elevator.move2Sigma().alongWith(elbow.aimAtReef());
@@ -159,11 +159,26 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "shootL1",
         elbow.aimAtReef()
-            .alongWith(elevator.move1Beta())
-            .andThen(pipeshooter.shootCoral())
-            .andThen(elbow.receive().alongWith(elevator.moveToReceive()))
+            .alongWith(elevator.move1Beta().withTimeout(2))
+            .andThen(pipeshooter.shootCoral().withTimeout(2))
+            .andThen(elbow.receive().alongWith(elevator.moveToReceive().withTimeout(2)))
             .alongWith(showCommand("Shoot L1"))
             .alongWith(leds.green()));
+
+    NamedCommands.registerCommand(
+        "moveToL1",
+        elevator.move1Beta().alongWith(elbow.aimAtTrough()).withTimeout(2));
+
+    NamedCommands.registerCommand(
+        "moveToL2",
+        elevator.move2Sigma().alongWith(elbow.aimAtReef()).withTimeout(2));
+
+    NamedCommands.registerCommand(
+        "moveToL3",
+        elevator.move3Alpha().alongWith(elbow.aimAtReef()).withTimeout(2));
+
+    NamedCommands.registerCommand("shootCoral",
+        pipeshooter.shootCoral().alongWith(showCommand("shootCoral")).withTimeout(2));
 
     NamedCommands.registerCommand(
         "shootL2",
@@ -177,8 +192,6 @@ public class RobotContainer {
     NamedCommands.registerCommand("moveAlgae", elbow.aimAtAlgae().alongWith(showCommand("Move Algae")));
     NamedCommands.registerCommand("intakePipeshooter",
         pipeshooter.intakeCoral().withTimeout(2).alongWith(showCommand("intakePipeshooter")));
-    NamedCommands.registerCommand("shootCoral",
-        pipeshooter.shootCoral().alongWith(showCommand("shootCoral")).withTimeout(2));
     NamedCommands.registerCommand("waitForTeammates", new WaitCommand(9).alongWith(showCommand("wait For Teammates")));
 
     // TODO: we shouldn't have the drivetrain null but we need to since there is a

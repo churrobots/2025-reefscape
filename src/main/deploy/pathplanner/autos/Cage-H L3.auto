@@ -5,7 +5,7 @@
     "data": {
       "commands": [
         {
-          "type": "sequential",
+          "type": "parallel",
           "data": {
             "commands": [
               {
@@ -17,7 +17,20 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "move2Sigma"
+                  "name": "moveToL3"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "shootCoral"
                 }
               }
             ]
@@ -26,7 +39,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "GH-Cage2"
+            "pathName": "H backwards"
           }
         }
       ]

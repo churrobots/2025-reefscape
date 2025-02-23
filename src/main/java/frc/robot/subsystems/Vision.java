@@ -22,7 +22,7 @@ import swervelib.telemetry.SwerveDriveTelemetry;
 public class Vision {
   PhotonPoseEstimator m_photonPoseEstimator = new PhotonPoseEstimator(m_aprilTagFieldLayout,
       PoseStrategy.CLOSEST_TO_REFERENCE_POSE, Hardware.Vision.robotToCam1);
-  Camera[] m_cameras = { new Camera("camera 1", Hardware.Vision.robotToCam1) };
+  Camera[] m_cameras = { new Camera("VisionCamera1", Hardware.Vision.robotToCam1) };
 
   static AprilTagFieldLayout m_aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
   Supplier<Pose2d> m_currentPose;

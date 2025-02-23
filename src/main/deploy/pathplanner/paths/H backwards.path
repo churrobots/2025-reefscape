@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.5833297470868635,
-        "y": 7.296404512049788
+        "x": 5.891394249867585,
+        "y": 4.119456352621822
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.156400818864979,
-        "y": 7.270132636523421
+        "x": 6.891394249867585,
+        "y": 4.119456352621822
       },
       "isLocked": false,
-      "linkedName": "Blue Cage"
+      "linkedName": "GH"
     },
     {
       "anchor": {
-        "x": 4.178301691604873,
-        "y": 6.26924614340572
+        "x": 6.976940297272246,
+        "y": 4.1022692664194915
       },
       "prevControl": {
-        "x": 5.677403790509259,
-        "y": 6.235314308449074
+        "x": 5.976940297272246,
+        "y": 4.1022692664194915
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Wall"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.8369596000866404
+    "rotation": 179.5841173001821
   },
   "reversed": false,
   "folder": "Cage",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 179.7012280856445
+    "rotation": 165.01440004080973
   },
   "useDefaultConstraints": true
 }
