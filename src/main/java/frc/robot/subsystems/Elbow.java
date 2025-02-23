@@ -63,15 +63,15 @@ public class Elbow extends SubsystemBase {
   }
 
   public Command receive() {
-    return moveToPosition(Hardware.Elbow.receivingRotations);
+    return moveToPosition(Hardware.Elbow.receivingRotations, true);
   }
 
   public Command aimAtReef() {
-    return moveToPosition(Hardware.Elbow.aimAtReefRotations);
+    return moveToPosition(Hardware.Elbow.aimAtReefRotations, true);
   }
 
   public Command aimAtAlgae() {
-    return moveToPosition(Hardware.Elbow.aimAtAlgaeRotations);
+    return moveToPosition(Hardware.Elbow.aimAtAlgaeRotations, false);
   }
 
   public boolean isAtTarget() {
@@ -79,16 +79,19 @@ public class Elbow extends SubsystemBase {
     return distanceFromTarget < Hardware.Elbow.targetToleranceInRotations;
   }
 
-  private Command moveToPosition(double targetPosition) {
+  private Command moveToPosition(double targetPosition, boolean withReefSafety) {
     return run(() -> {
       double currentElevatorHeight = m_elevatorHeight.getAsDouble();
-      double safeTargetPosition = targetPosition;
-      if (currentElevatorHeight < Hardware.Elbow.maxHeightToKeepTucked) {
-        safeTargetPosition = MathUtil.clamp(targetPosition,
-            Hardware.Elbow.minRotations, Hardware.Elbow.maxTuckedRotations);
-      } else {
-        safeTargetPosition = MathUtil.clamp(targetPosition, Hardware.Elbow.minExtendedRotations,
-            Hardware.Elbow.maxRotations);
+      double safeTargetPosition = MathUtil.clamp(targetPosition, Hardware.Elbow.minRotations,
+          Hardware.Elbow.maxRotations);
+      if (withReefSafety) {
+        if (currentElevatorHeight < Hardware.Elbow.maxHeightToKeepTucked) {
+          safeTargetPosition = MathUtil.clamp(targetPosition,
+              Hardware.Elbow.minRotations, Hardware.Elbow.maxTuckedRotations);
+        } else {
+          safeTargetPosition = MathUtil.clamp(targetPosition, Hardware.Elbow.minExtendedRotations,
+              Hardware.Elbow.maxRotations);
+        }
       }
       m_targetPosition = safeTargetPosition;
       m_elbowPIDController.setReference(m_targetPosition, ControlType.kPosition);

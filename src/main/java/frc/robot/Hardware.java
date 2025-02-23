@@ -70,6 +70,8 @@ public final class Hardware {
     public static final double kL1Height = 0.11; // height to score in L1 trough
     public static final double kL2Height = 0.12; // height to score in L2
     public static final double kL3Height = 0.33; // height to score in L3
+    public static final double highAlgaeHeighet = 0.23;
+    public static final double lowAlgaeHeighet = 0.045;
   }
 
   public final class Elbow {
@@ -92,8 +94,8 @@ public final class Hardware {
 
     // These are the angles appropriate for different positions.
     public static final double receivingRotations = 0.04;
-    public static final double aimAtReefRotations = 0.50;
-    public static final double aimAtAlgaeRotations = 0.30;
+    public static final double aimAtReefRotations = 0.47;
+    public static final double aimAtAlgaeRotations = 0.44;
 
     // These govern the ranges of motion for being tucked and extended, to prevent
     // crashing with reef and crossbar.

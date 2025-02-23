@@ -128,6 +128,8 @@ public class RobotContainer {
       operatorXboxController.b().onTrue(moveElbowAndElevatorTo3);
 
       operatorXboxController.back().whileTrue(elevator.recalibrateElevator());
+      operatorXboxController.povUp().onTrue(elbow.aimAtAlgae().alongWith(elevator.moveToHighAlgae()));
+      operatorXboxController.povDown().onTrue(elbow.aimAtAlgae().alongWith(elevator.moveToLowAlgae()));
 
       // Command moveElbowAndElevatorToL2Algae = elbow.aimAtAlgae()
       // .alongWith(elevator.move2Sigma().alongWith(leds.purple()));
