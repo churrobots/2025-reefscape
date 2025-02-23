@@ -43,12 +43,11 @@ public class Pipeshooter extends SubsystemBase {
     return run(() -> {
       if (m_elevator.getHeight() > Hardware.Elevator.kL1Height) {
         m_pipeShooterMotor.set(0.40);
-      }
-      else {
+      } else {
         m_pipeShooterMotor.set(0.20);
       }
-    }).withTimeout(1);
-    
+    });
+
   }
 
 }
