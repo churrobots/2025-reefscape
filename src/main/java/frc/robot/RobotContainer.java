@@ -84,12 +84,12 @@ public class RobotContainer {
       Command slowRobotRelativeOperatorXboxControl = drivetrain.createRobotRelativeDriveCommand(
           () -> -1 * allianceRelativeFactor.getAsDouble()
               * MathUtil.applyDeadband(operatorXboxController.getLeftY(), xboxDeadband)
-              * Hardware.DriverStation.slowDriveScale,
+              * Hardware.DriverStation.slowbecauseyeah,
           () -> -1 * allianceRelativeFactor.getAsDouble()
               * MathUtil.applyDeadband(operatorXboxController.getLeftX(), xboxDeadband)
-              * Hardware.DriverStation.slowDriveScale,
+              * Hardware.DriverStation.slowbecauseyeah,
           () -> -1 * MathUtil.applyDeadband(operatorXboxController.getRightX(), xboxDeadband)
-              * Hardware.DriverStation.slowDriveScale);
+              * Hardware.DriverStation.slowbecauseyeah);
 
       drivetrain.setDefaultCommand(fastFieldRelativeDriverXboxControl);
       driverXboxController.rightBumper().whileTrue(slowFieldRelativeDriverXboxControl);

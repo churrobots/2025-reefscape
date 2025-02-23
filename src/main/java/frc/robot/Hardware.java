@@ -166,6 +166,7 @@ public final class Hardware {
     public static final double driverXboxDeadband = 0.1;
     public static final double fastDriveScale = 1.0;
     public static final double slowDriveScale = 0.15;
+    public static final double slowbecauseyeah = 0.10;
     public static final boolean mechanismsAreInTestMode = switch (robotName) {
       case ROBOT_BETA -> false;
       default -> false;
