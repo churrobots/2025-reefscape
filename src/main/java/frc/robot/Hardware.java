@@ -76,13 +76,13 @@ public final class Hardware {
     // TODO: we should make this a lower number to make CAN more efficient? (i
     // think there was some notes on chief delphi about this?)
     public static final int neoMotorCAN = 31;
-    public static final double gearboxReduction = 75;
+    public static final double gearboxReduction = 25;
     public static final boolean encoderIsInverted = true;
     public static final boolean motorIsInverted = true;
     public static final double minOutput = -1.0;
     public static final double maxOutput = 1.0;
     public static final int currentLimitInAmps = 30;
-    public static final double kP = 20;
+    public static final double kP = 3;
     public static final double kI = 0;
     public static final double kD = 0;
     public static final double minRotations = 0;
