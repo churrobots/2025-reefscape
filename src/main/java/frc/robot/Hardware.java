@@ -103,7 +103,6 @@ public final class Hardware {
     public static final double maxHeightToKeepTucked = 0.08;
     public static final double maxTuckedRotations = 0.10;
     public static final double minExtendedRotations = 0.15;
-    public static final double maxL1Rotations = 0.53;
   }
 
   public final class Drivetrain {

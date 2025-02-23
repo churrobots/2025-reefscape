@@ -71,7 +71,15 @@ public class Elbow extends SubsystemBase {
   }
 
   public Command aimAtAlgae() {
+    // Algae position has to be done at low elevator heights, so we
+    // don't use the safety clamping.
     return moveToPosition(Hardware.Elbow.aimAtAlgaeRotations, false);
+  }
+
+  public Command aimAtTrough() {
+    // Trough position also has to be done at low elevator heights, so we
+    // don't use the safety clamping.
+    return moveToPosition(Hardware.Elbow.aimAtTroughRotations, false);
   }
 
   public boolean isAtTarget() {
