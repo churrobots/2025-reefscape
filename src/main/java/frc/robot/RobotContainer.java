@@ -149,23 +149,19 @@ public class RobotContainer {
 
   }
 
-  Command showCommand(String text) {
-    return new InstantCommand(() -> {
-      SmartDashboard.putString("AutoCommand", text);
-    });
-  }
-
   Supplier<Command> bindCommandsForAutonomous() {
-    NamedCommands.registerCommand("Intake Coral", pipeshooter.intakeCoral());
+    // FIXME: driver station is reporting that one of our autos uses a command that
+    // doesn't exist in this map, check that and make sure to add it (or maybe it
+    // was just a typo that needs to be fixed)
+
+    NamedCommands.registerCommand("Intake Coral", pipeshooter.intakeCoral().withTimeout(2));
 
     NamedCommands.registerCommand(
         "shootL1",
         elbow.aimAtReef()
             .alongWith(elevator.move1Beta().withTimeout(2))
             .andThen(pipeshooter.shootCoral().withTimeout(2))
-            .andThen(elbow.receive().alongWith(elevator.moveToReceive().withTimeout(2)))
-            .alongWith(showCommand("Shoot L1"))
-            .alongWith(leds.green()));
+            .andThen(elbow.receive().alongWith(elevator.moveToReceive().withTimeout(2))));
 
     NamedCommands.registerCommand(
         "moveToL1",
@@ -180,31 +176,23 @@ public class RobotContainer {
         elevator.move3Alpha().alongWith(elbow.aimAtReef()).withTimeout(2));
 
     NamedCommands.registerCommand("shootCoral",
-        pipeshooter.shootCoral().alongWith(showCommand("shootCoral")).withTimeout(2));
+        pipeshooter.shootCoral().withTimeout(2));
 
     NamedCommands.registerCommand(
         "shootL2",
         elbow.aimAtReef()
-            .alongWith(elevator.move2Sigma())
-            .andThen(pipeshooter.shootCoral())
-            .andThen(elbow.receive().alongWith(elevator.moveToReceive()))
-            .alongWith(showCommand("Shoot L2"))
-            .alongWith(leds.green()));
+            .alongWith(elevator.move2Sigma().withTimeout(2))
+            .andThen(pipeshooter.shootCoral().withTimeout(2))
+            .andThen(elbow.receive().alongWith(elevator.moveToReceive()).withTimeout(2)));
 
-    NamedCommands.registerCommand("moveAlgae", elbow.aimAtAlgae().alongWith(showCommand("Move Algae")));
+    NamedCommands.registerCommand("moveAlgae", elbow.aimAtAlgae());
     NamedCommands.registerCommand("intakePipeshooter",
-        pipeshooter.intakeCoral().withTimeout(2).alongWith(showCommand("intakePipeshooter")));
-    NamedCommands.registerCommand("waitForTeammates", new WaitCommand(9).alongWith(showCommand("wait For Teammates")));
+        pipeshooter.intakeCoral().withTimeout(2));
+    NamedCommands.registerCommand("waitForTeammates", new WaitCommand(9);
 
-    // TODO: we shouldn't have the drivetrain null but we need to since there is a
-    // silent crasher on beta bot
-    if (drivetrain != null) {
-      SendableChooser<Command> autoChooser = drivetrain.createPathPlannerDropdown();
-      SmartDashboard.putData("Auto Chooser", autoChooser);
-      return autoChooser::getSelected;
-    } else {
-      return () -> Commands.none();
-    }
+    SendableChooser<Command> autoChooser = drivetrain.createPathPlannerDropdown();
+    SmartDashboard.putData("Auto Chooser", autoChooser);
+    return autoChooser::getSelected;
   }
 
   void updateDiagnostics() {
