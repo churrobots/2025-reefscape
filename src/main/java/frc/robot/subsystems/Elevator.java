@@ -78,6 +78,14 @@ public class Elevator extends SubsystemBase {
     return moveToHeight(Hardware.Elevator.kL3Height);
   }
 
+  public Command moveToLowAlgae() {
+    return moveToHeight(Hardware.Elevator.lowAlgaeHeighet);
+  }
+
+  public Command moveToHighAlgae() {
+    return moveToHeight(Hardware.Elevator.highAlgaeHeighet);
+  }
+
   public Command recalibrateElevator() {
     return run(() -> {
       setCurrentPositionAsZero();

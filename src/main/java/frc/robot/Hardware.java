@@ -70,19 +70,21 @@ public final class Hardware {
     public static final double kL1Height = 0.03; // height to score in L1 trough
     public static final double kL2Height = 0.12; // height to score in L2
     public static final double kL3Height = 0.33; // height to score in L3
+    public static final double highAlgaeHeighet = 0.23;
+    public static final double lowAlgaeHeighet = 0.045;
   }
 
   public final class Elbow {
     // TODO: we should make this a lower number to make CAN more efficient? (i
     // think there was some notes on chief delphi about this?)
     public static final int neoMotorCAN = 31;
-    public static final double gearboxReduction = 75;
+    public static final double gearboxReduction = 25;
     public static final boolean encoderIsInverted = true;
     public static final boolean motorIsInverted = true;
     public static final double minOutput = -1.0;
     public static final double maxOutput = 1.0;
     public static final int currentLimitInAmps = 30;
-    public static final double kP = 20;
+    public static final double kP = 3;
     public static final double kI = 0;
     public static final double kD = 0;
     public static final double minRotations = 0;
@@ -92,9 +94,9 @@ public final class Hardware {
 
     // These are the angles appropriate for different positions.
     public static final double receivingRotations = 0.04;
-    public static final double aimAtReefRotations = 0.50;
+    public static final double aimAtReefRotations = 0.47;
     public static final double aimAtTroughRotations = 0.53;
-    public static final double aimAtAlgaeRotations = 0.30;
+    public static final double aimAtAlgaeRotations = 0.44;
 
     // These govern the ranges of motion for being tucked and extended, to prevent
     // crashing with reef and crossbar.
@@ -166,6 +168,7 @@ public final class Hardware {
     public static final double driverXboxDeadband = 0.1;
     public static final double fastDriveScale = 1.0;
     public static final double slowDriveScale = 0.15;
+    public static final double slowbecauseyeah = 0.10;
     public static final boolean mechanismsAreInTestMode = switch (robotName) {
       case ROBOT_BETA -> false;
       default -> false;
