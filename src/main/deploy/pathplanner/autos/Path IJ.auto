@@ -5,7 +5,7 @@
     "data": {
       "commands": [
         {
-          "type": "parallel",
+          "type": "sequential",
           "data": {
             "commands": [
               {
@@ -13,26 +13,52 @@
                 "data": {
                   "pathName": "Cage-IJ"
                 }
-              },
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
               {
                 "type": "named",
                 "data": {
-                  "name": "moveToL2"
+                  "name": "aimToDump"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 1.0
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "dumpCoral"
+                      }
+                    }
+                  ]
                 }
               }
             ]
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "shootCoral"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "IJ-Cage"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "holdCoralHigh"
           }
         }
       ]

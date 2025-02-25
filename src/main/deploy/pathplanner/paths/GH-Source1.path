@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.891394249867585,
-        "y": 4.119456352621822
+        "x": 5.793197995507521,
+        "y": 4.259172255341408
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.397321901482155,
-        "y": 7.275295865335413
+        "x": 7.299125647122091,
+        "y": 7.415011768054999
       },
       "isLocked": false,
       "linkedName": "GH"
@@ -48,7 +48,7 @@
   "folder": "Source",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 165.01440004080973
+    "rotation": 169.20254583385537
   },
   "useDefaultConstraints": true
 }
