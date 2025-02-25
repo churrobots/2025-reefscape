@@ -199,12 +199,12 @@ public class Drivetrain extends SubsystemBase {
         m_swerveDrive.resetOdometry(new Pose2d(
             currentPose.getX(),
             currentPose.getY(),
-            new Rotation2d(0)));
+            Rotation2d.fromDegrees(0)));
       } else {
         m_swerveDrive.resetOdometry(new Pose2d(
             currentPose.getX(),
             currentPose.getY(),
-            new Rotation2d(180)));
+            Rotation2d.fromDegrees(180)));
 
       }
     });
