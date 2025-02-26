@@ -74,6 +74,14 @@ public final class Hardware {
     public static final double lowAlgaeHeighet = 0.045;
   }
 
+  public final class Trident {
+    public static final int dioID = 0;
+    public static final int neoMotorCAN = 46;
+    public static final int falconMotorCAN = 456;
+    // TODO: set real CAN ID
+
+  }
+
   public final class Elbow {
     // TODO: we should make this a lower number to make CAN more efficient? (i
     // think there was some notes on chief delphi about this?)
