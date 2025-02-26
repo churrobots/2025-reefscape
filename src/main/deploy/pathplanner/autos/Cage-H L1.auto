@@ -5,7 +5,7 @@
     "data": {
       "commands": [
         {
-          "type": "parallel",
+          "type": "sequential",
           "data": {
             "commands": [
               {
@@ -13,24 +13,37 @@
                 "data": {
                   "pathName": "Cage-H"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "moveToL1"
-                }
               }
             ]
           }
         },
         {
-          "type": "sequential",
+          "type": "parallel",
           "data": {
             "commands": [
               {
                 "type": "named",
                 "data": {
-                  "name": "shootCoral"
+                  "name": "aimToDump"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 1.0
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "dumpCoral"
+                      }
+                    }
+                  ]
                 }
               }
             ]
@@ -40,6 +53,12 @@
           "type": "path",
           "data": {
             "pathName": "H backwards"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "holdCoralHigh"
           }
         }
       ]

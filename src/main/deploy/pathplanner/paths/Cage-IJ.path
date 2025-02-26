@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.629638432111559,
-        "y": 7.210137740345821
+        "x": 6.636598254443225,
+        "y": 7.282256231697603
       },
       "isLocked": false,
       "linkedName": "Blue Cage"
     },
     {
       "anchor": {
-        "x": 5.277004925267504,
-        "y": 5.050142838775562
+        "x": 4.93066865111359,
+        "y": 5.270396728082178
       },
       "prevControl": {
-        "x": 5.081563341062763,
-        "y": 4.875848929222855
+        "x": 4.702193029219189,
+        "y": 5.101903994191896
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -120.621499998226
+    "rotation": -134.63951858623034
   },
   "reversed": false,
   "folder": "Cage",

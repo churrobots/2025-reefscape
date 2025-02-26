@@ -97,6 +97,7 @@ public final class Hardware {
     public static final double receivingRotations = 0.04;
     public static final double aimAtReefRotations = 0.47;
     public static final double aimAtTroughRotations = 0.53;
+    public static final double aimToDumpRotations = 0.34;
     public static final double aimAtAlgaeRotations = 0.44;
 
     // These govern the ranges of motion for being tucked and extended, to prevent
@@ -104,6 +105,7 @@ public final class Hardware {
     public static final double maxHeightToKeepTucked = 0.08;
     public static final double maxTuckedRotations = 0.10;
     public static final double minExtendedRotations = 0.15;
+    public static final double holdCoralHighRotations = 0.53;
   }
 
   public final class Drivetrain {

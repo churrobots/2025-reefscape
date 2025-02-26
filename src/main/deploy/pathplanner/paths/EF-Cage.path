@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.279387464021381,
-        "y": 2.6334976999383217
+        "x": 4.965630961411194,
+        "y": 2.7823684467796865
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.511484954316737,
-        "y": 2.2135295286016956
+        "x": 6.19772845170655,
+        "y": 2.3624002754430604
       },
       "isLocked": false,
       "linkedName": "EF"
@@ -48,7 +48,7 @@
   "folder": "Cage",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 119.48631047790268
+    "rotation": 137.81617537567973
   },
   "useDefaultConstraints": true
 }

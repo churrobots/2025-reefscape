@@ -145,8 +145,8 @@ public class Drivetrain extends SubsystemBase {
           },
           new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for
                                           // holonomic drive trains
-              new PIDConstants(1.5, 0.0, 0.0), // Translation PID constants (used to be 5.0)
-              new PIDConstants(0.01, 0.0, 0.0) // Rotation PID constants (used to be 5.0)
+              new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants (used to be 5.0)
+              new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants (used to be 5.0)
           ),
           config, // The robot configuration
           () -> {
