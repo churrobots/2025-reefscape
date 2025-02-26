@@ -82,6 +82,16 @@ public class Elbow extends SubsystemBase {
     return moveToPosition(Hardware.Elbow.aimAtTroughRotations, false);
   }
 
+  public Command aimToDump() {
+    // This is for Auto, and also has to be done at low elevator heights, so we
+    // don't use the safety clamping.
+    return moveToPosition(Hardware.Elbow.aimToDumpRotations, false);
+  }
+
+  public Command holdCoralHigh() {
+    return moveToPosition(Hardware.Elbow.holdCoralHighRotations, false);
+  }
+
   public boolean isAtTarget() {
     double distanceFromTarget = Math.abs(m_elbowMotor.getAbsoluteEncoder().getPosition() - m_targetPosition);
     return distanceFromTarget < Hardware.Elbow.targetToleranceInRotations;

@@ -145,8 +145,8 @@ public class Drivetrain extends SubsystemBase {
           },
           new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for
                                           // holonomic drive trains
-              new PIDConstants(1.5, 0.0, 0.0), // Translation PID constants (used to be 5.0)
-              new PIDConstants(0.01, 0.0, 0.0) // Rotation PID constants (used to be 5.0)
+              new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants (used to be 5.0)
+              new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants (used to be 5.0)
           ),
           config, // The robot configuration
           () -> {
@@ -199,12 +199,12 @@ public class Drivetrain extends SubsystemBase {
         m_swerveDrive.resetOdometry(new Pose2d(
             currentPose.getX(),
             currentPose.getY(),
-            new Rotation2d(0)));
+            Rotation2d.fromDegrees(0)));
       } else {
         m_swerveDrive.resetOdometry(new Pose2d(
             currentPose.getX(),
             currentPose.getY(),
-            new Rotation2d(180)));
+            Rotation2d.fromDegrees(180)));
 
       }
     });

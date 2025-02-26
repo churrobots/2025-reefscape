@@ -22,6 +22,7 @@ public class Elevator extends SubsystemBase {
   final TalonFX m_elevatorMotorLeader = new TalonFX(Hardware.Elevator.leaderFalconMotorCAN);
   final TalonFX m_elevatorMotorFollow = new TalonFX(Hardware.Elevator.followerFalconMotorCAN);
   final MotionMagicVoltage m_positionRequest = new MotionMagicVoltage(0);
+  double m_targetHeight = 0;
 
   public Elevator() {
     setDefaultCommand(moveToReceive());
@@ -29,6 +30,7 @@ public class Elevator extends SubsystemBase {
     HardwareRegistry.registerHardware(m_elevatorMotorFollow);
 
     final TalonFXConfiguration elevatorConfig = new TalonFXConfiguration();
+    elevatorConfig.Slot0.kS = Hardware.Elevator.kS;
     elevatorConfig.Slot0.kP = Hardware.Elevator.kP;
     elevatorConfig.Slot0.kI = Hardware.Elevator.kI;
     elevatorConfig.Slot0.kD = Hardware.Elevator.kD;
@@ -100,6 +102,7 @@ public class Elevator extends SubsystemBase {
           targetHeight,
           Hardware.Elevator.minHeightInMeters,
           Hardware.Elevator.maxHeightInMeters);
+      m_targetHeight = safeHeight;
       double desiredOutputInRotations = safeHeight / (Hardware.Elevator.sprocketPitchDiameter * Math.PI);
       double requiredInputRotations = Hardware.Elevator.gearboxReduction * desiredOutputInRotations;
       boolean shouldRestTheElevator = targetHeight < 0.02 && getHeight() < 0.01;
@@ -125,7 +128,8 @@ public class Elevator extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Elevator/Height", getHeight());
+    SmartDashboard.putNumber("Elevator/CurrentHeight", getHeight());
+    SmartDashboard.putNumber("Elevator/TargetHeight", m_targetHeight);
     SmartDashboard.putNumber("Elevator/OutputLeader", m_elevatorMotorLeader.getClosedLoopOutput().getValueAsDouble());
     SmartDashboard.putNumber("Elevator/OutputFollower", m_elevatorMotorFollow.getClosedLoopOutput().getValueAsDouble());
     SmartDashboard.putNumber("Elevator/StatorCurrentLeader",

@@ -39,6 +39,12 @@ public class Pipeshooter extends SubsystemBase {
     });
   }
 
+  public Command dumpCoral() {
+    return run(() -> {
+      m_pipeShooterMotor.set(-0.1);
+    });
+  }
+
   public Command shootCoral() {
     return run(() -> {
       if (m_elevator.getHeight() > Hardware.Elevator.kL1Height) {

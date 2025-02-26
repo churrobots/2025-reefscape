@@ -13,11 +13,37 @@
                 "data": {
                   "pathName": "Cage-EF"
                 }
-              },
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
               {
                 "type": "named",
                 "data": {
-                  "name": "move1Beta"
+                  "name": "aimToDump"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 1.0
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "dumpCoral"
+                      }
+                    }
+                  ]
                 }
               }
             ]
@@ -27,6 +53,12 @@
           "type": "path",
           "data": {
             "pathName": "EF-Cage"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "holdCoralHigh"
           }
         }
       ]

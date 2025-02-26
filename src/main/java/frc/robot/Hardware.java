@@ -44,14 +44,15 @@ public final class Hardware {
 
     // PID numbers from:
     // https://v6.docs.ctr-electronics.com/en/2024/docs/api-reference/device-specific/talonfx/basic-pid-control.html
-    public static final double kS = 0.0; // static friction feed-forward component.
-    public static final double kV = 2.83; // motor-specific, represents the motor's velocity per volt. The reciprocal is
-    // used as the feed-forward parameter in velocity-based control loops.
-    public static final double kA = 0.03; //
+    public static final double kS = 0.4; // static friction feed-forward component.
+    // public static final double kV = 2.83; // motor-specific, represents the
+    // motor's velocity per volt. The reciprocal is
+    // // used as the feed-forward parameter in velocity-based control loops.
+    // public static final double kA = 0.03; //
     public static final double kP = 2; // proportional
-    public static final double kI = 0.0; // integral
-    public static final double kD = 0.0; // derivative
-    public static final double kG = 0.31; // gravity
+    public static final double kI = 0; // integral
+    public static final double kD = 0.1; // derivative
+    public static final double kG = 0.6; // gravity
 
     // Slow speed for recalibrating the elevator downward.
     public static final double recalibrationSpeedPercentage = -0.03;
@@ -104,6 +105,7 @@ public final class Hardware {
     public static final double receivingRotations = 0.04;
     public static final double aimAtReefRotations = 0.47;
     public static final double aimAtTroughRotations = 0.53;
+    public static final double aimToDumpRotations = 0.34;
     public static final double aimAtAlgaeRotations = 0.44;
 
     // These govern the ranges of motion for being tucked and extended, to prevent
@@ -111,6 +113,7 @@ public final class Hardware {
     public static final double maxHeightToKeepTucked = 0.08;
     public static final double maxTuckedRotations = 0.10;
     public static final double minExtendedRotations = 0.15;
+    public static final double holdCoralHighRotations = 0.53;
   }
 
   public final class Drivetrain {
