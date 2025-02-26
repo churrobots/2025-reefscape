@@ -30,6 +30,7 @@ public class Elevator extends SubsystemBase {
     HardwareRegistry.registerHardware(m_elevatorMotorFollow);
 
     final TalonFXConfiguration elevatorConfig = new TalonFXConfiguration();
+    elevatorConfig.Slot0.kS = Hardware.Elevator.kS;
     elevatorConfig.Slot0.kP = Hardware.Elevator.kP;
     elevatorConfig.Slot0.kI = Hardware.Elevator.kI;
     elevatorConfig.Slot0.kD = Hardware.Elevator.kD;
