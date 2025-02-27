@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Cage-EF"
+                  "pathName": "Mid-H"
                 }
               }
             ]
@@ -50,15 +50,53 @@
           }
         },
         {
-          "type": "path",
+          "type": "deadline",
           "data": {
-            "pathName": "EF-Cage"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "H-MidAlgae"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "moveToLowAlgae"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "removeCoral"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "MidAlgae-Backoff"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "removeCoral"
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "holdCoralHigh"
+            "name": "intakeCoral"
           }
         }
       ]

@@ -131,6 +131,8 @@ public class RobotContainer {
       operatorXboxController.povUp().onTrue(elbow.aimAtAlgae().alongWith(elevator.moveToHighAlgae()));
       operatorXboxController.povDown().onTrue(elbow.aimAtAlgae().alongWith(elevator.moveToLowAlgae()));
 
+      driverXboxController.povUp().onTrue(elbow.holdCoralHigh());
+
       // Command moveElbowAndElevatorToL2Algae = elbow.aimAtAlgae()
       // .alongWith(elevator.move2Sigma().alongWith(leds.purple()));
       // operatorXboxController.povDown().onTrue(moveElbowAndElevatorToL2Algae);
@@ -153,45 +155,23 @@ public class RobotContainer {
     // FIXME: driver station is reporting that one of our autos uses a command that
     // doesn't exist in this map, check that and make sure to add it (or maybe it
     // was just a typo that needs to be fixed)
+    NamedCommands.registerCommand("holdCoralHigh", elbow.holdCoralHigh());
 
-    NamedCommands.registerCommand("Intake Coral", pipeshooter.intakeCoral().withTimeout(2));
-
-    NamedCommands.registerCommand(
-        "shootL1",
-        elbow.aimAtReef()
-            .alongWith(elevator.move1Beta().withTimeout(2))
-            .andThen(pipeshooter.shootCoral().withTimeout(2))
-            .andThen(elbow.receive().alongWith(elevator.moveToReceive().withTimeout(2))));
-
-    NamedCommands.registerCommand(
-        "moveToL1",
-        elevator.move1Beta().alongWith(elbow.aimAtTrough()).withTimeout(2));
-
-    NamedCommands.registerCommand(
-        "moveToL2",
-        elevator.move2Sigma().alongWith(elbow.aimAtReef()).withTimeout(2));
-
-    NamedCommands.registerCommand(
-        "moveToL3",
-        elevator.move3Alpha().alongWith(elbow.aimAtReef()).withTimeout(2));
-
-    NamedCommands.registerCommand("shootCoral",
-        pipeshooter.shootCoral().withTimeout(2));
-
-    NamedCommands.registerCommand(
-        "shootL2",
-        elbow.aimAtReef()
-            .alongWith(elevator.move2Sigma().withTimeout(2))
-            .andThen(pipeshooter.shootCoral().withTimeout(2))
-            .andThen(elbow.receive().alongWith(elevator.moveToReceive()).withTimeout(2)));
-
-    NamedCommands.registerCommand("moveAlgae", elbow.aimAtAlgae());
-    NamedCommands.registerCommand("intakePipeshooter",
-        pipeshooter.intakeCoral().withTimeout(2));
-    NamedCommands.registerCommand("waitForTeammates", new WaitCommand(9));
     NamedCommands.registerCommand("aimToDump", elbow.aimToDump().withTimeout(5));
     NamedCommands.registerCommand("dumpCoral", pipeshooter.dumpCoral().withTimeout(2));
-    NamedCommands.registerCommand("holdCoralHigh", elbow.holdCoralHigh());
+
+    NamedCommands.registerCommand("moveToHighAlgae",
+        elbow.aimAtAlgae().alongWith(elevator.moveToHighAlgae().withTimeout(2)));
+    NamedCommands.registerCommand("moveToLowAlgae",
+        elbow.aimAtAlgae().alongWith(elevator.moveToLowAlgae().withTimeout(2)));
+
+    NamedCommands.registerCommand("removeCoral",
+        pipeshooter.shootCoral().withTimeout(2));
+    NamedCommands.registerCommand("intakeCoral", elevator.moveToReceive().alongWith(elbow.receive())
+        .alongWith(pipeshooter.intakeCoral()).withTimeout(3));
+    NamedCommands.registerCommand("stopIntake", pipeshooter.idle());
+
+    NamedCommands.registerCommand("waitForTeammates", new WaitCommand(9));
 
     SendableChooser<Command> autoChooser = drivetrain.createPathPlannerDropdown();
     SmartDashboard.putData("Auto Chooser", autoChooser);

@@ -98,7 +98,7 @@ public final class Hardware {
     public static final double aimAtReefRotations = 0.47;
     public static final double aimAtTroughRotations = 0.53;
     public static final double aimToDumpRotations = 0.34;
-    public static final double aimAtAlgaeRotations = 0.44;
+    public static final double aimAtAlgaeRotations = 0.43; // previously: 0.44;
 
     // These govern the ranges of motion for being tucked and extended, to prevent
     // crashing with reef and crossbar.
