@@ -130,11 +130,12 @@ public class Drivetrain extends SubsystemBase {
   public SendableChooser<Command> createPathPlannerDropdown() {
     RobotConfig config;
     try {
-      // UniversalRobotProperties robotProperties = new
-      // UniversalRobotProperties(m_swerveJsonDirectory,
-      // Hardware.Drivetrain.maxSpeedMetersPerSecond, Hardware.Drivetrain.robotMOI);
-      // config = robotProperties.getAsPathPlannerConfig();
-      config = RobotConfig.fromGUISettings();
+      UniversalRobotProperties robotProperties = new UniversalRobotProperties(m_swerveJsonDirectory,
+          Hardware.Drivetrain.maxSpeedMetersPerSecond, Hardware.Drivetrain.robotMOI);
+      config = robotProperties.getAsPathPlannerConfig();
+
+      // If using GUI setttings:
+      // config = RobotConfig.fromGUISettings();
 
       AutoBuilder.configure(
           this::getPose, // Robot pose supplier
