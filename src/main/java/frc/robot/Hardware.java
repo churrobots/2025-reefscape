@@ -119,7 +119,8 @@ public final class Hardware {
     public static final double robotMOI = switch (robotName) {
       case ROBOT_CANELO -> 6.0;
       case ROBOT_ALPHA -> 2.0;
-      case ROBOT_BETA -> 6.0;
+      // TODO: could this MOI affect auto speed being slow
+      case ROBOT_BETA -> 3.5;
       case ROBOT_SIMULATION -> 2.0;
       default -> 6.0;
     };
