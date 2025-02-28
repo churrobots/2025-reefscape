@@ -132,6 +132,8 @@ public class RobotContainer {
       // for testing auto (putting the arm into position to hold our auto coral)
       if (!DriverStation.isFMSAttached()) {
         driverXboxController.povUp().onTrue(elbow.holdCoralHigh());
+        driverXboxController.povDown().onTrue(elbow.aimToDump());
+        driverXboxController.a().onTrue(pipeshooter.dumpCoral());
       }
 
       operatorXboxController.rightBumper()
