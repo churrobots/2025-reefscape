@@ -121,7 +121,7 @@ public class Elbow extends SubsystemBase {
 
   }
 
-  private double getCurrentElbowPosition() {
+  public double getCurrentElbowPosition() {
     return m_elbowMotor.getAbsoluteEncoder().getPosition();
   }
 
