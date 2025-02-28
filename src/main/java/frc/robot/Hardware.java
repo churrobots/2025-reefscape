@@ -95,8 +95,8 @@ public final class Hardware {
 
     // These are the angles appropriate for different positions.
     public static final double receivingRotations = 0.04;
-    public static final double aimAtReefRotations = 0.47;
-    public static final double aimAtTroughRotations = 0.53;
+    public static final double aimAtReefRotations = 0.48;
+    public static final double aimAtTroughRotations = 0.58;
     public static final double aimToDumpRotations = 0.34;
     public static final double aimAtAlgaeRotations = 0.43; // previously: 0.44;
 
