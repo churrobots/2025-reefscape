@@ -131,15 +131,11 @@ public class RobotContainer {
       operatorXboxController.povUp().onTrue(elbow.aimAtAlgae().alongWith(elevator.moveToHighAlgae()));
       operatorXboxController.povDown().onTrue(elbow.aimAtAlgae().alongWith(elevator.moveToLowAlgae()));
 
-      driverXboxController.povUp().onTrue(elbow.holdCoralHigh());
-
-      // Command moveElbowAndElevatorToL2Algae = elbow.aimAtAlgae()
-      // .alongWith(elevator.move2Sigma().alongWith(leds.purple()));
-      // operatorXboxController.povDown().onTrue(moveElbowAndElevatorToL2Algae);
-
-      // Command moveElbowAndElevatorToL3Algae = elbow.aimAtAlgae()
-      // .alongWith(elevator.move3Alpha().alongWith(leds.yellow()));
-      // operatorXboxController.povUp().onTrue(moveElbowAndElevatorToL3Algae);
+      // When we're not on a real field, make a command that we can use
+      // for testing auto (putting the arm into position to hold our auto coral)
+      if (!DriverStation.isFMSAttached()) {
+        driverXboxController.povUp().onTrue(elbow.holdCoralHigh());
+      }
 
       operatorXboxController.rightBumper()
           .whileTrue(pipeshooter.shootCoral().withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
