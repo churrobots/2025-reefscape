@@ -100,6 +100,10 @@ public final class Hardware {
     public static final double aimToDumpRotations = 0.34;
     public static final double aimAtAlgaeRotations = 0.43; // previously: 0.44;
 
+    // Keep track of safe positions for certain actions.
+    // It should be higher than the other aiming, EXCEPT for dump.
+    public static final double minimumRotationsForSafeShooting = 0.38;
+
     // These govern the ranges of motion for being tucked and extended, to prevent
     // crashing with reef and crossbar.
     public static final double maxHeightToKeepTucked = 0.08;

@@ -9,9 +9,6 @@ import java.util.function.Supplier;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -32,8 +29,8 @@ import frc.robot.subsystems.UnnecessaryLEDS;
 
 public class RobotContainer {
   Elevator elevator = new Elevator();
-  Pipeshooter pipeshooter = new Pipeshooter(elevator);
   Elbow elbow = new Elbow(elevator::getHeight);
+  Pipeshooter pipeshooter = new Pipeshooter(elevator, elbow);
   Drivetrain drivetrain = new Drivetrain();
   UnnecessaryLEDS leds = new UnnecessaryLEDS();
 

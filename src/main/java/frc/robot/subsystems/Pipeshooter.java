@@ -17,9 +17,11 @@ public class Pipeshooter extends SubsystemBase {
 
   final TalonFX m_pipeShooterMotor = new TalonFX(Hardware.Pipeshooter.falconMotorCAN);
   final Elevator m_elevator;
+  final Elbow m_elbow;
 
-  public Pipeshooter(Elevator elevator) {
+  public Pipeshooter(Elevator elevator, Elbow elbow) {
     m_elevator = elevator;
+    m_elbow = elbow;
     setDefaultCommand(idle());
     final TalonFXConfiguration shooterConfig = new TalonFXConfiguration();
     shooterConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
@@ -47,7 +49,10 @@ public class Pipeshooter extends SubsystemBase {
 
   public Command shootCoral() {
     return run(() -> {
-      if (m_elevator.getHeight() > Hardware.Elevator.kL1Height) {
+      boolean notSafe = m_elbow.getCurrentElbowPosition() < Hardware.Elbow.minimumRotationsForSafeShooting;
+      if (notSafe) {
+        return;
+      } else if (m_elevator.getHeight() > Hardware.Elevator.kL1Height) { 
         m_pipeShooterMotor.set(0.40);
       } else {
         m_pipeShooterMotor.set(0.20);
