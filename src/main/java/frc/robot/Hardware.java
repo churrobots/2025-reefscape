@@ -115,7 +115,7 @@ public final class Hardware {
   public final class Drivetrain {
     // TODO: consider upping the max speed again
     public static final double maxSpeedMetersPerSecond = 6.04; // TODO: should this really be 4?
-    public static final double maxSpeedMetersPerSecondForAuto = 7.3; // TODO: should this really be 4?
+    public static final double maxSpeedMetersPerSecondForAuto = 6.7; // TODO: should this really be 4?
     // TODO: Update the MOIs to match the robots.
     public static final double robotMOI = switch (robotName) {
       case ROBOT_CANELO -> 6.0;
