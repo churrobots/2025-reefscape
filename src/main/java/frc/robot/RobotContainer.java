@@ -152,7 +152,7 @@ public class RobotContainer {
     // was just a typo that needs to be fixed)
     NamedCommands.registerCommand("holdCoralHigh", elbow.holdCoralHigh());
 
-    NamedCommands.registerCommand("aimToDump", elbow.aimToDump().withTimeout(5));
+    NamedCommands.registerCommand("aimToDump", elbow.aimToDump().withTimeout(3));
     NamedCommands.registerCommand("dumpCoral", pipeshooter.dumpCoral().withTimeout(2));
 
     NamedCommands.registerCommand("moveToHighAlgae",

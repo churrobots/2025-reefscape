@@ -43,7 +43,7 @@ public class Pipeshooter extends SubsystemBase {
 
   public Command dumpCoral() {
     return run(() -> {
-      m_pipeShooterMotor.set(-0.1);
+      m_pipeShooterMotor.set(-0.10);
     });
   }
 
