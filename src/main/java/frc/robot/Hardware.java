@@ -97,8 +97,8 @@ public final class Hardware {
     public static final double receivingRotations = 0.04;
     public static final double aimAtReefRotations = 0.48;
     public static final double aimAtTroughRotations = 0.58;
-    public static final double aimToDumpRotations = 0.34;
-    public static final double aimAtAlgaeRotations = 0.43; // previously: 0.44;
+    public static final double aimToDumpRotations = 0.32;
+    public static final double aimAtAlgaeRotations = 0.44; // previously: 0.44;
 
     // Keep track of safe positions for certain actions.
     // It should be higher than the other aiming, EXCEPT for dump.
@@ -115,6 +115,7 @@ public final class Hardware {
   public final class Drivetrain {
     // TODO: consider upping the max speed again
     public static final double maxSpeedMetersPerSecond = 6.04; // TODO: should this really be 4?
+    public static final double maxSpeedMetersPerSecondForAuto = 7.3; // TODO: should this really be 4?
     // TODO: Update the MOIs to match the robots.
     public static final double robotMOI = switch (robotName) {
       case ROBOT_CANELO -> 6.0;
