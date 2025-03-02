@@ -94,7 +94,7 @@ public final class Hardware {
     public static final double speedForResettingPosition = 0.05;
 
     // These are the angles appropriate for different positions.
-    public static final double receivingRotations = 0.04;
+    public static final double receivingRotations = 0.025;
     public static final double aimAtReefRotations = 0.48;
     public static final double aimAtTroughRotations = 0.58;
     public static final double aimToDumpRotations = 0.32;
@@ -115,7 +115,7 @@ public final class Hardware {
   public final class Drivetrain {
     // TODO: consider upping the max speed again
     public static final double maxSpeedMetersPerSecond = 6.04; // TODO: should this really be 4?
-    public static final double maxSpeedMetersPerSecondForAuto = 6.7; // TODO: should this really be 4?
+    public static final double maxSpeedMetersPerSecondForAuto = 6.4;
     // TODO: Update the MOIs to match the robots.
     public static final double robotMOI = switch (robotName) {
       case ROBOT_CANELO -> 6.0;
