@@ -9,10 +9,8 @@ import java.util.function.Supplier;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -30,11 +28,10 @@ import frc.robot.subsystems.Pipeshooter;
 import frc.robot.subsystems.UnnecessaryLEDS;
 
 public class RobotContainer {
-
-  Pipeshooter pipeshooter = new Pipeshooter();
   Elevator elevator = new Elevator();
-  Elbow elbow = new Elbow();
-  Drivetrain drivetrain = Hardware.Drivetrain.disableDrivetrainDueToSilentBootFailure ? null : new Drivetrain();
+  Elbow elbow = new Elbow(elevator::getHeight);
+  Pipeshooter pipeshooter = new Pipeshooter(elevator, elbow);
+  Drivetrain drivetrain = new Drivetrain();
   UnnecessaryLEDS leds = new UnnecessaryLEDS();
 
   void bindCommandsForTeleop() {
@@ -61,7 +58,6 @@ public class RobotContainer {
     // TODO: also if it IS the sparkmaxes being disconnected, that's bad, because
     // the robot shouldn't crash entirely if we lose one motor
     if (drivetrain != null) {
-      Command recalibrateDriveTrain = new RunCommand(() -> drivetrain.recalibrateDrivetrain(), drivetrain);
       Command fastFieldRelativeDriverXboxControl = drivetrain.createFieldRelativeDriveCommand(
           () -> -1 * allianceRelativeFactor.getAsDouble()
               * MathUtil.applyDeadband(driverXboxController.getLeftY(), xboxDeadband)
@@ -83,60 +79,76 @@ public class RobotContainer {
               * Hardware.DriverStation.slowDriveScale);
 
       Command slowRobotRelativeOperatorXboxControl = drivetrain.createRobotRelativeDriveCommand(
-          () -> -1 * allianceRelativeFactor.getAsDouble()
+          () -> -1
               * MathUtil.applyDeadband(operatorXboxController.getLeftY(), xboxDeadband)
-              * Hardware.DriverStation.slowDriveScale,
-          () -> -1 * allianceRelativeFactor.getAsDouble()
+              * Hardware.DriverStation.slowbecauseyeah,
+          () -> -1
               * MathUtil.applyDeadband(operatorXboxController.getLeftX(), xboxDeadband)
-              * Hardware.DriverStation.slowDriveScale,
+              * Hardware.DriverStation.slowbecauseyeah,
           () -> -1 * MathUtil.applyDeadband(operatorXboxController.getRightX(), xboxDeadband)
-              * Hardware.DriverStation.slowDriveScale);
-
-      Command slowRobotRelativeOperatorXboxControlWithLEDs = slowRobotRelativeOperatorXboxControl.alongWith(
-          leds.yuvrajalliseeisredwhenigoupsettyspaghetti());
+              * Hardware.DriverStation.slowbecauseyeah);
 
       Command driveToAprilTag = drivetrain.driveToAprilTag();
       // TODO: bind this to a button?
       // operatorXboxController.someButton().whileTrue(driveToAprilTag);
 
       drivetrain.setDefaultCommand(fastFieldRelativeDriverXboxControl);
-      driverXboxController.leftBumper().whileTrue(slowFieldRelativeDriverXboxControl);
-      driverXboxController.back().whileTrue(recalibrateDriveTrain);
-      operatorXboxController.leftBumper().whileTrue(slowRobotRelativeOperatorXboxControlWithLEDs);
+      driverXboxController.rightBumper().whileTrue(slowFieldRelativeDriverXboxControl);
+      driverXboxController.back().whileTrue(drivetrain.recalibrateDrivetrain());
+      operatorXboxController.leftBumper()
+          .whileTrue(slowRobotRelativeOperatorXboxControl.withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
     }
 
     if (Hardware.DriverStation.mechanismsAreInTestMode) {
       // This is for safely testing the beta bot in the meantime
-      operatorXboxController.x().whileTrue(elevator.move1Beta());
+      // operatorXboxController.x().whileTrue(elevator.move1Beta());
       operatorXboxController.y().whileTrue(elevator.move2Sigma());
       operatorXboxController.b().whileTrue(elevator.move3Alpha());
-      operatorXboxController.a().whileTrue(pipeshooter.intakeCoral());
       operatorXboxController.rightBumper().whileTrue(pipeshooter.shootCoral());
+      operatorXboxController.povDown().whileTrue(pipeshooter.intakeCoral());
+
+      operatorXboxController.a().whileTrue(elbow.receive());
+      operatorXboxController.leftBumper().whileTrue(elbow.aimAtReef());
+
+      operatorXboxController.x().whileTrue(
+          elevator.move3Alpha().alongWith(elbow.aimAtReef()));
+      // operatorXboxController.rightBumper().whileTrue(elbow.aimAtAlgae());
 
     } else {
-      Command moveElbowAndElevatorToRecieve = elbow.recieve().alongWith(elevator.moveToReceive())
-          .alongWith(pipeshooter.intakeCoral()).alongWith(leds.jjisbeingasussybakaimpostoramongussus());
+      Command moveElbowAndElevatorToRecieve = elevator.moveToReceive().alongWith(elbow.receive())
+          .alongWith(pipeshooter.intakeCoral());
       operatorXboxController.a().whileTrue(moveElbowAndElevatorToRecieve);
 
-      Command moveElbowAndElevatorTo1 = elbow.move1Beta().alongWith(elevator.move1Beta());
+      // TODO: add in ground algae command?
+      // Command moveElbowAndElevatorToGroundAlgae =
+      // elevator.moveToGroundAlgae().alongWith(elbow.aimToGroundAlgae())
+      // .alongWith(pipeshooter.intakeCoral());
+      // operatorXboxController.x().whileTrue(moveElbowAndElevatorToGroundAlgae);
+
+      Command moveElbowAndElevatorTo1 = elevator.move1Beta().alongWith(elbow.aimAtTrough());
       operatorXboxController.x().onTrue(moveElbowAndElevatorTo1);
 
-      Command moveElbowAndElevatorTo2 = elbow.move2Sigma().alongWith(elevator.move2Sigma().alongWith(leds.rainbow()));
+      Command moveElbowAndElevatorTo2 = elevator.move2Sigma().alongWith(elbow.aimAtReef());
       operatorXboxController.y().onTrue(moveElbowAndElevatorTo2);
 
-      Command moveElbowAndElevatorTo3 = elbow.move2Sigma().alongWith(elevator.move3Alpha().alongWith(leds.blue()));
+      Command moveElbowAndElevatorTo3 = elevator.move3Alpha().alongWith(elbow.aimAtReef());
       operatorXboxController.b().onTrue(moveElbowAndElevatorTo3);
 
-      Command moveElbowAndElevatorToL2Algae = elbow.moveAlgae()
-          .alongWith(elevator.move2Sigma().alongWith(leds.purple()));
-      operatorXboxController.povDown().onTrue(moveElbowAndElevatorToL2Algae);
+      operatorXboxController.back().whileTrue(elevator.recalibrateElevator());
+      operatorXboxController.povUp().onTrue(elbow.aimAtAlgae().alongWith(elevator.moveToHighAlgae()));
+      operatorXboxController.povDown().onTrue(elbow.aimAtAlgae().alongWith(elevator.moveToLowAlgae()));
 
-      Command moveElbowAndElevatorToL3Algae = elbow.moveAlgae()
-          .alongWith(elevator.move3Alpha().alongWith(leds.yellow()));
-      operatorXboxController.povUp().onTrue(moveElbowAndElevatorToL3Algae);
+      // When we're not on a real field, make a command that we can use
+      // for testing auto (putting the arm into position to hold our auto coral)
+      if (!DriverStation.isFMSAttached()) {
+        driverXboxController.povUp().onTrue(elbow.holdCoralHigh());
+        driverXboxController.povDown().onTrue(elbow.aimToDump());
+        driverXboxController.a().onTrue(pipeshooter.dumpCoral());
+      }
 
-      Command shootCoral = pipeshooter.shootCoral().alongWith(leds.green());
-      operatorXboxController.rightBumper().whileTrue(shootCoral);
+      operatorXboxController.rightBumper()
+          .whileTrue(pipeshooter.shootCoral().withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
+      operatorXboxController.rightStick().whileTrue(pipeshooter.intakeCoral());
     }
 
     Elastic.enableDashboardToBeDownloadedFromRobotDeployDirectory();
@@ -144,53 +156,40 @@ public class RobotContainer {
 
   }
 
-  Command showCommand(String text) {
-    return new InstantCommand(() -> {
-      SmartDashboard.putString("AutoCommand", text);
-    });
-  }
-
   Supplier<Command> bindCommandsForAutonomous() {
-    NamedCommands.registerCommand("Intake Coral", pipeshooter.intakeCoral());
+    // FIXME: driver station is reporting that one of our autos uses a command that
+    // doesn't exist in this map, check that and make sure to add it (or maybe it
+    // was just a typo that needs to be fixed)
+    NamedCommands.registerCommand("holdCoralHigh", elbow.holdCoralHigh());
 
-    NamedCommands.registerCommand(
-        "shootL1",
-        elbow.move1Beta()
-            .alongWith(elevator.move1Beta())
-            .andThen(pipeshooter.shootCoral())
-            .andThen(elbow.recieve().alongWith(elevator.moveToReceive()))
-            .alongWith(showCommand("Shoot L1"))
-            .alongWith(leds.green()));
+    NamedCommands.registerCommand("aimToDump", elbow.aimToDump().withTimeout(3));
+    NamedCommands.registerCommand("dumpCoral", pipeshooter.dumpCoral().withTimeout(2));
 
-    NamedCommands.registerCommand(
-        "shootL2",
-        elbow.move1Beta()
-            .alongWith(elevator.move2Sigma())
-            .andThen(pipeshooter.shootCoral())
-            .andThen(elbow.recieve().alongWith(elevator.moveToReceive()))
-            .alongWith(showCommand("Shoot L2"))
-            .alongWith(leds.green()));
+    NamedCommands.registerCommand("moveToHighAlgae",
+        elbow.aimAtAlgae().alongWith(elevator.moveToHighAlgae().withTimeout(2)));
+    NamedCommands.registerCommand("moveToLowAlgae",
+        elbow.aimAtAlgae().alongWith(elevator.moveToLowAlgae().withTimeout(2)));
 
-    NamedCommands.registerCommand("moveAlgae", elbow.moveAlgae().alongWith(showCommand("Move Algae")));
-    NamedCommands.registerCommand("intakePipeshooter",
-        pipeshooter.intakeCoral().withTimeout(2).alongWith(showCommand("intakePipeshooter")));
-    NamedCommands.registerCommand("shootCoral",
-        pipeshooter.shootCoral().alongWith(showCommand("shootCoral")).withTimeout(2));
-    NamedCommands.registerCommand("waitForTeammates", new WaitCommand(9).alongWith(showCommand("wait For Teammates")));
+    NamedCommands.registerCommand("removeCoral",
+        pipeshooter.shootCoral().withTimeout(2));
+    NamedCommands.registerCommand("intakeCoral", elevator.moveToReceive().alongWith(elbow.receive())
+        .alongWith(pipeshooter.intakeCoral()).withTimeout(3));
+    NamedCommands.registerCommand("stopIntake", pipeshooter.idle());
 
-    // TODO: we shouldn't have the drivetrain null but we need to since there is a
-    // silent crasher on beta bot
-    if (drivetrain != null) {
-      SendableChooser<Command> autoChooser = drivetrain.createPathPlannerDropdown();
-      SmartDashboard.putData("Auto Chooser", autoChooser);
-      return autoChooser::getSelected;
-    } else {
-      return () -> Commands.none();
-    }
+    NamedCommands.registerCommand("waitForTeammates", new WaitCommand(9));
+
+    SendableChooser<Command> autoChooser = drivetrain.createPathPlannerDropdown();
+    SmartDashboard.putData("Auto Chooser", autoChooser);
+    return autoChooser::getSelected;
   }
 
   void updateDiagnostics() {
     HardwareRegistry.dumpDeviceFaultsToNetworkTables();
+    if (Hardware.Diagnostics.debugMemoryLeaks) {
+      long allocatedMemoryInBytes = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory());
+      long presumableFreeMemoryInBytes = Runtime.getRuntime().maxMemory() - allocatedMemoryInBytes;
+      SmartDashboard.putNumber("freeMemory", presumableFreeMemoryInBytes);
+    }
   }
 
 }

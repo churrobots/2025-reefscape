@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.699441627358491,
-        "y": 5.995804982311321
+        "x": 5.118246221528363,
+        "y": 5.102851831418549
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.618686529371202,
-        "y": 6.939448636310262
+        "x": 5.743246408236229,
+        "y": 6.7722225900423725
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "CageAlgae"
     },
     {
       "anchor": {
-        "x": 2.8362565380031777,
-        "y": 4.120618296477755
+        "x": 1.5589413400423728,
+        "y": 7.332521600238347
       },
       "prevControl": {
-        "x": 1.7456269862288127,
-        "y": 7.314414641816738
+        "x": 2.590408583818856,
+        "y": 6.02267197431144
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "AB"
+      "linkedName": "CageSource"
     }
   ],
   "rotationTargets": [],
@@ -33,8 +33,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 6.0,
+    "maxAcceleration": 5.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -1.6316305561540942
+    "rotation": -55.46660242905806
   },
   "reversed": false,
   "folder": "Cage",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -179.41884262846398
+    "rotation": -120.15327614684324
   },
   "useDefaultConstraints": true
 }

@@ -38,12 +38,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.RobotBase;
 import swervelib.parser.SwerveParser;
 import swervelib.SwerveDrive;
 import swervelib.math.SwerveMath;
 import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
+import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
 
 // TODO(Controls): Support robot-relative driving so the Operator can use the live camera feed to position the robot for placing coral on the reef.
 // Note: there is a robot-relative boolean on one of the drive APIs that can be used for this purpose.
@@ -70,9 +71,13 @@ public class Drivetrain extends SubsystemBase {
   private DriveToAprilTag m_driveToAprilTag;
 
   public Drivetrain() {
+    // TODO: Record logging
+    // DataLogManager.start();
+    // DriverStation.startDataLog(DataLogManager.getLog());
+
     setDefaultCommand(new RunCommand(this::stop, this));
     SmartDashboard.putData("Field", m_fieldViz);
-    if (Hardware.Drivetrain.debugTelemetry == true) {
+    if (Hardware.Diagnostics.debugTelemetry == true) {
       SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
     } else {
       SwerveDriveTelemetry.verbosity = TelemetryVerbosity.POSE;
@@ -113,19 +118,26 @@ public class Drivetrain extends SubsystemBase {
     m_swerveDrive.setModuleEncoderAutoSynchronize(false,
         1);
 
+    // TODO: this made it drive weird
+    // m_swerveDrive.setChassisDiscretization(true, 0.02);
+
     // Setup vision
     if (Hardware.Vision.isEnabled) {
       m_vision = new Vision(m_swerveDrive::getPose, m_swerveDrive.field);
       m_driveToAprilTag = new DriveToAprilTag(this, m_vision);
     }
+
   }
 
   public SendableChooser<Command> createPathPlannerDropdown() {
     RobotConfig config;
     try {
       UniversalRobotProperties robotProperties = new UniversalRobotProperties(m_swerveJsonDirectory,
-          Hardware.Drivetrain.maxSpeedMetersPerSecond, Hardware.Drivetrain.robotMOI);
+          Hardware.Drivetrain.maxSpeedMetersPerSecondForAuto, Hardware.Drivetrain.robotMOI);
       config = robotProperties.getAsPathPlannerConfig();
+
+      // If using GUI setttings:
+      // config = RobotConfig.fromGUISettings();
 
       AutoBuilder.configure(
           this::getPose, // Robot pose supplier
@@ -138,8 +150,8 @@ public class Drivetrain extends SubsystemBase {
           },
           new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for
                                           // holonomic drive trains
-              new PIDConstants(5, 0.0, 0.0), // Translation PID constants
-              new PIDConstants(5, 0.0, 0.0) // Rotation PID constants
+              new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants (used to be 5.0)
+              new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants (used to be 5.0)
           ),
           config, // The robot configuration
           () -> {
@@ -179,9 +191,28 @@ public class Drivetrain extends SubsystemBase {
    *
    * @return a Command that centers the modules of the SwerveDrive subsystem
    */
-  public Command recalibrateDrivetrain() {
+  public Command recalibrateSwerveModules() {
     return run(() -> Arrays.asList(m_swerveDrive.getModules())
         .forEach(it -> it.setAngle(0.0)));
+  }
+
+  public Command recalibrateDrivetrain() {
+    return run(() -> {
+      boolean isBlueAlliance = DriverStation.getAlliance().orElseGet(() -> Alliance.Blue) == Alliance.Blue;
+      Pose2d currentPose = m_swerveDrive.getPose();
+      if (isBlueAlliance) {
+        m_swerveDrive.resetOdometry(new Pose2d(
+            currentPose.getX(),
+            currentPose.getY(),
+            Rotation2d.fromDegrees(0)));
+      } else {
+        m_swerveDrive.resetOdometry(new Pose2d(
+            currentPose.getX(),
+            currentPose.getY(),
+            Rotation2d.fromDegrees(180)));
+
+      }
+    });
   }
 
   void driveRobotRelative(ChassisSpeeds speeds) {
@@ -359,4 +390,5 @@ public class Drivetrain extends SubsystemBase {
   public Rotation2d getHeading() {
     return getPose().getRotation();
   }
+
 }
