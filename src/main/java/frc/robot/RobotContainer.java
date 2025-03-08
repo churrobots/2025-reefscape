@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.churrolib.CommandXboxControllerForSimulation;
 import frc.churrolib.HardwareRegistry;
 import frc.churrolib.vendor.Elastic;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elbow;
 import frc.robot.subsystems.Elevator;
@@ -33,6 +34,7 @@ public class RobotContainer {
   Pipeshooter pipeshooter = new Pipeshooter(elevator, elbow);
   Drivetrain drivetrain = new Drivetrain();
   UnnecessaryLEDS leds = new UnnecessaryLEDS();
+  Climber climber = new Climber();
 
   void bindCommandsForTeleop() {
 
@@ -134,6 +136,9 @@ public class RobotContainer {
       operatorXboxController.povUp().onTrue(elbow.aimAtAlgae().alongWith(elevator.moveToHighAlgae()));
       operatorXboxController.povDown().onTrue(elbow.aimAtAlgae().alongWith(elevator.moveToLowAlgae()));
 
+      operatorXboxController.povRight().onTrue(climber.moveUp());
+      operatorXboxController.start().onTrue(climber.moveMid());
+      operatorXboxController.povLeft().onTrue(climber.moveDown());
       // When we're not on a real field, make a command that we can use
       // for testing auto (putting the arm into position to hold our auto coral)
       if (!DriverStation.isFMSAttached()) {
