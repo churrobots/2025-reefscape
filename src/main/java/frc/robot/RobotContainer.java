@@ -9,9 +9,6 @@ import java.util.function.Supplier;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -32,8 +29,8 @@ import frc.robot.subsystems.UnnecessaryLEDS;
 
 public class RobotContainer {
   Elevator elevator = new Elevator();
-  Pipeshooter pipeshooter = new Pipeshooter(elevator);
   Elbow elbow = new Elbow(elevator::getHeight);
+  Pipeshooter pipeshooter = new Pipeshooter(elevator, elbow);
   Drivetrain drivetrain = new Drivetrain();
   UnnecessaryLEDS leds = new UnnecessaryLEDS();
 
@@ -82,10 +79,10 @@ public class RobotContainer {
               * Hardware.DriverStation.slowDriveScale);
 
       Command slowRobotRelativeOperatorXboxControl = drivetrain.createRobotRelativeDriveCommand(
-          () -> -1 * allianceRelativeFactor.getAsDouble()
+          () -> -1
               * MathUtil.applyDeadband(operatorXboxController.getLeftY(), xboxDeadband)
               * Hardware.DriverStation.slowbecauseyeah,
-          () -> -1 * allianceRelativeFactor.getAsDouble()
+          () -> -1
               * MathUtil.applyDeadband(operatorXboxController.getLeftX(), xboxDeadband)
               * Hardware.DriverStation.slowbecauseyeah,
           () -> -1 * MathUtil.applyDeadband(operatorXboxController.getRightX(), xboxDeadband)
@@ -118,6 +115,12 @@ public class RobotContainer {
           .alongWith(pipeshooter.intakeCoral());
       operatorXboxController.a().whileTrue(moveElbowAndElevatorToRecieve);
 
+      // TODO: add in ground algae command?
+      // Command moveElbowAndElevatorToGroundAlgae =
+      // elevator.moveToGroundAlgae().alongWith(elbow.aimToGroundAlgae())
+      // .alongWith(pipeshooter.intakeCoral());
+      // operatorXboxController.x().whileTrue(moveElbowAndElevatorToGroundAlgae);
+
       Command moveElbowAndElevatorTo1 = elevator.move1Beta().alongWith(elbow.aimAtTrough());
       operatorXboxController.x().onTrue(moveElbowAndElevatorTo1);
 
@@ -131,13 +134,13 @@ public class RobotContainer {
       operatorXboxController.povUp().onTrue(elbow.aimAtAlgae().alongWith(elevator.moveToHighAlgae()));
       operatorXboxController.povDown().onTrue(elbow.aimAtAlgae().alongWith(elevator.moveToLowAlgae()));
 
-      // Command moveElbowAndElevatorToL2Algae = elbow.aimAtAlgae()
-      // .alongWith(elevator.move2Sigma().alongWith(leds.purple()));
-      // operatorXboxController.povDown().onTrue(moveElbowAndElevatorToL2Algae);
-
-      // Command moveElbowAndElevatorToL3Algae = elbow.aimAtAlgae()
-      // .alongWith(elevator.move3Alpha().alongWith(leds.yellow()));
-      // operatorXboxController.povUp().onTrue(moveElbowAndElevatorToL3Algae);
+      // When we're not on a real field, make a command that we can use
+      // for testing auto (putting the arm into position to hold our auto coral)
+      if (!DriverStation.isFMSAttached()) {
+        driverXboxController.povUp().onTrue(elbow.holdCoralHigh());
+        driverXboxController.povDown().onTrue(elbow.aimToDump());
+        driverXboxController.a().onTrue(pipeshooter.dumpCoral());
+      }
 
       operatorXboxController.rightBumper()
           .whileTrue(pipeshooter.shootCoral().withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
@@ -153,45 +156,23 @@ public class RobotContainer {
     // FIXME: driver station is reporting that one of our autos uses a command that
     // doesn't exist in this map, check that and make sure to add it (or maybe it
     // was just a typo that needs to be fixed)
-
-    NamedCommands.registerCommand("Intake Coral", pipeshooter.intakeCoral().withTimeout(2));
-
-    NamedCommands.registerCommand(
-        "shootL1",
-        elbow.aimAtReef()
-            .alongWith(elevator.move1Beta().withTimeout(2))
-            .andThen(pipeshooter.shootCoral().withTimeout(2))
-            .andThen(elbow.receive().alongWith(elevator.moveToReceive().withTimeout(2))));
-
-    NamedCommands.registerCommand(
-        "moveToL1",
-        elevator.move1Beta().alongWith(elbow.aimAtTrough()).withTimeout(2));
-
-    NamedCommands.registerCommand(
-        "moveToL2",
-        elevator.move2Sigma().alongWith(elbow.aimAtReef()).withTimeout(2));
-
-    NamedCommands.registerCommand(
-        "moveToL3",
-        elevator.move3Alpha().alongWith(elbow.aimAtReef()).withTimeout(2));
-
-    NamedCommands.registerCommand("shootCoral",
-        pipeshooter.shootCoral().withTimeout(2));
-
-    NamedCommands.registerCommand(
-        "shootL2",
-        elbow.aimAtReef()
-            .alongWith(elevator.move2Sigma().withTimeout(2))
-            .andThen(pipeshooter.shootCoral().withTimeout(2))
-            .andThen(elbow.receive().alongWith(elevator.moveToReceive()).withTimeout(2)));
-
-    NamedCommands.registerCommand("moveAlgae", elbow.aimAtAlgae());
-    NamedCommands.registerCommand("intakePipeshooter",
-        pipeshooter.intakeCoral().withTimeout(2));
-    NamedCommands.registerCommand("waitForTeammates", new WaitCommand(9));
-    NamedCommands.registerCommand("aimToDump", elbow.aimToDump().withTimeout(5));
-    NamedCommands.registerCommand("dumpCoral", pipeshooter.dumpCoral().withTimeout(2));
     NamedCommands.registerCommand("holdCoralHigh", elbow.holdCoralHigh());
+
+    NamedCommands.registerCommand("aimToDump", elbow.aimToDump().withTimeout(3));
+    NamedCommands.registerCommand("dumpCoral", pipeshooter.dumpCoral().withTimeout(2));
+
+    NamedCommands.registerCommand("moveToHighAlgae",
+        elbow.aimAtAlgae().alongWith(elevator.moveToHighAlgae().withTimeout(2)));
+    NamedCommands.registerCommand("moveToLowAlgae",
+        elbow.aimAtAlgae().alongWith(elevator.moveToLowAlgae().withTimeout(2)));
+
+    NamedCommands.registerCommand("removeCoral",
+        pipeshooter.shootCoral().withTimeout(2));
+    NamedCommands.registerCommand("intakeCoral", elevator.moveToReceive().alongWith(elbow.receive())
+        .alongWith(pipeshooter.intakeCoral()).withTimeout(3));
+    NamedCommands.registerCommand("stopIntake", pipeshooter.idle());
+
+    NamedCommands.registerCommand("waitForTeammates", new WaitCommand(9));
 
     SendableChooser<Command> autoChooser = drivetrain.createPathPlannerDropdown();
     SmartDashboard.putData("Auto Chooser", autoChooser);

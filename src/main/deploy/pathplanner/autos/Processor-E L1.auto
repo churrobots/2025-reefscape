@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Cage-H"
+                  "pathName": "Processor-E"
                 }
               }
             ]
@@ -52,7 +52,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "H backwards"
+            "pathName": "E-Processor"
           }
         },
         {

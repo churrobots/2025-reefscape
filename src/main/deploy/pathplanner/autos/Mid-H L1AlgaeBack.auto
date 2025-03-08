@@ -5,13 +5,13 @@
     "data": {
       "commands": [
         {
-          "type": "sequential",
+          "type": "parallel",
           "data": {
             "commands": [
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Cage-EF"
+                  "pathName": "Mid-H"
                 }
               }
             ]
@@ -34,7 +34,7 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 1.0
+                        "waitTime": 0.7
                       }
                     },
                     {
@@ -50,15 +50,53 @@
           }
         },
         {
-          "type": "path",
+          "type": "deadline",
           "data": {
-            "pathName": "EF-Cage"
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 9.0
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "H-MidAlgae"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "moveToLowAlgae"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "removeCoral"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "named",
+          "type": "deadline",
           "data": {
-            "name": "holdCoralHigh"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "MidAlgae-Backoff"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "removeCoral"
+                }
+              }
+            ]
           }
         }
       ]

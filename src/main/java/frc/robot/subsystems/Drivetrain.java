@@ -131,8 +131,11 @@ public class Drivetrain extends SubsystemBase {
     RobotConfig config;
     try {
       UniversalRobotProperties robotProperties = new UniversalRobotProperties(m_swerveJsonDirectory,
-          Hardware.Drivetrain.maxSpeedMetersPerSecond, Hardware.Drivetrain.robotMOI);
+          Hardware.Drivetrain.maxSpeedMetersPerSecondForAuto, Hardware.Drivetrain.robotMOI);
       config = robotProperties.getAsPathPlannerConfig();
+
+      // If using GUI setttings:
+      // config = RobotConfig.fromGUISettings();
 
       AutoBuilder.configure(
           this::getPose, // Robot pose supplier
