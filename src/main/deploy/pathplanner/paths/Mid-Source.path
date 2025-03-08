@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.2028055481991524,
-        "y": 0.94662341101695
+        "x": 5.75,
+        "y": 4.034094456113259
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.2028055481991524,
-        "y": 0.94662341101695
+        "x": 7.031696901483051,
+        "y": 5.446638307733051
       },
       "isLocked": false,
-      "linkedName": "ProcessorSource"
+      "linkedName": "MidAlgae"
     },
     {
       "anchor": {
-        "x": 4.995428275309618,
-        "y": 2.8313366448260355
+        "x": 1.5589413400423728,
+        "y": 7.332521600238347
       },
       "prevControl": {
-        "x": 4.686835352904958,
-        "y": 1.995995841065442
+        "x": 2.7683312367584745,
+        "y": 6.990135477356992
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "CageSource"
     }
   ],
   "rotationTargets": [],
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 120.43709822688272
+    "rotation": -55.46660242905806
   },
   "reversed": false,
   "folder": "Cage",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 51.115035446938684
+    "rotation": -179.52217459792243
   },
   "useDefaultConstraints": true
 }

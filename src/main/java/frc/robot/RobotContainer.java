@@ -166,11 +166,14 @@ public class RobotContainer {
     NamedCommands.registerCommand("moveToLowAlgae",
         elbow.aimAtAlgae().alongWith(elevator.moveToLowAlgae().withTimeout(2)));
 
-    NamedCommands.registerCommand("removeCoral",
+    NamedCommands.registerCommand("removeAlgae",
         pipeshooter.shootCoral().withTimeout(2));
     NamedCommands.registerCommand("intakeCoral", elevator.moveToReceive().alongWith(elbow.receive())
         .alongWith(pipeshooter.intakeCoral()).withTimeout(3));
     NamedCommands.registerCommand("stopIntake", pipeshooter.idle());
+
+    NamedCommands.registerCommand("moveToL2", elevator.move2Sigma().alongWith(elbow.aimAtReef()));
+    NamedCommands.registerCommand("shootCoral", pipeshooter.shootCoral());
 
     NamedCommands.registerCommand("waitForTeammates", new WaitCommand(9));
 
