@@ -13,6 +13,7 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import frc.robot.Robot;
@@ -40,7 +41,15 @@ public class Camera {
     m_robotToCam = robotToCam;
     // Construct PhotonPoseEstimator
     m_photonPoseEstimator = new PhotonPoseEstimator(Vision.m_aprilTagFieldLayout,
+        // Strategies that work:
+        // - CLOSEST_TO_REFERENCE_POSE
+        // - CLOSEST_TO_CAMERA_HEIGHT
+        // - AVERAGE_BEST_TARGETS
+        // Strategies that do NOT work:
+        // - CLOSEST_TO_LAST_POSE
+        // - LOWEST_AMBIGUITY
         PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, m_robotToCam);
+    m_photonPoseEstimator.setMultiTagFallbackStrategy(PoseStrategy.AVERAGE_BEST_TARGETS);
 
     if (Robot.isSimulation()) {
       SimCameraProperties cameraProp = new SimCameraProperties();

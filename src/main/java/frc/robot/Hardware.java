@@ -149,7 +149,7 @@ public final class Hardware {
   public final class Vision {
     public static final boolean isEnabled = switch (robotName) {
       case ROBOT_CANELO -> false;
-      case ROBOT_ALPHA -> false;
+      case ROBOT_ALPHA -> true;
       case ROBOT_BETA -> true;
       case ROBOT_SIMULATION -> true;
       default -> false;
