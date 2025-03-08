@@ -73,6 +73,7 @@ public final class Hardware {
     public static final double kL3Height = 0.33; // height to score in L3
     public static final double highAlgaeHeighet = 0.23;
     public static final double lowAlgaeHeighet = 0.045;
+    public static final double groundAlgaeHeight = 0.0;
   }
 
   public final class Elbow {
@@ -94,11 +95,16 @@ public final class Hardware {
     public static final double speedForResettingPosition = 0.05;
 
     // These are the angles appropriate for different positions.
-    public static final double receivingRotations = 0.04;
-    public static final double aimAtReefRotations = 0.47;
-    public static final double aimAtTroughRotations = 0.53;
-    public static final double aimToDumpRotations = 0.34;
-    public static final double aimAtAlgaeRotations = 0.43; // previously: 0.44;
+    public static final double receivingRotations = 0.025;
+    public static final double aimAtReefRotations = 0.48;
+    public static final double aimAtTroughRotations = 0.58;
+    public static final double aimToDumpRotations = 0.32;
+    public static final double aimAtAlgaeRotations = 0.44;
+    public static final double aimToGroundAlgae = 0.166;
+
+    // Keep track of safe positions for certain actions.
+    // It should be higher than the other aiming, EXCEPT for dump.
+    public static final double minimumRotationsForSafeShooting = 0.38;
 
     // These govern the ranges of motion for being tucked and extended, to prevent
     // crashing with reef and crossbar.
@@ -111,11 +117,13 @@ public final class Hardware {
   public final class Drivetrain {
     // TODO: consider upping the max speed again
     public static final double maxSpeedMetersPerSecond = 6.04; // TODO: should this really be 4?
+    public static final double maxSpeedMetersPerSecondForAuto = 6.4;
     // TODO: Update the MOIs to match the robots.
     public static final double robotMOI = switch (robotName) {
       case ROBOT_CANELO -> 6.0;
       case ROBOT_ALPHA -> 2.0;
-      case ROBOT_BETA -> 6.0;
+      // TODO: could this MOI affect auto speed being slow
+      case ROBOT_BETA -> 3.5;
       case ROBOT_SIMULATION -> 2.0;
       default -> 6.0;
     };
