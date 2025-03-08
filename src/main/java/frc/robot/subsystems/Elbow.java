@@ -88,6 +88,11 @@ public class Elbow extends SubsystemBase {
     return moveToPosition(Hardware.Elbow.aimToDumpRotations, false);
   }
 
+  public Command aimToGroundAlgae() {
+    // no safety
+    return moveToPosition(Hardware.Elbow.aimToGroundAlgae, false);
+  }
+
   public Command holdCoralHigh() {
     return moveToPosition(Hardware.Elbow.holdCoralHighRotations, false);
   }

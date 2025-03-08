@@ -115,6 +115,12 @@ public class RobotContainer {
           .alongWith(pipeshooter.intakeCoral());
       operatorXboxController.a().whileTrue(moveElbowAndElevatorToRecieve);
 
+      // TODO: add in ground algae command?
+      // Command moveElbowAndElevatorToGroundAlgae =
+      // elevator.moveToGroundAlgae().alongWith(elbow.aimToGroundAlgae())
+      // .alongWith(pipeshooter.intakeCoral());
+      // operatorXboxController.x().whileTrue(moveElbowAndElevatorToGroundAlgae);
+
       Command moveElbowAndElevatorTo1 = elevator.move1Beta().alongWith(elbow.aimAtTrough());
       operatorXboxController.x().onTrue(moveElbowAndElevatorTo1);
 

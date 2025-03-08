@@ -73,6 +73,7 @@ public final class Hardware {
     public static final double kL3Height = 0.33; // height to score in L3
     public static final double highAlgaeHeighet = 0.23;
     public static final double lowAlgaeHeighet = 0.045;
+    public static final double groundAlgaeHeight = 0.0;
   }
 
   public final class Elbow {
@@ -98,7 +99,8 @@ public final class Hardware {
     public static final double aimAtReefRotations = 0.48;
     public static final double aimAtTroughRotations = 0.58;
     public static final double aimToDumpRotations = 0.32;
-    public static final double aimAtAlgaeRotations = 0.44; // previously: 0.44;
+    public static final double aimAtAlgaeRotations = 0.44;
+    public static final double aimToGroundAlgae = 0.166;
 
     // Keep track of safe positions for certain actions.
     // It should be higher than the other aiming, EXCEPT for dump.
