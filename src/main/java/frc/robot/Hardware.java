@@ -34,30 +34,30 @@ public final class Hardware {
   }
 
   public final class Climber {
-    public static final int falconMotorCAN = 0; //Figure out the Can ID
-    public static final double gearboxReduction = 0; //Figure this out too
+    public static final int falconMotorCAN = 10;
+    public static final double gearboxReduction = 32;
+    public static final double armRatio = 5.5;
 
     public static final double kCurrentLimit = 80;
     public static final double simCarriageMass = 0.01;
-    public static final double sprocketPitchDiameter = Units.inchesToMeters(1.75); // 22T #25
 
-    public static final double kS = 0.4; // static friction feed-forward component.
-    public static final double kP = 2; // proportional
+    public static final double kS = 0; // static friction feed-forward component.
+    public static final double kP = 1; // proportional
     public static final double kI = 0; // integral
     public static final double kD = 0.1; // derivative
-    public static final double kG = 0.6; // gravity
+    public static final double kG = 0; // gravity
 
-    public static final double kMaxVelocity = 40 * gearboxReduction; // TODO: when we fix arm, make this 70
-    public static final double kMaxAcceleration = 10 * gearboxReduction; // TODO: when we fix arm, make this 30
-    public static final double kMaxJerk = 100 * gearboxReduction;
-
+    public static final double kMaxVelocity = 10 * gearboxReduction * armRatio;
+    public static final double kMaxAcceleration = 2.5 * gearboxReduction * armRatio;
+    public static final double kMaxJerk = 25 * gearboxReduction * armRatio;
 
     public static final double minRotations = 0.0;
-    public static final double maxRotations = 0.33;
+    // TODO: calibrate the number below
+    public static final double maxRotations = 0.4; // this is the height that should correspond to a full climb.
 
     public static final double kDown = 0; // Rotations to move down
-    public static final double kMid = 0.625; // Rotations to move to the mid
-    public static final double kUp = 0.75; // Rotations to move Up
+    // TODO: calibrate the number below
+    public static final double kMid = 0.125; // Rotations to move to the mid
   }
 
   public final class Elevator {

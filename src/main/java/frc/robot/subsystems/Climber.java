@@ -25,9 +25,8 @@ public class Climber extends SubsystemBase {
 
   /** Creates a new Climber. */
   public Climber() {
-    setDefaultCommand(moveDown());
+    setDefaultCommand(stay());
     HardwareRegistry.registerHardware(m_climberMotor);
-    
     final TalonFXConfiguration climberConfig = new TalonFXConfiguration();
     climberConfig.Slot0.kS = Hardware.Climber.kS;
     climberConfig.Slot0.kP = Hardware.Climber.kP;
@@ -57,6 +56,12 @@ public class Climber extends SubsystemBase {
     m_climberMotor.setPosition(0);
   }
 
+  public Command stay() {
+    return run(() -> {
+      m_climberMotor.set(0);
+    });
+  }
+
   public Command moveDown() {
     return moveToRotations(Hardware.Climber.kDown);
   }
@@ -65,12 +70,20 @@ public class Climber extends SubsystemBase {
     return moveToRotations(Hardware.Climber.kMid);
   }
 
-  public Command moveUp() {
-    return moveToRotations(Hardware.Climber.kUp);
+  // slowly climb until hit max position
+  public Command moveUpwards() {
+    return run(() -> {
+      if (getRotations() < Hardware.Climber.maxRotations) {
+        m_climberMotor.set(0.1);
+      } else {
+        m_climberMotor.set(0);
+      }
+    });
   }
 
   public double getRotations() {
-    return m_climberMotor.getPosition().getValueAsDouble() / Hardware.Climber.gearboxReduction;
+    return m_climberMotor.getPosition().getValueAsDouble() / Hardware.Climber.gearboxReduction
+        / Hardware.Climber.armRatio;
   }
 
   private Command moveToRotations(double desiredOutputInRotations) {
@@ -80,7 +93,8 @@ public class Climber extends SubsystemBase {
           Hardware.Climber.minRotations,
           Hardware.Climber.maxRotations);
       m_targetRotations = safeRotations;
-      double requiredInputRotations = Hardware.Climber.gearboxReduction * desiredOutputInRotations;
+      double requiredInputRotations = Hardware.Climber.gearboxReduction * Hardware.Climber.armRatio
+          * desiredOutputInRotations;
       m_climberMotor.setControl(m_positionRequest.withPosition(requiredInputRotations));
     });
   }

@@ -136,7 +136,7 @@ public class RobotContainer {
       operatorXboxController.povUp().onTrue(elbow.aimAtAlgae().alongWith(elevator.moveToHighAlgae()));
       operatorXboxController.povDown().onTrue(elbow.aimAtAlgae().alongWith(elevator.moveToLowAlgae()));
 
-      operatorXboxController.povRight().onTrue(climber.moveUp());
+      operatorXboxController.povRight().whileTrue(climber.moveUpwards());
       operatorXboxController.start().onTrue(climber.moveMid());
       operatorXboxController.povLeft().onTrue(climber.moveDown());
       // When we're not on a real field, make a command that we can use
