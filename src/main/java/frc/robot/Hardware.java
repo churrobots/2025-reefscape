@@ -96,7 +96,7 @@ public final class Hardware {
     public static final double maxHeightInMeters = 0.33;
     public static final double kReceiveHeight = 0.0; // initial height, also the height where we receive coral.
     public static final double kL1Height = 0.03; // height to score in L1 trough
-    public static final double kL2Height = 0.12; // height to score in L2
+    public static final double kL2Height = 0.135; // height to score in L2
     public static final double kL3Height = 0.33; // height to score in L3
     public static final double highAlgaeHeighet = 0.23;
     public static final double lowAlgaeHeighet = 0.045;
