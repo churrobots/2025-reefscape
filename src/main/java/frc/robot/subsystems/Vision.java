@@ -130,41 +130,4 @@ public class Vision {
     }
     return poseEst;
   }
-
-  /**
-   * Calculates a target pose relative to an AprilTag on the field.
-   *
-   * @param aprilTag    The ID of the AprilTag.
-   * @param robotOffset The offset {@link Transform2d} of the robot to apply to
-   *                    the pose for the robot to position
-   *                    itself correctly.
-   * @return The target pose of the AprilTag.
-   */
-  // public static Pose2d getAprilTagPose(int aprilTag, Transform2d robotOffset) {
-  // }
-
-  /**
-   * Get distance of the robot from the AprilTag pose.
-   *
-   * @param id AprilTag ID
-   * @return Distance
-   */
-  // public double getDistanceFromAprilTag(int id) {
-  // }
-
-  /**
-   * Get tracked target from a camera of AprilTagID
-   *
-   * @param id     AprilTag ID
-   * @param camera Camera to check.
-   * @return Tracked target.
-   */
-  // public PhotonTrackedTarget getTargetFromId(int id, Cameras camera) {
-  // }
-
-  /**
-   * Update the {@link Field2d} to include tracked targets/
-   */
-  // public void updateVisionField() {
-  // }
 }

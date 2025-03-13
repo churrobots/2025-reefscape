@@ -10,10 +10,8 @@ import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
 import org.photonvision.targeting.PhotonPipelineResult;
-import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import frc.robot.Robot;
@@ -110,43 +108,6 @@ public class Camera {
       return Optional.empty();
     }
     return m_photonPoseEstimator.update(latestResult.get());
-  }
-
-  /**
-   * Update the latest results, cached with a maximum refresh rate of 1req/15ms.
-   * Sorts the list by timestamp.
-   */
-  private void updateUnreadResults() {
-  }
-
-  /**
-   * The latest estimated robot pose on the field from vision data. This may be
-   * empty. This should only be called once
-   * per loop.
-   *
-   * <p>
-   * Also includes updates for the standard deviations, which can (optionally) be
-   * retrieved with
-   * {@link Cameras#updateEstimationStdDevs}
-   *
-   * @return An {@link EstimatedRobotPose} with an estimated pose, estimate
-   *         timestamp, and targets used for
-   *         estimation.
-   */
-  private void updateEstimatedGlobalPose() {
-  }
-
-  /**
-   * Calculates new standard deviations This algorithm is a heuristic that creates
-   * dynamic standard deviations based
-   * on number of tags, estimation strategy, and distance from the tags.
-   *
-   * @param estimatedPose The estimated pose to guess standard deviations for.
-   * @param targets       All targets in this camera frame
-   */
-  private void updateEstimationStdDevs(
-      Optional<EstimatedRobotPose> estimatedPose, List<PhotonTrackedTarget> targets) {
-
   }
 
   /**
