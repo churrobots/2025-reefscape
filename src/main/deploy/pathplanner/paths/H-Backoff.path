@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.793197995507521,
-        "y": 4.259172255341408
+        "x": 5.867058974985305,
+        "y": 3.9783572548314146
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.663359670854744,
-        "y": 4.002543566105296
+        "x": 6.737220650332528,
+        "y": 3.7217285655953027
       },
       "isLocked": false,
       "linkedName": "GH"
@@ -48,7 +48,7 @@
   "folder": "Cage",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 169.20254583385537
+    "rotation": 178.7564601465672
   },
   "useDefaultConstraints": true
 }

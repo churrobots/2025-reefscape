@@ -18,13 +18,21 @@ import swervelib.SwerveDrive;
 import swervelib.telemetry.SwerveDriveTelemetry;
 
 public class Vision {
-  Camera[] m_cameras = { new Camera("VisionCamera1", Hardware.Vision.robotToCam1) };
+  Camera[] m_cameras = {
+      new Camera("OperatorCamera1", Hardware.Vision.robotToCamOperator),
+      new Camera("VisionCameraFront", Hardware.Vision.robotToCamFront),
+      new Camera("VisionCameraBack", Hardware.Vision.robotToCamBack),
+  };
 
   static AprilTagFieldLayout m_aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
   Supplier<Pose2d> m_currentPose;
   Field2d m_field;
-  final StructPublisher<Pose2d> m_publisher = NetworkTableInstance.getDefault()
-      .getStructTopic("VisionPose", Pose2d.struct).publish();
+  final StructPublisher<Pose2d> m_operator1PosePublisher = NetworkTableInstance.getDefault()
+      .getStructTopic("OperatorCamera1Pose", Pose2d.struct).publish();
+  final StructPublisher<Pose2d> m_visionFrontPosePublisher = NetworkTableInstance.getDefault()
+      .getStructTopic("VisionCameraFrontPose", Pose2d.struct).publish();
+  final StructPublisher<Pose2d> m_visionBackPosePublisher = NetworkTableInstance.getDefault()
+      .getStructTopic("VisionCameraBackPose", Pose2d.struct).publish();
 
   // For simulation
   VisionSystemSim m_visionSim;
@@ -80,17 +88,24 @@ public class Vision {
       m_field.getObject("VisionPose").setPose(swerveDrive.getSimulationDriveTrainPose().get());
     }
 
-    for (Camera camera : m_cameras) {
+    for (Integer i = 0; i < 3; i++) {
+      Camera camera = m_cameras[i];
       Optional<EstimatedRobotPose> poseEst = getEstimatedGlobalPose(camera);
       if (poseEst.isPresent()) {
         var pose = poseEst.get();
         m_currentPose = () -> pose.estimatedPose.toPose2d();
-        m_publisher.set(pose.estimatedPose.toPose2d());
+        if (i == 0) {
+          m_operator1PosePublisher.set(pose.estimatedPose.toPose2d());
+        } else if (i == 1) {
+          m_visionFrontPosePublisher.set(pose.estimatedPose.toPose2d());
+        } else {
+          m_visionBackPosePublisher.set(pose.estimatedPose.toPose2d());
+        }
         swerveDrive.addVisionMeasurement(pose.estimatedPose.toPose2d(),
             pose.timestampSeconds);
       }
-    }
 
+    }
   }
 
   /**

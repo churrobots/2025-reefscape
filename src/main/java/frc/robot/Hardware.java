@@ -117,7 +117,7 @@ public final class Hardware {
   public final class Drivetrain {
     // TODO: consider upping the max speed again
     public static final double maxSpeedMetersPerSecond = 6.04; // TODO: should this really be 4?
-    public static final double maxSpeedMetersPerSecondForAuto = 6.4;
+    public static final double maxSpeedMetersPerSecondForAuto = 6.05;
     // TODO: Update the MOIs to match the robots.
     public static final double robotMOI = switch (robotName) {
       case ROBOT_CANELO -> 6.0;
@@ -158,11 +158,19 @@ public final class Hardware {
     // TODO: Update the Transform3d to match the camera position on the bot
     // Currently it is set to a camera mounted facing forward, 0.5 meters forwards
     // of center, 0.0 meters right of center, 0.5 meters up from center
-    public static final Transform3d robotToCam1 = switch (robotName) {
-      case ROBOT_ALPHA -> new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0));
-      case ROBOT_BETA -> new Transform3d(new Translation3d(0.17, -0.32, 0.62), new Rotation3d(0, 0, 0));
+    public static final Transform3d robotToCamOperator = switch (robotName) {
+      case ROBOT_BETA -> new Transform3d(new Translation3d(0.33, 0.0, 0.102), new Rotation3d(0, -1.05, 0));
       default -> new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0));
     };
+    public static final Transform3d robotToCamFront = switch (robotName) {
+      case ROBOT_BETA -> new Transform3d(new Translation3d(0.12, -0.32, 0.51), new Rotation3d(0, 0.79, 0));
+      default -> new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0));
+    };
+    public static final Transform3d robotToCamBack = switch (robotName) {
+      case ROBOT_BETA -> new Transform3d(new Translation3d(0.14, -0.32, 0.33), new Rotation3d(0, 0.79, 3.14));
+      default -> new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0));
+    };
+
   }
 
   public final class LEDLights {
