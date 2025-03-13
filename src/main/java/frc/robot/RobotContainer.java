@@ -158,8 +158,8 @@ public class RobotContainer {
     // was just a typo that needs to be fixed)
     NamedCommands.registerCommand("holdCoralHigh", elbow.holdCoralHigh());
 
-    NamedCommands.registerCommand("aimToDump", elbow.aimToDump().withTimeout(3));
-    NamedCommands.registerCommand("dumpCoral", pipeshooter.dumpCoral().withTimeout(2));
+    NamedCommands.registerCommand("aimToDump", elbow.aimToDump().withTimeout(1.5));
+    NamedCommands.registerCommand("dumpCoral", pipeshooter.dumpCoral().withTimeout(0.5));
 
     NamedCommands.registerCommand("moveToHighAlgae",
         elbow.aimAtAlgae().alongWith(elevator.moveToHighAlgae().withTimeout(2)));
@@ -169,10 +169,11 @@ public class RobotContainer {
     NamedCommands.registerCommand("removeAlgae",
         pipeshooter.shootCoral().withTimeout(2));
     NamedCommands.registerCommand("intakeCoral", elevator.moveToReceive().alongWith(elbow.receive())
-        .alongWith(pipeshooter.intakeCoral()).withTimeout(3));
+        .alongWith(pipeshooter.intakeCoral()).withTimeout(1.5));
     NamedCommands.registerCommand("stopIntake", pipeshooter.idle());
 
     NamedCommands.registerCommand("moveToL2", elevator.move2Sigma().alongWith(elbow.aimAtReef()));
+    NamedCommands.registerCommand("moveToL3", elevator.move3Alpha().alongWith(elbow.aimAtReef()));
     NamedCommands.registerCommand("shootCoral", pipeshooter.shootCoral());
 
     NamedCommands.registerCommand("waitForTeammates", new WaitCommand(9));

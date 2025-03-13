@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.1371056210175485,
-        "y": 2.9536450449393423
+        "x": 5.12,
+        "y": 2.92
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.223131289724576,
-        "y": 1.1872910321769075
+        "x": 5.206025668707028,
+        "y": 1.153645987237565
       },
       "isLocked": false,
       "linkedName": "ProcessorAlgae"
@@ -20,7 +20,7 @@
         "y": 0.94662341101695
       },
       "prevControl": {
-        "x": 0.39607761189088975,
+        "x": 0.39607761189088986,
         "y": 1.140571206302967
       },
       "nextControl": null,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 51.11503544693868
+    "rotation": 51.115035446938684
   },
   "reversed": false,
   "folder": "Cage",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 119.66457826089749
+    "rotation": 120.07686149757714
   },
   "useDefaultConstraints": true
 }

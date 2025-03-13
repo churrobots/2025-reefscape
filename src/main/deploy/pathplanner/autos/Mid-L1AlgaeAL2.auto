@@ -87,7 +87,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Mid-Source"
+                  "pathName": "Mid-ProcessorSource"
                 }
               },
               {
@@ -125,7 +125,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "CageSource-Reef"
+                  "pathName": "ProcessorSource-BackReef"
                 }
               },
               {

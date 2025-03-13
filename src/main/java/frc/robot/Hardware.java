@@ -117,7 +117,7 @@ public final class Hardware {
   public final class Drivetrain {
     // TODO: consider upping the max speed again
     public static final double maxSpeedMetersPerSecond = 6.04; // TODO: should this really be 4?
-    public static final double maxSpeedMetersPerSecondForAuto = 6.05;
+    public static final double maxSpeedMetersPerSecondForAuto = 6.375;
     // TODO: Update the MOIs to match the robots.
     public static final double robotMOI = switch (robotName) {
       case ROBOT_CANELO -> 6.0;
@@ -163,11 +163,11 @@ public final class Hardware {
       default -> new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0));
     };
     public static final Transform3d robotToCamFront = switch (robotName) {
-      case ROBOT_BETA -> new Transform3d(new Translation3d(0.12, -0.32, 0.51), new Rotation3d(0, 0.79, 0));
+      case ROBOT_BETA -> new Transform3d(new Translation3d(0.12, 0.32, 0.51), new Rotation3d(0, 0.79, 0));
       default -> new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0));
     };
     public static final Transform3d robotToCamBack = switch (robotName) {
-      case ROBOT_BETA -> new Transform3d(new Translation3d(0.14, -0.32, 0.33), new Rotation3d(0, 0.79, 3.14));
+      case ROBOT_BETA -> new Transform3d(new Translation3d(0.14, 0.32, 0.33), new Rotation3d(0, 0.79, 3.14));
       default -> new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0));
     };
 

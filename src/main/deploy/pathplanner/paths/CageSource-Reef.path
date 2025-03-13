@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.9240893852966834,
-        "y": 6.42232509853454
+        "x": 2.6298971755532934,
+        "y": 6.875262517794416
       },
       "isLocked": false,
       "linkedName": "CageSource"
     },
     {
       "anchor": {
-        "x": 3.2184406891255097,
-        "y": 4.222321918448948
+        "x": 5.277671078511829,
+        "y": 5.080670920446294
       },
       "prevControl": {
-        "x": 2.801740362701082,
-        "y": 4.222321918448948
+        "x": 5.685401721470301,
+        "y": 5.786881109853093
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "AL2"
+      "linkedName": "I-L3"
     }
   ],
   "rotationTargets": [],
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -2.274372415178408
+    "rotation": -122.95908041829297
   },
   "reversed": false,
   "folder": "Cage",
