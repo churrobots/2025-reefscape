@@ -376,4 +376,18 @@ public class Drivetrain extends SubsystemBase {
     return getPose().getRotation();
   }
 
+  /**
+   * Sets vision into vision-only mode.
+   */
+  public void setupAutonomous() {
+    m_vision.setAutonomousMode();
+  }
+
+  /**
+   * Sets vision into driver mode (i.e., turn the operator camera into driver
+   * mode).
+   */
+  public void setupTeleop() {
+    m_vision.setDriverMode();
+  }
 }

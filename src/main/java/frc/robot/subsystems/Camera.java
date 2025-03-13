@@ -121,4 +121,13 @@ public class Camera {
     }
   }
 
+  /**
+   * Set the camera to driver mode.
+   * 
+   * @param driverMode True if camera should be set to driver mode.
+   */
+  public void setDriverMode(Boolean driverMode) {
+    m_photonCamera.setDriverMode(driverMode);
+  }
+
 }

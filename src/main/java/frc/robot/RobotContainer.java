@@ -192,4 +192,11 @@ public class RobotContainer {
     }
   }
 
+  void setupAutonomous() {
+    drivetrain.setupAutonomous();
+  }
+
+  void setupTeleop() {
+    drivetrain.setupTeleop();
+  }
 }

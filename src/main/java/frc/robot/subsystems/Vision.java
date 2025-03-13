@@ -130,4 +130,24 @@ public class Vision {
     }
     return poseEst;
   }
+
+  /**
+   * Sets all cameras into vision mode for detecting AprilTags.
+   */
+  public void setAutonomousMode() {
+    for (Camera camera : m_cameras) {
+      camera.setDriverMode(false);
+    }
+  }
+
+  /**
+   * Sets the operator camera into driver mode.
+   */
+  public void setDriverMode() {
+    // Set the operator camera in driver mode, but leave all vision cameras in
+    // vision mode.
+    m_cameras[0].setDriverMode(true);
+    m_cameras[1].setDriverMode(false);
+    m_cameras[2].setDriverMode(false);
+  }
 }
