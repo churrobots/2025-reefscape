@@ -134,16 +134,6 @@ public final class Hardware {
       case ROBOT_SIMULATION -> "yagsl-configs/beta";
       default -> "yagsl-configs/beta";
     };
-    // PathPlanner config values
-    // double wheelRadius = 0;
-    // double maxDriveVelocity = 0;
-    // double wheelCOF = 0;
-    // DCMotor driveMotor = DCMotor.getNEO(1);
-    // double driveCurrentLimit = 0;
-    // double robotMassKg = 0;
-    // double robotMOI = 0;
-    // double trackwidthMeters = 0;
-    // int numMotors = 0;
   }
 
   public final class Vision {
@@ -155,17 +145,18 @@ public final class Hardware {
       default -> false;
     };
 
-    // TODO: Update the Transform3d to match the camera position on the bot
-    // Currently it is set to a camera mounted facing forward, 0.5 meters forwards
-    // of center, 0.0 meters right of center, 0.5 meters up from center
+    // Camera positions relative to robot center
+    // Operator camera
     public static final Transform3d robotToCamOperator = switch (robotName) {
       case ROBOT_BETA -> new Transform3d(new Translation3d(0.33, 0.0, 0.102), new Rotation3d(0, -1.05, 0));
       default -> new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0));
     };
+    // Camera facing forward
     public static final Transform3d robotToCamFront = switch (robotName) {
       case ROBOT_BETA -> new Transform3d(new Translation3d(0.12, 0.32, 0.51), new Rotation3d(0, 0.79, 0));
       default -> new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0));
     };
+    // Camera facing backward
     public static final Transform3d robotToCamBack = switch (robotName) {
       case ROBOT_BETA -> new Transform3d(new Translation3d(0.14, 0.32, 0.33), new Rotation3d(0, 0.79, 3.14));
       default -> new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0));
