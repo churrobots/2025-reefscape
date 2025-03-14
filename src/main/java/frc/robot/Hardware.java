@@ -47,8 +47,8 @@ public final class Hardware {
     public static final double kD = 0.1; // derivative
     public static final double kG = 0; // gravity
 
-    public static final double kMaxVelocity = 10 * gearboxReduction * armRatio;
-    public static final double kMaxAcceleration = 2.5 * gearboxReduction * armRatio;
+    public static final double kMaxVelocity = 20 * gearboxReduction * armRatio;
+    public static final double kMaxAcceleration = 3.5 * gearboxReduction * armRatio;
     public static final double kMaxJerk = 25 * gearboxReduction * armRatio;
 
     public static final double minRotations = 0.0;
