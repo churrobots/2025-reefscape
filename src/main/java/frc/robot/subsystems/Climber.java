@@ -22,6 +22,7 @@ public class Climber extends SubsystemBase {
   final TalonFX m_climberMotor = new TalonFX(Hardware.Climber.falconMotorCAN);
   final MotionMagicVoltage m_positionRequest = new MotionMagicVoltage(0);
   double m_targetRotations = 0;
+  boolean m_isActivated = false;
 
   /** Creates a new Climber. */
   public Climber() {
@@ -63,23 +64,40 @@ public class Climber extends SubsystemBase {
   }
 
   public Command moveDown() {
-    return moveToRotations(Hardware.Climber.kDown);
+    return run(() -> {
+      if (getRotations() < Hardware.Climber.maxRotations) {
+        m_climberMotor.set(-1);
+      } else {
+        m_climberMotor.set(0);
+      }
+    });
   }
 
   public Command moveMid() {
-    return moveToRotations(Hardware.Climber.kMid);
+    return run(() -> {
+      // if (getRotations() < Hardware.Climber.kMid) {
+      // m_climberMotor.set(1);
+      // } else {
+      // m_climberMotor.set(0);
+      // }
+    });
   }
 
   // slowly climb until hit max position
   public Command moveUpwards() {
     return run(() -> {
       if (getRotations() < Hardware.Climber.maxRotations) {
-        m_climberMotor.set(0.1);
+        m_climberMotor.set(1);
       } else {
         m_climberMotor.set(0);
       }
     });
   }
+
+  // public Command activation()
+  // {
+  // return m_isActivated = true;
+  // }
 
   public double getRotations() {
     return m_climberMotor.getPosition().getValueAsDouble() / Hardware.Climber.gearboxReduction

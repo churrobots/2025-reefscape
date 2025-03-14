@@ -136,9 +136,16 @@ public class RobotContainer {
       operatorXboxController.povUp().onTrue(elbow.aimAtAlgae().alongWith(elevator.moveToHighAlgae()));
       operatorXboxController.povDown().onTrue(elbow.aimAtAlgae().alongWith(elevator.moveToLowAlgae()));
 
-      operatorXboxController.povRight().whileTrue(climber.moveUpwards());
-      operatorXboxController.start().onTrue(climber.moveMid());
-      operatorXboxController.povLeft().onTrue(climber.moveDown());
+      Command moveClimbUp = climber.moveUpwards();
+      Command moveClimbMid = climber.moveMid();
+      Command moveClimbDown = climber.moveDown();
+
+      // operatorXboxController.povRight().whileTrue(climber.moveUpwards());
+      operatorXboxController.start().onTrue(moveClimbMid);
+      operatorXboxController.povLeft().whileTrue(moveClimbDown);
+      operatorXboxController.povRight().whileTrue(moveClimbUp);
+
+      // operatorXboxController.povLeft().onTrue(climber.moveDown());
       // When we're not on a real field, make a command that we can use
       // for testing auto (putting the arm into position to hold our auto coral)
       if (!DriverStation.isFMSAttached()) {

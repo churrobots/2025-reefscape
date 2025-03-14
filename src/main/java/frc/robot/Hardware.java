@@ -53,7 +53,7 @@ public final class Hardware {
 
     public static final double minRotations = 0.0;
     // TODO: calibrate the number below
-    public static final double maxRotations = 0.4; // this is the height that should correspond to a full climb.
+    public static final double maxRotations = 999; // this is the height that should correspond to a full climb.
 
     public static final double kDown = 0; // Rotations to move down
     // TODO: calibrate the number below
