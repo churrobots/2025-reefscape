@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.1383452517008115,
-        "y": 5.173764856992095
+        "x": 5.126568777647118,
+        "y": 5.138749210019089
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.324492204923438,
-        "y": 5.340645987758678
+        "x": 5.312715730869745,
+        "y": 5.3056303407856715
       },
       "isLocked": false,
       "linkedName": "IJ"
     },
     {
       "anchor": {
-        "x": 5.1383452517008115,
-        "y": 5.11
+        "x": 5.126568777647118,
+        "y": 5.439820719523141
       },
       "prevControl": {
-        "x": 5.236291103633139,
-        "y": 5.340014369310377
+        "x": 5.218558500100003,
+        "y": 5.6722812343703755
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "IJ Rotation"
     }
   ],
   "rotationTargets": [],
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -120.15327614684324
+    "rotation": -86.00463425392283
   },
   "reversed": false,
   "folder": "Cage",
