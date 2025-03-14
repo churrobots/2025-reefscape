@@ -33,6 +33,33 @@ public final class Hardware {
     public static final double simMomentOfInertia = 0.01;
   }
 
+  public final class Climber {
+    public static final int falconMotorCAN = 10;
+    public static final double gearboxReduction = 32;
+    public static final double armRatio = 5.5;
+
+    public static final double kCurrentLimit = 80;
+    public static final double simCarriageMass = 0.01;
+
+    public static final double kS = 0; // static friction feed-forward component.
+    public static final double kP = 1; // proportional
+    public static final double kI = 0; // integral
+    public static final double kD = 0.1; // derivative
+    public static final double kG = 0; // gravity
+
+    public static final double kMaxVelocity = 10 * gearboxReduction * armRatio;
+    public static final double kMaxAcceleration = 2.5 * gearboxReduction * armRatio;
+    public static final double kMaxJerk = 25 * gearboxReduction * armRatio;
+
+    public static final double minRotations = 0.0;
+    // TODO: calibrate the number below
+    public static final double maxRotations = 999; // this is the height that should correspond to a full climb.
+
+    public static final double kDown = 0; // Rotations to move down
+    // TODO: calibrate the number below
+    public static final double kMid = 0.125; // Rotations to move to the mid
+  }
+
   public final class Elevator {
     public static final int leaderFalconMotorCAN = 15;
     public static final int followerFalconMotorCAN = 16;
@@ -69,7 +96,7 @@ public final class Hardware {
     public static final double maxHeightInMeters = 0.33;
     public static final double kReceiveHeight = 0.0; // initial height, also the height where we receive coral.
     public static final double kL1Height = 0.03; // height to score in L1 trough
-    public static final double kL2Height = 0.12; // height to score in L2
+    public static final double kL2Height = 0.135; // height to score in L2
     public static final double kL3Height = 0.33; // height to score in L3
     public static final double highAlgaeHeighet = 0.23;
     public static final double lowAlgaeHeighet = 0.045;
