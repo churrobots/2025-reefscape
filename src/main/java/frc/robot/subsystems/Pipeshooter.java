@@ -31,7 +31,7 @@ public class Pipeshooter extends SubsystemBase {
 
   public Command idle() {
     return run(() -> {
-      m_pipeShooterMotor.set(0);
+      m_pipeShooterMotor.set(-0.05);
     });
   }
 
@@ -52,7 +52,7 @@ public class Pipeshooter extends SubsystemBase {
       boolean notSafe = m_elbow.getCurrentElbowPosition() < Hardware.Elbow.minimumRotationsForSafeShooting;
       if (notSafe) {
         return;
-      } else if (m_elevator.getHeight() > Hardware.Elevator.kL1Height) { 
+      } else if (m_elevator.getHeight() > Hardware.Elevator.kL1Height) {
         m_pipeShooterMotor.set(0.40);
       } else {
         m_pipeShooterMotor.set(0.20);
