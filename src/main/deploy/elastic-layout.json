@@ -273,14 +273,14 @@
             }
           },
           {
-            "title": "OperatorCamera",
+            "title": "OperatorCamera1",
             "x": 0.0,
-            "y": 25.0,
-            "width": 700.0,
-            "height": 625.0,
+            "y": 0.0,
+            "width": 725.0,
+            "height": 575.0,
             "type": "Camera Stream",
             "properties": {
-              "topic": "/CameraPublisher/photonvision.fr_Port_1183_Input_MJPEG_Server",
+              "topic": "/CameraPublisher/photonvision.fr_Port_1182_Output_MJPEG_Server",
               "period": 0.06
             }
           }
