@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.2028055481991524,
-        "y": 0.94662341101695
+        "x": 1.2607772101214367,
+        "y": 0.9292899527851205
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.2028055481991524,
-        "y": 0.94662341101695
+        "x": 2.2607772101214367,
+        "y": 0.9292899527851205
       },
       "isLocked": false,
       "linkedName": "ProcessorSource"
@@ -48,7 +48,7 @@
   "folder": "Cage",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 51.115035446938684
+    "rotation": 54.0
   },
   "useDefaultConstraints": true
 }
