@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.126568777647118,
-        "y": 5.439820719523141
+        "x": 4.942710148238997,
+        "y": 5.409304113029679
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.162860678225235,
-        "y": 6.389434527572184
+        "x": 4.979002048817114,
+        "y": 6.358917921078722
       },
       "isLocked": false,
       "linkedName": "IJ Rotation"
     },
     {
       "anchor": {
-        "x": 1.6187814486228813,
-        "y": 7.326179323358051
+        "x": 1.2709144217553459,
+        "y": 7.068542918586406
       },
       "prevControl": {
-        "x": 2.447217779207977,
-        "y": 6.838598247128357
+        "x": 2.3741872838835874,
+        "y": 5.266800841717718
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -55.46660242905806
+    "rotation": -52.97171975617435
   },
   "reversed": false,
   "folder": "Cage",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -86.00463425392283
+    "rotation": -118.09378471695831
   },
   "useDefaultConstraints": true
 }

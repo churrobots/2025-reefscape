@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.1281981484141275,
-        "y": 5.136644606111702
+        "x": 5.117113797993081,
+        "y": 5.120609842236645
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.3128173143746515,
-        "y": 5.305214364846893
+        "x": 5.301732963953605,
+        "y": 5.289179600971836
       },
       "isLocked": false,
       "linkedName": "IJ"
@@ -48,7 +48,7 @@
   "folder": "Cage",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -121.3555105768303
+    "rotation": -120.8103811306715
   },
   "useDefaultConstraints": true
 }
