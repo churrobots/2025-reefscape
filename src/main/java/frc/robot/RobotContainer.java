@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -123,8 +124,9 @@ public class RobotContainer {
       // .alongWith(pipeshooter.intakeCoral());
       // operatorXboxController.x().whileTrue(moveElbowAndElevatorToGroundAlgae);
 
-      Command moveElbowAndElevatorTo1 = elevator.move1Beta().alongWith(elbow.aimAtTrough());
-      operatorXboxController.x().onTrue(moveElbowAndElevatorTo1);
+      // Command moveElbowAndElevatorTo1 =
+      // elevator.move1Beta().alongWith(elbow.aimAtTrough());
+      // operatorXboxController.x().onTrue(moveElbowAndElevatorTo1);
 
       Command moveElbowAndElevatorTo2 = elevator.move2Sigma().alongWith(elbow.aimAtReef());
       operatorXboxController.y().onTrue(moveElbowAndElevatorTo2);
@@ -136,16 +138,9 @@ public class RobotContainer {
       operatorXboxController.povUp().onTrue(elbow.aimAtAlgae().alongWith(elevator.moveToHighAlgae()));
       operatorXboxController.povDown().onTrue(elbow.aimAtAlgae().alongWith(elevator.moveToLowAlgae()));
 
-      Command moveClimbUp = climber.moveUpwards();
-      Command moveClimbMid = climber.moveMid();
-      Command moveClimbDown = climber.moveDown();
+      // operatorXboxController.leftTrigger(0.1).whileTrue(climber.moveDownwards());
+      // operatorXboxController.rightTrigger(0.1).whileTrue(climber.moveUpwards());
 
-      // operatorXboxController.povRight().whileTrue(climber.moveUpwards());
-      // operatorXboxController.start().onTrue(moveClimbMid);
-      // operatorXboxController.povLeft().whileTrue(moveClimbDown);
-      // operatorXboxController.povRight().whileTrue(moveClimbUp);
-
-      // operatorXboxController.povLeft().onTrue(climber.moveDown());
       // When we're not on a real field, make a command that we can use
       // for testing auto (putting the arm into position to hold our auto coral)
       if (!DriverStation.isFMSAttached()) {

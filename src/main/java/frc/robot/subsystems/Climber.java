@@ -63,27 +63,30 @@ public class Climber extends SubsystemBase {
     });
   }
 
-  public Command moveDown() {
+  // slowly retract until hit min position.
+  public Command moveDownwards() {
     return run(() -> {
-      if (getRotations() < Hardware.Climber.maxRotations) {
-        m_climberMotor.set(-1);
-      } else {
-        m_climberMotor.set(0);
-      }
-    });
-  }
+      m_climberMotor.set(-1);
 
-  public Command moveMid() {
-    return run(() -> {
-      // if (getRotations() < Hardware.Climber.kMid) {
-      // m_climberMotor.set(1);
+      // if (getRotations() > Hardware.Climber.minRotations) {
+      // m_climberMotor.set(-1);
       // } else {
       // m_climberMotor.set(0);
       // }
     });
   }
 
-  // slowly climb until hit max position
+  // public Command moveMid() {
+  // return run(() -> {
+  // // if (getRotations() < Hardware.Climber.kMid) {
+  // // m_climberMotor.set(1);
+  // // } else {
+  // // m_climberMotor.set(0);
+  // // }
+  // });
+  // }
+
+  // Slowly climb until hit max position.
   public Command moveUpwards() {
     return run(() -> {
       if (getRotations() < Hardware.Climber.maxRotations) {
@@ -104,18 +107,19 @@ public class Climber extends SubsystemBase {
         / Hardware.Climber.armRatio;
   }
 
-  private Command moveToRotations(double desiredOutputInRotations) {
-    return run(() -> {
-      double safeRotations = MathUtil.clamp(
-          desiredOutputInRotations,
-          Hardware.Climber.minRotations,
-          Hardware.Climber.maxRotations);
-      m_targetRotations = safeRotations;
-      double requiredInputRotations = Hardware.Climber.gearboxReduction * Hardware.Climber.armRatio
-          * desiredOutputInRotations;
-      m_climberMotor.setControl(m_positionRequest.withPosition(requiredInputRotations));
-    });
-  }
+  // private Command moveToRotations(double desiredOutputInRotations) {
+  // return run(() -> {
+  // double safeRotations = MathUtil.clamp(
+  // desiredOutputInRotations,
+  // Hardware.Climber.minRotations,
+  // Hardware.Climber.maxRotations);
+  // m_targetRotations = safeRotations;
+  // double requiredInputRotations = Hardware.Climber.gearboxReduction *
+  // Hardware.Climber.armRatio
+  // * desiredOutputInRotations;
+  // m_climberMotor.setControl(m_positionRequest.withPosition(requiredInputRotations));
+  // });
+  // }
 
   @Override
   public void periodic() {
