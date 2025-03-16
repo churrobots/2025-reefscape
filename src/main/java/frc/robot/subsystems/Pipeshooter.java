@@ -22,16 +22,30 @@ public class Pipeshooter extends SubsystemBase {
   public Pipeshooter(Elevator elevator, Elbow elbow) {
     m_elevator = elevator;
     m_elbow = elbow;
-    setDefaultCommand(idle());
+    // setDefaultCommand(idle());
     final TalonFXConfiguration shooterConfig = new TalonFXConfiguration();
     shooterConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     m_pipeShooterMotor.getConfigurator().apply(shooterConfig);
     HardwareRegistry.registerHardware(m_pipeShooterMotor);
   }
 
+  public void setupAutonomous() {
+    setDefaultCommand(trueIdle());
+  }
+
+  public void setupTeleop() {
+    setDefaultCommand(idle());
+  }
+
   public Command idle() {
     return run(() -> {
       m_pipeShooterMotor.set(-0.05);
+    });
+  }
+
+  public Command trueIdle() {
+    return run(() -> {
+      m_pipeShooterMotor.set(0);
     });
   }
 
@@ -43,7 +57,7 @@ public class Pipeshooter extends SubsystemBase {
 
   public Command dumpCoral() {
     return run(() -> {
-      m_pipeShooterMotor.set(-0.10);
+      m_pipeShooterMotor.set(-0.050);
     });
   }
 

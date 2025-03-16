@@ -66,7 +66,9 @@ public class Climber extends SubsystemBase {
   // slowly retract until hit min position.
   public Command moveDownwards() {
     return run(() -> {
-      m_climberMotor.set(-1);
+      if (m_isActivated) {
+        m_climberMotor.set(-1);
+      }
 
       // if (getRotations() > Hardware.Climber.minRotations) {
       // m_climberMotor.set(-1);
@@ -89,18 +91,21 @@ public class Climber extends SubsystemBase {
   // Slowly climb until hit max position.
   public Command moveUpwards() {
     return run(() -> {
-      if (getRotations() < Hardware.Climber.maxRotations) {
-        m_climberMotor.set(1);
-      } else {
-        m_climberMotor.set(0);
+      if (m_isActivated) {
+        if (getRotations() < Hardware.Climber.maxRotations) {
+          m_climberMotor.set(1);
+        } else {
+          m_climberMotor.set(0);
+        }
       }
     });
   }
 
-  // public Command activation()
-  // {
-  // return m_isActivated = true;
-  // }
+  public Command activation() {
+    return run(() -> {
+      m_isActivated = true;
+    });
+  }
 
   public double getRotations() {
     return m_climberMotor.getPosition().getValueAsDouble() / Hardware.Climber.gearboxReduction

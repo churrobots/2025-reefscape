@@ -18,32 +18,19 @@
           }
         },
         {
-          "type": "deadline",
+          "type": "race",
           "data": {
             "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.6
+                }
+              },
               {
                 "type": "named",
                 "data": {
                   "name": "aimToDump"
-                }
-              },
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 0.4
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "dumpCoral"
-                      }
-                    }
-                  ]
                 }
               }
             ]

@@ -139,7 +139,9 @@ public class RobotContainer {
       operatorXboxController.povDown().onTrue(elbow.aimAtAlgae().alongWith(elevator.moveToLowAlgae()));
 
       // operatorXboxController.leftTrigger(0.1).whileTrue(climber.moveDownwards());
+      // //just uncommented these out
       // operatorXboxController.rightTrigger(0.1).whileTrue(climber.moveUpwards());
+      // operatorXboxController.start().onTrue(climber.activation());
 
       // When we're not on a real field, make a command that we can use
       // for testing auto (putting the arm into position to hold our auto coral)
@@ -165,7 +167,7 @@ public class RobotContainer {
     // was just a typo that needs to be fixed)
     NamedCommands.registerCommand("holdCoralHigh", elbow.holdCoralHigh());
 
-    NamedCommands.registerCommand("aimToDump", elbow.aimToDump().withTimeout(1.5));
+    NamedCommands.registerCommand("aimToDump", elbow.aimToDump().withTimeout(1));
     NamedCommands.registerCommand("dumpCoral", pipeshooter.dumpCoral().withTimeout(0.5));
 
     NamedCommands.registerCommand("moveToHighAlgae",
@@ -177,11 +179,12 @@ public class RobotContainer {
         pipeshooter.shootCoral().withTimeout(2));
     NamedCommands.registerCommand("intakeCoral", elevator.moveToReceive().alongWith(elbow.receive())
         .alongWith(pipeshooter.intakeCoral()).withTimeout(1.5));
-    NamedCommands.registerCommand("stopIntake", pipeshooter.idle());
+    NamedCommands.registerCommand("fakeIdle", pipeshooter.idle());
 
     NamedCommands.registerCommand("moveToL2", elevator.move2Sigma().alongWith(elbow.aimAtReef()));
     NamedCommands.registerCommand("moveToL3", elevator.move3Alpha().alongWith(elbow.aimAtReef()));
     NamedCommands.registerCommand("shootCoral", pipeshooter.shootCoral());
+    NamedCommands.registerCommand("stopIntake", pipeshooter.trueIdle());
 
     NamedCommands.registerCommand("waitForTeammates", new WaitCommand(9));
 
@@ -201,9 +204,11 @@ public class RobotContainer {
 
   void setupAutonomous() {
     drivetrain.setupAutonomous();
+    pipeshooter.setupAutonomous();
   }
 
   void setupTeleop() {
     drivetrain.setupTeleop();
+    pipeshooter.setupTeleop();
   }
 }

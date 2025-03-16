@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.0926061785859025,
-        "y": 2.831639859500041
+        "x": 5.207397699136159,
+        "y": 2.7750754770909576
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.859002075119613,
-        "y": 3.300950880650849
+        "x": 4.973898898668566,
+        "y": 3.244174944347312
       },
       "isLocked": false,
-      "linkedName": "EF"
+      "linkedName": "RightReef-Red"
     },
     {
       "anchor": {
