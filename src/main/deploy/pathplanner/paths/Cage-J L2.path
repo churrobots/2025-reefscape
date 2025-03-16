@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 7.5833297470868635,
+        "y": 7.296404512049788
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.636598254443225,
+        "y": 7.282256231697603
+      },
+      "isLocked": false,
+      "linkedName": "Blue Cage"
+    },
+    {
+      "anchor": {
+        "x": 4.911123722087817,
+        "y": 5.351426661481273
+      },
+      "prevControl": {
+        "x": 4.665271767895073,
+        "y": 5.209483969547297
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "I-L3"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 6.0,
+    "maxAcceleration": 5.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -120.25032786019386
+  },
+  "reversed": false,
+  "folder": "Cage",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 179.7012280856445
+  },
+  "useDefaultConstraints": true
+}

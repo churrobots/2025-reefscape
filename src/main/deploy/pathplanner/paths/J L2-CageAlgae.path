@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 4.911123722087817,
+        "y": 5.351426661481273
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.644772873499718,
+        "y": 4.881530509277929
+      },
+      "isLocked": false,
+      "linkedName": "I-L3"
+    },
+    {
+      "anchor": {
+        "x": 4.942710148238997,
+        "y": 5.409304113029679
+      },
+      "prevControl": {
+        "x": 5.368860515838075,
+        "y": 5.503236079869389
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "IJ Rotation"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 6.0,
+    "maxAcceleration": 5.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -118.09378471695831
+  },
+  "reversed": false,
+  "folder": "Cage",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -120.25032786019386
+  },
+  "useDefaultConstraints": true
+}
