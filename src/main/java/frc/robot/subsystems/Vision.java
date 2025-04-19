@@ -1,17 +1,25 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Microseconds;
+import static edu.wpi.first.units.Units.Milliseconds;
+import static edu.wpi.first.units.Units.Seconds;
+
+import java.lang.StackWalker.Option;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.simulation.VisionSystemSim;
+import org.photonvision.targeting.PhotonPipelineResult;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.NetworkTablesJNI;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import frc.robot.Hardware;
@@ -149,5 +157,18 @@ public class Vision {
     m_cameras[0].setDriverMode(true);
     m_cameras[1].setDriverMode(false);
     m_cameras[2].setDriverMode(false);
+  }
+
+  public Optional<PhotonPipelineResult> getBestResult() {
+
+    Optional<PhotonPipelineResult> bestResult = Optional.empty();
+    for (Camera camera : m_cameras) {
+      bestResult = camera.getBestResult();
+      if (bestResult.isPresent()) {
+        return bestResult;
+      }
+
+    }
+    return Optional.empty();
   }
 }

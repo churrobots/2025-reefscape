@@ -44,6 +44,7 @@ public class RobotContainer {
             : new CommandXboxController(Hardware.DriverStation.driverXboxPort);
 
     CommandXboxController operatorXboxController = new CommandXboxController(Hardware.DriverStation.operatorXboxPort);
+    Command aimAttarget = drivetrain.aimAtTarget();
 
     DoubleSupplier allianceRelativeFactor = () -> {
       boolean isBlueAlliance = DriverStation.getAlliance().orElseGet(() -> Alliance.Blue) == Alliance.Blue;
@@ -93,6 +94,7 @@ public class RobotContainer {
       drivetrain.setDefaultCommand(fastFieldRelativeDriverXboxControl);
       driverXboxController.rightBumper().whileTrue(slowFieldRelativeDriverXboxControl);
       driverXboxController.back().whileTrue(drivetrain.recalibrateDrivetrain());
+      driverXboxController.a().onTrue(aimAttarget);
       operatorXboxController.leftBumper()
           .whileTrue(slowRobotRelativeOperatorXboxControl.withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
     }
