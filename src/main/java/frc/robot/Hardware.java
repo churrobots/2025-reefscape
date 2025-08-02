@@ -175,17 +175,20 @@ public final class Hardware {
     // Camera positions relative to robot center
     // Operator camera
     public static final Transform3d robotToCamOperator = switch (robotName) {
-      case ROBOT_BETA -> new Transform3d(new Translation3d(0.33, 0.0, 0.102), new Rotation3d(0, -1.05, 0));
+      // 12.74, 0.0, 4.5 inches
+      case ROBOT_BETA -> new Transform3d(new Translation3d(0.32, 0.0, 0.11), new Rotation3d(0, -1.05, 0));
       default -> new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0));
     };
     // Camera facing forward
     public static final Transform3d robotToCamFront = switch (robotName) {
-      case ROBOT_BETA -> new Transform3d(new Translation3d(0.12, 0.32, 0.51), new Rotation3d(0, 0.79, 0));
+      // 6.865, 14.115, 19 inches
+      case ROBOT_BETA -> new Transform3d(new Translation3d(0.17, 0.36, 0.48), new Rotation3d(0, 0.79, 0));
       default -> new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0));
     };
     // Camera facing backward
     public static final Transform3d robotToCamBack = switch (robotName) {
-      case ROBOT_BETA -> new Transform3d(new Translation3d(0.14, 0.32, 0.33), new Rotation3d(0, 0.79, 3.14));
+      // 5.24, 14.115, 18.25 inches
+      case ROBOT_BETA -> new Transform3d(new Translation3d(0.13, 0.36, 0.33), new Rotation3d(0, 0.79, 3.14));
       default -> new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0));
     };
 

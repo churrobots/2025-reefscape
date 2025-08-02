@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.555927237817797,
-        "y": 0.8266527078919501
+        "x": 3.8607113486841276,
+        "y": 2.8906905324862633
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.684873163182305,
-        "y": 1.267680067691284
+        "x": 3.0285736113977055,
+        "y": 2.296010800557065
       },
       "isLocked": false,
-      "linkedName": "Red Cage"
+      "linkedName": "CD algae"
     },
     {
       "anchor": {
-        "x": 4.925315203849646,
-        "y": 2.713996775315587
+        "x": 1.2028055481991524,
+        "y": 0.94662341101695
       },
       "prevControl": {
-        "x": 5.48409749004973,
-        "y": 2.151233112976522
+        "x": 1.8590225944891898,
+        "y": 1.4179519091186918
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "EL2"
+      "linkedName": "ProcessorSource"
     }
   ],
   "rotationTargets": [],
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 120.43709822688272
+    "rotation": 51.115035446938684
   },
   "reversed": false,
   "folder": "Cage",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 179.70997518439148
+    "rotation": 63.19265453201073
   },
   "useDefaultConstraints": true
 }
