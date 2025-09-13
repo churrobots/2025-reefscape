@@ -170,7 +170,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("moveToL2", elevator.move2Sigma().alongWith(elbow.aimAtReef()));
     NamedCommands.registerCommand("moveToL3", elevator.move3Alpha().alongWith(elbow.aimAtReef()));
     NamedCommands.registerCommand("shootCoral", pipeshooter.shootCoral());
-    NamedCommands.registerCommand("stopIntake", pipeshooter.trueIdle());
+    NamedCommands.registerCommand("stopIntake", pipeshooter.idle());
 
     NamedCommands.registerCommand("waitForTeammates", new WaitCommand(9));
 
