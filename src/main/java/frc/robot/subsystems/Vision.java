@@ -28,6 +28,7 @@ import swervelib.SwerveDrive;
 import swervelib.telemetry.SwerveDriveTelemetry;
 
 public class Vision {
+  // TODO: detect if the cameras are working and show on the dashboard
   Camera[] m_cameras = {
       new Camera("OperatorCamera1", Hardware.Vision.robotToCamOperator),
       new Camera("VisionCameraFront", Hardware.Vision.robotToCamFront),

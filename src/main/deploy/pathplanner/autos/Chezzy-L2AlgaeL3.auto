@@ -5,13 +5,19 @@
     "data": {
       "commands": [
         {
-          "type": "sequential",
+          "type": "deadline",
           "data": {
             "commands": [
               {
                 "type": "path",
                 "data": {
                   "pathName": "Processor-E"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "moveToL2"
                 }
               }
             ]
@@ -22,9 +28,9 @@
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "wait",
                 "data": {
-                  "name": "moveToL2"
+                  "waitTime": 1.0
                 }
               },
               {
