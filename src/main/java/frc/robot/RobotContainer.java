@@ -190,11 +190,9 @@ public class RobotContainer {
 
   void setupAutonomous() {
     drivetrain.setupAutonomous();
-    pipeshooter.setupAutonomous();
   }
 
   void setupTeleop() {
     drivetrain.setupTeleop();
-    pipeshooter.setupTeleop();
   }
 }
