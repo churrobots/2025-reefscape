@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.2028055481991524,
-        "y": 0.94662341101695
-      },
-      "prevControl": null,
-      "nextControl": {
-        "x": 2.2028055481991524,
-        "y": 0.94662341101695
-      },
-      "isLocked": false,
-      "linkedName": "ProcessorSource"
-    },
-    {
-      "anchor": {
         "x": 4.994264527581398,
         "y": 2.854634686976062
       },
+      "prevControl": null,
+      "nextControl": {
+        "x": 5.517693926938906,
+        "y": 2.2261115444756854
+      },
+      "isLocked": false,
+      "linkedName": "EL2"
+    },
+    {
+      "anchor": {
+        "x": 3.8607113486841276,
+        "y": 2.8906905324862633
+      },
       "prevControl": {
-        "x": 4.549005094726337,
-        "y": 2.083422726721793
+        "x": 3.5094061600533712,
+        "y": 1.5199350457469543
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "EL2"
+      "linkedName": "CD algae"
     }
   ],
   "rotationTargets": [],
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 120.43709822688272
+    "rotation": 63.19265453201073
   },
   "reversed": false,
   "folder": "Cage",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 51.115035446938684
+    "rotation": 120.43709822688272
   },
   "useDefaultConstraints": true
 }

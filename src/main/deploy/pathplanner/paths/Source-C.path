@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.2028055481991524,
-        "y": 0.94662341101695
+        "x": 2.0487883613319973,
+        "y": 1.6330383800221133
       },
       "isLocked": false,
       "linkedName": "ProcessorSource"
     },
     {
       "anchor": {
-        "x": 4.994264527581398,
-        "y": 2.854634686976062
+        "x": 3.8099342747738483,
+        "y": 3.2111385947779603
       },
       "prevControl": {
-        "x": 4.549005094726337,
-        "y": 2.083422726721793
+        "x": 3.459987050575795,
+        "y": 2.9135365581653296
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "EL2"
+      "linkedName": "C"
     }
   ],
   "rotationTargets": [],
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 120.43709822688272
+    "rotation": 53.64866614839734
   },
   "reversed": false,
   "folder": "Cage",

@@ -1,5 +1,10 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Microseconds;
+import static edu.wpi.first.units.Units.Milliseconds;
+import static edu.wpi.first.units.Units.Seconds;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.photonvision.EstimatedRobotPose;
@@ -10,18 +15,28 @@ import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
 import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.networktables.NetworkTablesJNI;
 import frc.robot.Robot;
 
 public class Camera {
   public PhotonPoseEstimator m_photonPoseEstimator;
   PhotonCamera m_photonCamera;
   Transform3d m_robotToCam;
-
-  // For simulation
+  public List<PhotonPipelineResult> resultsList = new ArrayList<>();
+  private double                       lastReadTimestamp = Microseconds.of(NetworkTablesJNI.now()).in(Seconds);
+  public Optional<EstimatedRobotPose> estimatedRobotPose = Optional.empty();
+  public Matrix<N3, N1> curStdDevs;
+  private final Matrix<N3, N1>               singleTagStdDevs = VecBuilder.fill(4, 4, 8); 
+ // For simulation
   public PhotonCameraSim m_cameraSim;
 
   /**
@@ -109,6 +124,88 @@ public class Camera {
     }
     return m_photonPoseEstimator.update(latestResult.get());
   }
+
+  private void updateUnreadResults()
+  {
+    double mostRecentTimestamp = resultsList.isEmpty() ? 0.0 : resultsList.get(0).getTimestampSeconds();
+    double currentTimestamp = Microseconds.of(NetworkTablesJNI.now()).in(Seconds);
+    double debounceTime = Milliseconds.of(15).in(Seconds);
+    for (PhotonPipelineResult result : resultsList) {
+      mostRecentTimestamp = Math.max(mostRecentTimestamp, result.getTimestampSeconds());
+    }
+
+    resultsList = Robot.isReal() ? m_photonCamera.getAllUnreadResults() : m_cameraSim.getCamera().getAllUnreadResults();
+    lastReadTimestamp = currentTimestamp;
+    resultsList.sort((PhotonPipelineResult a, PhotonPipelineResult b) -> {
+      return a.getTimestampSeconds() >= b.getTimestampSeconds() ? 1 : -1;
+    });
+    if (!resultsList.isEmpty()) {
+      updateEstimatedGlobalPose();
+    }
+
+  }
+    
+  private void updateEstimationStdDevs(
+        Optional<EstimatedRobotPose> estimatedPose, List<PhotonTrackedTarget> targets)
+  {
+    if (estimatedPose.isEmpty()) {
+      // No pose input. Default to single-tag std devs
+      curStdDevs = singleTagStdDevs;
+
+    } else {
+      // Pose present. Start running Heuristic
+      var estStdDevs = singleTagStdDevs;
+      int numTags = 0;
+      double avgDist = 0;
+
+      // Precalculation - see how many tags we found, and calculate an average-distance metric
+      for (var tgt : targets) {
+        var tagPose = m_photonPoseEstimator.getFieldTags().getTagPose(tgt.getFiducialId());
+        if (tagPose.isEmpty()) {
+          continue;
+        }
+        numTags++;
+        avgDist += tagPose
+            .get()
+            .toPose2d()
+            .getTranslation()
+            .getDistance(estimatedPose.get().estimatedPose.toPose2d().getTranslation());
+      }
+    }
+  }
+
+  public Optional<PhotonPipelineResult> getBestResult()
+    {
+      if (resultsList.isEmpty())
+      {
+        return Optional.empty();
+      }
+
+      PhotonPipelineResult bestResult       = resultsList.get(0);
+      double               amiguity         = bestResult.getBestTarget().getPoseAmbiguity();
+      double               currentAmbiguity = 0;
+      for (PhotonPipelineResult result : resultsList)
+      {
+        currentAmbiguity = result.getBestTarget().getPoseAmbiguity();
+        if (currentAmbiguity < amiguity && currentAmbiguity > 0)
+        {
+          bestResult = result;
+          amiguity = currentAmbiguity;
+        }
+      }
+      return Optional.of(bestResult);
+    }
+
+  private void updateEstimatedGlobalPose()
+    {
+      Optional<EstimatedRobotPose> visionEst = Optional.empty();
+      for (var change : resultsList)
+      {
+        visionEst = m_photonPoseEstimator.update(change);
+        updateEstimationStdDevs(visionEst, change.getTargets());
+      }
+      estimatedRobotPose = visionEst;
+    }
 
   /**
    * Add camera to {@link VisionSystemSim} for simulated photon vision.

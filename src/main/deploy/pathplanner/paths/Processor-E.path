@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 5.112401940064296,
-        "y": 2.8161712803237107
+        "x": 4.993613314449586,
+        "y": 2.8583650930644753
       },
       "prevControl": {
-        "x": 5.67118422626438,
-        "y": 2.2534076179846454
+        "x": 5.55239560064967,
+        "y": 2.29560143072541
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "EF"
+      "linkedName": "EL2"
     }
   ],
   "rotationTargets": [],
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 119.85949175786249
+    "rotation": 120.43709822688272
   },
   "reversed": false,
   "folder": "Cage",
