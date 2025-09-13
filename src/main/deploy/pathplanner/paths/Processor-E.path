@@ -8,27 +8,32 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.684873163182305,
-        "y": 1.267680067691284
+        "x": 6.985381731324571,
+        "y": 1.573563506539807
       },
       "isLocked": false,
       "linkedName": "Red Cage"
     },
     {
       "anchor": {
-        "x": 4.993613314449586,
-        "y": 2.8583650930644753
+        "x": 5.28563714555505,
+        "y": 2.9927887672084057
       },
       "prevControl": {
-        "x": 5.55239560064967,
-        "y": 2.29560143072541
+        "x": 5.818684777975611,
+        "y": 1.9674978121224889
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "EL2"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.2,
+      "rotationDegrees": 123.37800000000001
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -42,7 +47,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 120.43709822688272
+    "rotation": 119.57662107406462
   },
   "reversed": false,
   "folder": "Cage",

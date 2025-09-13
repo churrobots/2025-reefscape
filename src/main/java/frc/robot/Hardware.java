@@ -188,7 +188,7 @@ public final class Hardware {
     // Camera facing backward
     public static final Transform3d robotToCamBack = switch (robotName) {
       // 5.24, 14.115, 18.25 inches
-      case ROBOT_BETA -> new Transform3d(new Translation3d(0.13, 0.36, 0.33), new Rotation3d(0, 1.047, 3.14));
+      case ROBOT_BETA -> new Transform3d(new Translation3d(0.13, 0.36, 0.33), new Rotation3d(0, -1.047, 3.14));
       default -> new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0));
     };
 
