@@ -299,8 +299,8 @@ public class Drivetrain extends SubsystemBase {
           m_swerveDrive.getMaximumChassisVelocity()));
     });
   }
-  public ChassisSpeeds getTargetSpeeds(double xInput, double yInput, double headingX, double headingY)
-  {
+
+  public ChassisSpeeds getTargetSpeeds(double xInput, double yInput, double headingX, double headingY) {
     Translation2d scaledInputs = SwerveMath.cubeTranslation(new Translation2d(xInput, yInput));
     return m_swerveDrive.swerveController.getTargetSpeeds(scaledInputs.getX(),
         scaledInputs.getY(),
@@ -309,16 +309,15 @@ public class Drivetrain extends SubsystemBase {
         getHeading().getRadians(),
         Hardware.Drivetrain.maxSpeedMetersPerSecond);
   }
-  
-public ChassisSpeeds getTargetSpeeds(double xInput, double yInput, Rotation2d angle)
-  {
+
+  public ChassisSpeeds getTargetSpeeds(double xInput, double yInput, Rotation2d angle) {
     Translation2d scaledInputs = SwerveMath.cubeTranslation(new Translation2d(xInput, yInput));
 
     return m_swerveDrive.swerveController.getTargetSpeeds(scaledInputs.getX(),
-                                                        scaledInputs.getY(),
-                                                        angle.getRadians(),
-                                                        getHeading().getRadians(),
-                                                        Hardware.Drivetrain.maxSpeedMetersPerSecond);
+        scaledInputs.getY(),
+        angle.getRadians(),
+        getHeading().getRadians(),
+        Hardware.Drivetrain.maxSpeedMetersPerSecond);
   }
 
   /**
@@ -416,22 +415,4 @@ public ChassisSpeeds getTargetSpeeds(double xInput, double yInput, Rotation2d an
     m_vision.setDriverMode();
   }
 
-  public Command aimAtTarget()
-  {
-
-    return run(() -> {
-      Optional<PhotonPipelineResult> resultO = m_vision.getBestResult();
-      if (resultO.isPresent())
-      {
-        var result = resultO.get();
-        if (result.hasTargets())
-        {
-          drive(getTargetSpeeds(0,
-                                0,
-                                Rotation2d.fromDegrees(result.getBestTarget()
-                                                             .getYaw()))); // Not sure if this will work, more math may be required.
-        }
-      }
-    });
-  }
 }
