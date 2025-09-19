@@ -27,6 +27,7 @@ public class Pipeshooter extends SubsystemBase {
     shooterConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     m_pipeShooterMotor.getConfigurator().apply(shooterConfig);
     HardwareRegistry.registerHardware(m_pipeShooterMotor);
+    setDefaultCommand(idle());
   }
 
   public Command idle() {
