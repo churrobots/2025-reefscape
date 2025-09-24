@@ -11,39 +11,26 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Cage-J"
+                  "pathName": "Processor-E"
                 }
               }
             ]
           }
         },
         {
-          "type": "parallel",
+          "type": "race",
           "data": {
             "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.6
+                }
+              },
               {
                 "type": "named",
                 "data": {
                   "name": "aimToDump"
-                }
-              },
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 0.5
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "dumpCoral"
-                      }
-                    }
-                  ]
                 }
               }
             ]
@@ -54,9 +41,22 @@
           "data": {
             "commands": [
               {
-                "type": "path",
+                "type": "sequential",
                 "data": {
-                  "pathName": "J-CageAlgae"
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 1.1
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "E-ProcessorAlgae"
+                      }
+                    }
+                  ]
                 }
               },
               {
@@ -75,13 +75,13 @@
           }
         },
         {
-          "type": "deadline",
+          "type": "parallel",
           "data": {
             "commands": [
               {
                 "type": "path",
                 "data": {
-                  "pathName": "CageAlgae-Source"
+                  "pathName": "ProcessorAlgae-Source"
                 }
               },
               {
@@ -113,7 +113,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 0.9
+                  "waitTime": 1.1
                 }
               },
               {
@@ -132,7 +132,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "CageSource-Reef"
+                  "pathName": "ProcessorSource-Reef"
                 }
               },
               {
@@ -176,7 +176,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "I-Source"
+                  "pathName": "ProcessorSourceReef-Backoff"
                 }
               },
               {

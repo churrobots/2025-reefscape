@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.75,
-        "y": 4.034094456113259
+        "x": 7.5833297470868635,
+        "y": 7.296404512049788
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.545895905671296,
-        "y": 3.124441189236111
+        "x": 6.636598254443225,
+        "y": 7.282256231697603
       },
       "isLocked": false,
-      "linkedName": "MidAlgae"
+      "linkedName": "Blue Cage"
     },
     {
       "anchor": {
-        "x": 1.2607772101214367,
-        "y": 0.9292899527851205
+        "x": 4.911123722087817,
+        "y": 5.351426661481273
       },
       "prevControl": {
-        "x": 5.280874222686171,
-        "y": 1.3669008444302062
+        "x": 4.665271767895073,
+        "y": 5.209483969547297
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "ProcessorSource"
+      "linkedName": "I-L3"
     }
   ],
   "rotationTargets": [],
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 54.0
+    "rotation": -120.25032786019386
   },
   "reversed": false,
   "folder": "Cage",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -179.52217459792243
+    "rotation": 179.7012280856445
   },
   "useDefaultConstraints": true
 }
