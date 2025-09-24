@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.28563714555505,
-        "y": 2.9927887672084057
+        "x": 4.9124640754446345,
+        "y": 2.6878433649536557
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.41063714555505,
-        "y": 2.776282416262296
+        "x": 5.0374640754446345,
+        "y": 2.471337014007546
       },
       "isLocked": false,
       "linkedName": "EL2"
     },
     {
       "anchor": {
-        "x": 5.12,
-        "y": 2.92
+        "x": 5.225691289023572,
+        "y": 2.7185347409846234
       },
       "prevControl": {
-        "x": 4.995,
-        "y": 3.1365063509461097
+        "x": 5.100691289023572,
+        "y": 2.9350410919307333
       },
       "nextControl": null,
       "isLocked": false,
@@ -48,7 +48,7 @@
   "folder": "Cage",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 119.57662107406462
+    "rotation": 120.43709822688272
   },
   "useDefaultConstraints": true
 }

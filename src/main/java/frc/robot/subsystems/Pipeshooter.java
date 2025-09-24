@@ -33,7 +33,7 @@ public class Pipeshooter extends SubsystemBase {
   public Command idle() {
     return run(() -> {
       if (DriverStation.isAutonomous()) {
-        m_pipeShooterMotor.set(0);
+        m_pipeShooterMotor.set(-0.05);
       } else {
         m_pipeShooterMotor.set(-0.05);
       }
