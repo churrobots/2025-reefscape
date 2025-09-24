@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.2028055481991524,
-        "y": 0.94662341101695
+        "x": 7.555927237817797,
+        "y": 0.8266527078919501
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.2028055481991524,
-        "y": 0.94662341101695
+        "x": 6.684873163182305,
+        "y": 1.267680067691284
       },
       "isLocked": false,
-      "linkedName": "ProcessorSource"
+      "linkedName": "Red Cage"
     },
     {
       "anchor": {
-        "x": 3.2184406891255097,
-        "y": 4.222321918448948
+        "x": 4.9124640754446345,
+        "y": 2.6878433649536557
       },
       "prevControl": {
-        "x": 1.8564489293981472,
-        "y": 3.9091764322916664
+        "x": 5.4712463616447184,
+        "y": 2.1250797026145904
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "AL2"
+      "linkedName": "EL2"
     }
   ],
   "rotationTargets": [],
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -2.274372415178408
+    "rotation": 120.43709822688272
   },
   "reversed": false,
   "folder": "Cage",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 51.115035446938684
+    "rotation": 179.70997518439148
   },
   "useDefaultConstraints": true
 }

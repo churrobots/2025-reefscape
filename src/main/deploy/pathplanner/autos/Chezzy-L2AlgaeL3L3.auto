@@ -5,13 +5,43 @@
     "data": {
       "commands": [
         {
+<<<<<<<< HEAD:src/main/deploy/pathplanner/autos/RightRed.auto
+          "type": "deadline",
+========
           "type": "sequential",
+>>>>>>>> platform:src/main/deploy/pathplanner/autos/Chezzy-L2AlgaeL3L3.auto
           "data": {
             "commands": [
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Processor-E"
+<<<<<<<< HEAD:src/main/deploy/pathplanner/autos/RightRed.auto
+                  "pathName": "Processor-E-Red"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "stopIntake"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.6
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "aimToDump"
                 }
               }
             ]
@@ -22,9 +52,54 @@
           "data": {
             "commands": [
               {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 1.1
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "E-ProcessorAlgae-Red"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
                 "type": "named",
                 "data": {
+                  "name": "moveToHighAlgae"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "removeAlgae"
+========
+                  "pathName": "Processor-E"
+>>>>>>>> platform:src/main/deploy/pathplanner/autos/Chezzy-L2AlgaeL3L3.auto
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+<<<<<<<< HEAD:src/main/deploy/pathplanner/autos/RightRed.auto
+                  "pathName": "ProcessorAlgae-Source-Red"
+========
                   "name": "moveToL2"
+>>>>>>>> platform:src/main/deploy/pathplanner/autos/Chezzy-L2AlgaeL3L3.auto
                 }
               },
               {
@@ -32,15 +107,23 @@
                 "data": {
                   "commands": [
                     {
-                      "type": "wait",
+                      "type": "named",
                       "data": {
+<<<<<<<< HEAD:src/main/deploy/pathplanner/autos/RightRed.auto
+                        "name": "removeAlgae"
+========
                         "waitTime": 0.5
+>>>>>>>> platform:src/main/deploy/pathplanner/autos/Chezzy-L2AlgaeL3L3.auto
                       }
                     },
                     {
                       "type": "named",
                       "data": {
+<<<<<<<< HEAD:src/main/deploy/pathplanner/autos/RightRed.auto
+                        "name": "intakeCoral"
+========
                         "name": "shootCoral"
+>>>>>>>> platform:src/main/deploy/pathplanner/autos/Chezzy-L2AlgaeL3L3.auto
                       }
                     }
                   ]
@@ -54,6 +137,11 @@
           "data": {
             "commands": [
               {
+<<<<<<<< HEAD:src/main/deploy/pathplanner/autos/RightRed.auto
+                "type": "wait",
+                "data": {
+                  "waitTime": 1.1
+========
                 "type": "path",
                 "data": {
                   "pathName": "E-CD algae"
@@ -114,6 +202,7 @@
                 "type": "wait",
                 "data": {
                   "waitTime": 0.9
+>>>>>>>> platform:src/main/deploy/pathplanner/autos/Chezzy-L2AlgaeL3L3.auto
                 }
               },
               {
@@ -132,13 +221,19 @@
               {
                 "type": "path",
                 "data": {
+<<<<<<<< HEAD:src/main/deploy/pathplanner/autos/RightRed.auto
+                  "pathName": "ProcessorSource-Reef-Red"
+========
                   "pathName": "Source-D"
+>>>>>>>> platform:src/main/deploy/pathplanner/autos/Chezzy-L2AlgaeL3L3.auto
                 }
               },
               {
                 "type": "named",
                 "data": {
                   "name": "moveToL3"
+<<<<<<<< HEAD:src/main/deploy/pathplanner/autos/RightRed.auto
+========
                 }
               }
             ]
@@ -196,9 +291,16 @@
                       }
                     }
                   ]
+>>>>>>>> platform:src/main/deploy/pathplanner/autos/Chezzy-L2AlgaeL3L3.auto
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.25
           }
         },
         {
@@ -208,6 +310,8 @@
               {
                 "type": "wait",
                 "data": {
+<<<<<<<< HEAD:src/main/deploy/pathplanner/autos/RightRed.auto
+========
                   "waitTime": 0.9
                 }
               },
@@ -259,6 +363,7 @@
               {
                 "type": "wait",
                 "data": {
+>>>>>>>> platform:src/main/deploy/pathplanner/autos/Chezzy-L2AlgaeL3L3.auto
                   "waitTime": 0.5
                 }
               },
@@ -266,6 +371,38 @@
                 "type": "named",
                 "data": {
                   "name": "shootCoral"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "ProcessorSourceReef-Backoff"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.3
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "intakeCoral"
+                      }
+                    }
+                  ]
                 }
               }
             ]

@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -44,7 +45,6 @@ public class RobotContainer {
             : new CommandXboxController(Hardware.DriverStation.driverXboxPort);
 
     CommandXboxController operatorXboxController = new CommandXboxController(Hardware.DriverStation.operatorXboxPort);
-    Command aimAttarget = drivetrain.aimAtTarget();
 
     DoubleSupplier allianceRelativeFactor = () -> {
       boolean isBlueAlliance = DriverStation.getAlliance().orElseGet(() -> Alliance.Blue) == Alliance.Blue;
@@ -94,14 +94,15 @@ public class RobotContainer {
       drivetrain.setDefaultCommand(fastFieldRelativeDriverXboxControl);
       driverXboxController.rightBumper().whileTrue(slowFieldRelativeDriverXboxControl);
       driverXboxController.back().whileTrue(drivetrain.recalibrateDrivetrain());
-      driverXboxController.a().onTrue(aimAttarget);
+
+      // When the operator holds the left bumper, they take over control from the
+      // driver and go into "first person" driving with the camera.
       operatorXboxController.leftBumper()
           .whileTrue(slowRobotRelativeOperatorXboxControl.withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
     }
 
     if (Hardware.DriverStation.mechanismsAreInTestMode) {
       // This is for safely testing the beta bot in the meantime
-      // operatorXboxController.x().whileTrue(elevator.move1Beta());
       operatorXboxController.y().whileTrue(elevator.move2Sigma());
       operatorXboxController.b().whileTrue(elevator.move3Alpha());
       operatorXboxController.rightBumper().whileTrue(pipeshooter.shootCoral());
@@ -112,21 +113,11 @@ public class RobotContainer {
 
       operatorXboxController.x().whileTrue(
           elevator.move3Alpha().alongWith(elbow.aimAtReef()));
-      // operatorXboxController.rightBumper().whileTrue(elbow.aimAtAlgae());
 
     } else {
       Command moveElbowAndElevatorToRecieve = elevator.moveToReceive().alongWith(elbow.receive())
           .alongWith(pipeshooter.intakeCoral());
       operatorXboxController.a().whileTrue(moveElbowAndElevatorToRecieve);
-
-      // TODO: add in ground algae command?
-      // Command moveElbowAndElevatorToGroundAlgae =
-      // elevator.moveToGroundAlgae().alongWith(elbow.aimToGroundAlgae())
-      // .alongWith(pipeshooter.intakeCoral());
-      // operatorXboxController.x().whileTrue(moveElbowAndElevatorToGroundAlgae);
-
-      Command moveElbowAndElevatorTo1 = elevator.move1Beta().alongWith(elbow.aimAtTrough());
-      operatorXboxController.x().onTrue(moveElbowAndElevatorTo1);
 
       Command moveElbowAndElevatorTo2 = elevator.move2Sigma().alongWith(elbow.aimAtReef());
       operatorXboxController.y().onTrue(moveElbowAndElevatorTo2);
@@ -138,16 +129,6 @@ public class RobotContainer {
       operatorXboxController.povUp().onTrue(elbow.aimAtAlgae().alongWith(elevator.moveToHighAlgae()));
       operatorXboxController.povDown().onTrue(elbow.aimAtAlgae().alongWith(elevator.moveToLowAlgae()));
 
-      Command moveClimbUp = climber.moveUpwards();
-      Command moveClimbMid = climber.moveMid();
-      Command moveClimbDown = climber.moveDown();
-
-      // operatorXboxController.povRight().whileTrue(climber.moveUpwards());
-      operatorXboxController.start().onTrue(moveClimbMid);
-      operatorXboxController.povLeft().whileTrue(moveClimbDown);
-      operatorXboxController.povRight().whileTrue(moveClimbUp);
-
-      // operatorXboxController.povLeft().onTrue(climber.moveDown());
       // When we're not on a real field, make a command that we can use
       // for testing auto (putting the arm into position to hold our auto coral)
       if (!DriverStation.isFMSAttached()) {
@@ -172,7 +153,7 @@ public class RobotContainer {
     // was just a typo that needs to be fixed)
     NamedCommands.registerCommand("holdCoralHigh", elbow.holdCoralHigh());
 
-    NamedCommands.registerCommand("aimToDump", elbow.aimToDump().withTimeout(1.5));
+    NamedCommands.registerCommand("aimToDump", elbow.aimToDump().withTimeout(1));
     NamedCommands.registerCommand("dumpCoral", pipeshooter.dumpCoral().withTimeout(0.5));
 
     NamedCommands.registerCommand("moveToHighAlgae",
@@ -184,11 +165,12 @@ public class RobotContainer {
         pipeshooter.shootCoral().withTimeout(2));
     NamedCommands.registerCommand("intakeCoral", elevator.moveToReceive().alongWith(elbow.receive())
         .alongWith(pipeshooter.intakeCoral()).withTimeout(1.5));
-    NamedCommands.registerCommand("stopIntake", pipeshooter.idle());
+    NamedCommands.registerCommand("fakeIdle", pipeshooter.idle());
 
     NamedCommands.registerCommand("moveToL2", elevator.move2Sigma().alongWith(elbow.aimAtReef()));
     NamedCommands.registerCommand("moveToL3", elevator.move3Alpha().alongWith(elbow.aimAtReef()));
     NamedCommands.registerCommand("shootCoral", pipeshooter.shootCoral());
+    NamedCommands.registerCommand("stopIntake", pipeshooter.idle());
 
     NamedCommands.registerCommand("waitForTeammates", new WaitCommand(9));
 

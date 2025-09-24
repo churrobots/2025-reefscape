@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.242030188882857,
-        "y": 5.200534772297655
+        "x": 5.117113797993081,
+        "y": 5.120609842236645
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.428177142105484,
-        "y": 5.367415903064238
+        "x": 4.850762949404982,
+        "y": 4.6507136900333
       },
       "isLocked": false,
       "linkedName": "IJ"
     },
     {
       "anchor": {
-        "x": 5.127426681886544,
-        "y": 5.097852480890636
+        "x": 4.942710148238997,
+        "y": 5.409304113029679
       },
       "prevControl": {
-        "x": 5.225372533818872,
-        "y": 5.327866850201013
+        "x": 5.368860515838075,
+        "y": 5.503236079869389
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "CageAlgae"
+      "linkedName": "IJ Rotation"
     }
   ],
   "rotationTargets": [],
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -120.15327614684324
+    "rotation": -118.09378471695831
   },
   "reversed": false,
   "folder": "Cage",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -122.95908041829297
+    "rotation": -120.8103811306715
   },
   "useDefaultConstraints": true
 }

@@ -11,13 +11,32 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Processor-E"
+                  "pathName": "Processor-E-Red"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "moveToL2"
+                  "name": "stopIntake"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.6
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "aimToDump"
                 }
               }
             ]
@@ -27,12 +46,6 @@
           "type": "deadline",
           "data": {
             "commands": [
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 1.0
-                }
-              },
               {
                 "type": "sequential",
                 "data": {
@@ -40,29 +53,16 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.5
+                        "waitTime": 1.1
                       }
                     },
                     {
-                      "type": "named",
+                      "type": "path",
                       "data": {
-                        "name": "shootCoral"
+                        "pathName": "E-ProcessorAlgae-Red"
                       }
                     }
                   ]
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "deadline",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "E-ProcessorAlgae"
                 }
               },
               {
@@ -87,7 +87,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "ProcessorAlgae-Source"
+                  "pathName": "ProcessorAlgae-Source-Red"
                 }
               },
               {
@@ -119,7 +119,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 0.9
+                  "waitTime": 1.1
                 }
               },
               {
@@ -138,7 +138,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "ProcessorSource-Reef"
+                  "pathName": "ProcessorSource-Reef-Red"
                 }
               },
               {

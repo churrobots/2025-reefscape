@@ -11,14 +11,14 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Processor-E"
+                  "pathName": "Cage-J"
                 }
               }
             ]
           }
         },
         {
-          "type": "deadline",
+          "type": "parallel",
           "data": {
             "commands": [
               {
@@ -54,9 +54,22 @@
           "data": {
             "commands": [
               {
-                "type": "path",
+                "type": "sequential",
                 "data": {
-                  "pathName": "E-ProcessorAlgae"
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 1.1
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "J-CageAlgae"
+                      }
+                    }
+                  ]
                 }
               },
               {
@@ -75,13 +88,13 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "deadline",
           "data": {
             "commands": [
               {
                 "type": "path",
                 "data": {
-                  "pathName": "ProcessorAlgae-Source"
+                  "pathName": "CageAlgae-Source"
                 }
               },
               {
@@ -113,7 +126,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 0.9
+                  "waitTime": 1.1
                 }
               },
               {
@@ -132,7 +145,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "ProcessorSource-Reef"
+                  "pathName": "CageSource-Reef"
                 }
               },
               {
@@ -176,7 +189,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "ProcessorSourceReef-Backoff"
+                  "pathName": "I-Source"
                 }
               },
               {
