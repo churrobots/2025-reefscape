@@ -8,6 +8,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.churrolib.HardwareRegistry;
@@ -22,30 +23,21 @@ public class Pipeshooter extends SubsystemBase {
   public Pipeshooter(Elevator elevator, Elbow elbow) {
     m_elevator = elevator;
     m_elbow = elbow;
-    // setDefaultCommand(idle());
     final TalonFXConfiguration shooterConfig = new TalonFXConfiguration();
     shooterConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     m_pipeShooterMotor.getConfigurator().apply(shooterConfig);
     HardwareRegistry.registerHardware(m_pipeShooterMotor);
-  }
-
-  public void setupAutonomous() {
-    setDefaultCommand(trueIdle());
-  }
-
-  public void setupTeleop() {
     setDefaultCommand(idle());
   }
 
   public Command idle() {
     return run(() -> {
-      m_pipeShooterMotor.set(-0.05);
-    });
-  }
+      if (DriverStation.isAutonomous()) {
+        m_pipeShooterMotor.set(0);
+      } else {
+        m_pipeShooterMotor.set(-0.05);
+      }
 
-  public Command trueIdle() {
-    return run(() -> {
-      m_pipeShooterMotor.set(0);
     });
   }
 
