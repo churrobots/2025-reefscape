@@ -179,16 +179,14 @@ public final class Hardware {
       case ROBOT_BETA -> new Transform3d(new Translation3d(0.32, 0.0, 0.11), new Rotation3d(0, -1.05, 0));
       default -> new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0));
     };
-    // Camera facing forward
+    // Camera facing forward and down (low tags )
     public static final Transform3d robotToCamFront = switch (robotName) {
-      // 6.865, 14.115, 19 inches
-      case ROBOT_BETA -> new Transform3d(new Translation3d(0.17, 0.36, 0.48), new Rotation3d(0, 1.047, 0));
+      case ROBOT_BETA -> new Transform3d(new Translation3d(0.17, 0.34, 0.57), new Rotation3d(0, 1.047, 0));
       default -> new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0));
     };
-    // Camera facing backward
+    // Camera facing backward and up (high tags)
     public static final Transform3d robotToCamBack = switch (robotName) {
-      // 5.24, 14.115, 18.25 inches
-      case ROBOT_BETA -> new Transform3d(new Translation3d(0.13, 0.36, 0.33), new Rotation3d(0, -1.047, 3.14));
+      case ROBOT_BETA -> new Transform3d(new Translation3d(0.13, 0.34, 0.53), new Rotation3d(0, -1.047, 3.14));
       default -> new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0));
     };
 
