@@ -18,11 +18,13 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.NetworkTablesJNI;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Hardware;
 import frc.robot.Robot;
 import swervelib.SwerveDrive;
@@ -87,10 +89,6 @@ public class Vision {
    * @param swerveDrive {@link SwerveDrive} instance.
    */
   public void updatePoseEstimation(SwerveDrive swerveDrive) {
-    if (!DriverStation.isAutonomous()) {
-      // Don't use vision in teleop since its busted
-      return;
-    }
     if (SwerveDriveTelemetry.isSimulation && swerveDrive.getSimulationDriveTrainPose().isPresent()) {
       /*
        * In the maple-sim, odometry is simulated using encoder values, accounting for
@@ -113,9 +111,33 @@ public class Vision {
         var pose = poseEst.get();
         m_currentPose = () -> pose.estimatedPose.toPose2d();
         m_posePublishers.get(i).set(pose.estimatedPose.toPose2d());
-        swerveDrive.addVisionMeasurement(pose.estimatedPose.toPose2d(),
-            pose.timestampSeconds);
+        var proposedPose = pose.estimatedPose.toPose2d();
+        if (shouldUsePose(proposedPose, swerveDrive)) {
+          swerveDrive.addVisionMeasurement(pose.estimatedPose.toPose2d(),
+              pose.timestampSeconds);
+        }
       }
+    }
+  }
+
+  private boolean shouldUsePose(Pose2d proposedPose, SwerveDrive swerveDrive) {
+    // Only accept vision poses during autonomous
+    // TODO: make vision better
+    if (!DriverStation.isAutonomous()) {
+      return false;
+    }
+    Rotation2d gyroRotations = swerveDrive.getOdometryHeading();
+    Rotation2d proposedRotations = proposedPose.getRotation();
+    double degreesOffFromGyro = Math.abs(proposedRotations.minus(gyroRotations).getDegrees());
+    SmartDashboard.putNumber("gyroRotations", gyroRotations.getDegrees());
+    SmartDashboard.putNumber("proposedRotations", proposedRotations.getDegrees());
+    SmartDashboard.putNumber("degreesOffFromGyro", degreesOffFromGyro);
+    double MAX_ACCEPTABLE_DELTA_IN_DEGREES = 9;
+    boolean poseIsCloseToCorrectHeading = degreesOffFromGyro <= MAX_ACCEPTABLE_DELTA_IN_DEGREES;
+    if (poseIsCloseToCorrectHeading) {
+      return true;
+    } else {
+      return false;
     }
   }
 
