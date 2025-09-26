@@ -129,8 +129,6 @@ public class Vision {
     Rotation2d gyroRotations = swerveDrive.getOdometryHeading();
     Rotation2d proposedRotations = proposedPose.getRotation();
     double degreesOffFromGyro = Math.abs(proposedRotations.minus(gyroRotations).getDegrees());
-    SmartDashboard.putNumber("gyroRotations", gyroRotations.getDegrees());
-    SmartDashboard.putNumber("proposedRotations", proposedRotations.getDegrees());
     SmartDashboard.putNumber("degreesOffFromGyro", degreesOffFromGyro);
     double MAX_ACCEPTABLE_DELTA_IN_DEGREES = 9;
     boolean poseIsCloseToCorrectHeading = degreesOffFromGyro <= MAX_ACCEPTABLE_DELTA_IN_DEGREES;
