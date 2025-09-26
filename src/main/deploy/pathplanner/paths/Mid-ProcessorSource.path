@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.545895905671296,
-        "y": 3.124441189236111
+        "x": 8.335301079185566,
+        "y": 0.031205309856423114
       },
       "isLocked": false,
       "linkedName": "MidAlgae"
@@ -20,15 +20,20 @@
         "y": 0.6333342988612298
       },
       "prevControl": {
-        "x": 5.653499588041436,
-        "y": 1.070945190506315
+        "x": 3.796118991657839,
+        "y": 0.8521670583951277
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "ProcessorSource"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 10.465270384639863
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
