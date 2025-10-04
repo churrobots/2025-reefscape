@@ -6,7 +6,9 @@
     "Cage",
     "Source"
   ],
-  "autoFolders": [],
+  "autoFolders": [
+    "New Folder"
+  ],
   "defaultMaxVel": 6.0,
   "defaultMaxAccel": 5.0,
   "defaultMaxAngVel": 540.0,
