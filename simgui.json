@@ -29,6 +29,7 @@
       "/SmartDashboard/JSON": "Alerts",
       "/SmartDashboard/Motors": "Alerts",
       "/SmartDashboard/PathPlanner": "Alerts",
+      "/SmartDashboard/PhotonAlerts": "Alerts",
       "/SmartDashboard/Pigeon 2 (v6) [9]": "Gyro",
       "/SmartDashboard/SendableChooser[0]": "String Chooser",
       "/SmartDashboard/Swerve Drive": "Alerts",
